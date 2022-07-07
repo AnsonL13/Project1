@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.enemy.Enemy;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.Direction;
 
@@ -19,8 +20,7 @@ public class Dungeon {
     // Add any variables here when you need them.
     private String dungeonId;
     private String dungeonName;
-
-    // Add data structures here when you need them.
+    private List<Enemy> enemies;
 
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -68,4 +68,6 @@ public class Dungeon {
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
 
     }
+
+    //public void 
 }
