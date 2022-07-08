@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Dungeon {
@@ -28,8 +30,13 @@ public class Dungeon {
         this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
-
+        createZombieSpawner();
         // Add more here
+    }
+
+    private void createZombieSpawner() {
+        int health = configJson.get("zombie_attack").getAsJsonObject().get("type").getAsInt();
+        int attack = configJson.get("zombie_health").getAsJsonObject().get("type").getAsInt();
     }
 
     // Getters (Add more here)
