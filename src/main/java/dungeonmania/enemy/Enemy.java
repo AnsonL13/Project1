@@ -13,10 +13,10 @@ public abstract class Enemy {
     }
 
     public void move (boolean isInvicible, boolean isInvisible, int x, int y) {
-        inBattle = isBattle();
+        inBattle = isBattle(x, y);
     }
 
-    public boolean isBattle() {
+    public boolean isBattle(int x, int y) {
         return false;
     }
     
