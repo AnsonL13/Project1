@@ -14,12 +14,15 @@ public class Boulder extends StaticEntity {
         this.setType("Boulder");
     }
 
-    public boolean canMove(Direction direction) {
+    public boolean canMove(Direction direction, List<StaticEntity> entity) {
         Position newDirection = super.getPosition().translateBy(direction.getOffset());
         List<String> block = new ArrayList<>(Arrays.asList("Boulder","Wall","Door")); //maybe add more
-        if (super.getPosition().equals(newDirection) && block.contains(super.getType())) {
-            return false;
+        for(StaticEntity item : entity) {
+            if (item.getPosition().equals(newDirection) && block.contains(item.getType())) {
+                return false;
+            }
         }
+        
         return true;
     }
     

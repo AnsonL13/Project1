@@ -1,13 +1,13 @@
 package dungeonmania;
 
+import java.util.List;
+
+import com.google.gson.JsonObject;
+
+import dungeonmania.StaticEntity.StaticEntity;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.Direction;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import com.google.gson.JsonObject;
 
 public class Dungeon {
 
@@ -21,13 +21,15 @@ public class Dungeon {
     private String dungeonName;
 
     // Add data structures here when you need them.
+    private List<StaticEntity> entities;
 
 
-    public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
+    public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson, List<StaticEntity> entities) {
         this.dungeonJson = dungeonJson;
         this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
+        this.entities = entities;
 
         // Add more here
     }
@@ -40,6 +42,16 @@ public class Dungeon {
     public String getDungeonName() {
         return dungeonName;
     }
+
+
+    /**
+     * @param item
+     * this function can add Static entities to the list
+     */
+    public void AddStaticEntity(StaticEntity item) {
+        entities.add(item);
+    }
+
 
     /**
      * /game/tick/item
