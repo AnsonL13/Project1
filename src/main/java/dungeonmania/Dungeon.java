@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.enemy.Enemy;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Dungeon {
     private String dungeonId;
     private String dungeonName;
     private List<Enemy> enemies;
+    private List<EnemyFactory> spawners;
 
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -30,13 +32,15 @@ public class Dungeon {
         this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
-        createZombieSpawner();
         // Add more here
     }
 
-    private void createZombieSpawner() {
-        int health = configJson.get("zombie_attack").getAsJsonObject().get("type").getAsInt();
-        int attack = configJson.get("zombie_health").getAsJsonObject().get("type").getAsInt();
+    private void createZombieSpawner(Position pos) {
+        int health = configJson.get("zombie_attack").getAsJsonObject().getAsInt();
+        int attack = configJson.get("zombie_health").getAsJsonObject().getAsInt();
+        int spawnRate = configJson.get("zombie_spawn_rate").getAsJsonObject().getAsInt();
+        spawners.add(new ZombieToastSpawner(attack, health, spawnRate, pos));
+
     }
 
     // Getters (Add more here)
