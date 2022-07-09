@@ -2,8 +2,6 @@ package dungeonmania.enemy;
 
 import java.util.Random;
 
-import org.reflections.vfs.Vfs.Dir;
-
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -17,7 +15,7 @@ public class ZombieToast extends Enemy{
         if (super.isInBattle()) {
 
         } else if (isInvicible) {
-
+            runAway();
         } else {
             randomMove();
         }
