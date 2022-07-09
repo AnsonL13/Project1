@@ -1,6 +1,7 @@
 package dungeonmania;
 
 import dungeonmania.enemy.Enemy;
+import dungeonmania.enemy.Mercenary;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -10,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -41,6 +46,22 @@ public class Dungeon {
         int spawnRate = configJson.get("zombie_spawn_rate").getAsJsonObject().getAsInt();
         spawners.add(new ZombieToastSpawner(attack, health, spawnRate, pos));
 
+    }
+
+    private void createMercenary() {
+        JsonArray dungeonEntities = dungeonJson.get("entities").getAsJsonArray();
+        for (JsonElement entities : dungeonEntities) {
+            String type = entities.getAsJsonObject().get("Type").getAsString();
+            if (type == "mercenary") {
+                int x = entities.getAsJsonObject().get("x").getAsInt();
+                int y = entities.getAsJsonObject().get("y").getAsInt();
+                int health = configJson.get("mercenary_attack").getAsJsonObject().getAsInt();
+                int attack = configJson.get("mercenary_health").getAsJsonObject().getAsInt();
+                Position pos = new Position(x, y);
+                enemies.add(new Mercenary(health, attack, pos));
+
+            }
+        }
     }
 
     // Getters (Add more here)
