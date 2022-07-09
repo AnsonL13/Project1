@@ -2,13 +2,18 @@ package dungeonmania.enemy;
 
 import java.util.Random;
 
+import org.reflections.vfs.Vfs.Dir;
+
+import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
+
 public class ZombieToast extends Enemy{
 
-    public ZombieToast (int health, int attack) {
-        super(health, attack);
+    public ZombieToast (int health, int attack, Position position) {
+        super(health, attack, position);
     }
 
-    public void move(boolean isInvicible, boolean isInvisible, int x, int y) {  
+    public void move(boolean isInvicible, boolean isInvisible, Position player) {  
         if (super.isInBattle()) {
 
         } else if (isInvicible) {
@@ -17,36 +22,34 @@ public class ZombieToast extends Enemy{
             randomMove();
         }
 
-        super.isBattle(x, y);
+        super.isBattle(player);
     }
     
     private void randomMove () {
         Random rand = new Random(); //instance of random class
         int upper = 4;
         int randomdir = rand.nextInt(upper); 
-        int x = super.getX();
-        int y = super.getY();
+        Position pos = super.getPos();
         switch(randomdir) {
             case 0:
-                x += 1;
+                pos.translateBy(Direction.UP);
                 break;
             case 1:
-                y += 1;
+                pos.translateBy(Direction.LEFT);
                 break;
             case 2:
-                x -= 1;
+                pos.translateBy(Direction.DOWN);
                 break;
             case 3:
-                y -=1;
+                pos.translateBy(Direction.RIGHT);
                 break;
           }
-        if (canMove(x, y)) {
-            super.setX(x);
-            super.setY(y);
+        if (canMove(pos)) {
+            super.setPos(pos);
         }  
     }
 
-    private boolean canMove(int x, int y) {
+    private boolean canMove(Position position) {
         return true;
     }
 

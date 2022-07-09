@@ -1,22 +1,24 @@
 package dungeonmania.enemy;
 
+import dungeonmania.util.Position;
+
 public abstract class Enemy {
     private int health;
     private int attack;
-    private int x;
-    private int y;
+    private Position position;
     private boolean inBattle;
 
-    public Enemy (int health, int attack) { 
+    public Enemy (int health, int attack, Position position) { 
         this.health = health;
         this.attack = attack;
+        this.position = position;
     }
 
-    public void move (boolean isInvicible, boolean isInvisible, int x, int y) {
-        inBattle = isBattle(x, y);
+    public void move (boolean isInvicible, boolean isInvisible, Position player) {
+        inBattle = isBattle(player);
     }
 
-    public boolean isBattle(int x, int y) {
+    public boolean isBattle(Position player) {
         return false;
     }
     
@@ -36,20 +38,12 @@ public abstract class Enemy {
         this.attack = attack;
     }
 
-    public int getX() {
-        return x;
+    public Position getPos() {
+        return position;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+    public void setPos(Position position) {
+        this.position = position;
     }
 
     public boolean isInBattle() {
