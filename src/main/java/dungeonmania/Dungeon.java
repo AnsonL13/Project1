@@ -67,8 +67,12 @@ public class Dungeon {
         }
     }
 
-    public List<EntityResponse> getEntities () {
-        return null;
+    public List<EntityResponse> getEntities() {
+        List<EntityResponse> entities = new ArrayList<EntityResponse>();
+        for (Enemy enemy : enemies) {
+            entities.add(new EntityResponse("0", enemy.getSimpleName(), enemy.getPos(), false));
+        }
+        return entities;
     }
 
     // Getters (Add more here)
