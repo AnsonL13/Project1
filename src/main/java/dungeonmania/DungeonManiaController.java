@@ -73,7 +73,7 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        List<EntityResponse> entities = null;
+        List<EntityResponse> entities = dungeon.getEntities();
         List<ItemResponse> inventory = null;
         List<BattleResponse> battles = null;
         List<String> buildables = null;
