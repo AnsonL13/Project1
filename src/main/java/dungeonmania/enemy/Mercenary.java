@@ -10,5 +10,9 @@ public class Mercenary extends Enemy {
     public void move(boolean isInvicible, boolean isInvisible, Position player) {
 
     }
+
+    public String getSimpleName() {
+        return "mercenary";
+    }
     
 }

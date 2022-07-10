@@ -55,4 +55,8 @@ public class ZombieToast extends Enemy{
         
     }
 
+    public String getSimpleName() {
+        return "zombie";
+    }
+
 }

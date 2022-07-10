@@ -54,5 +54,8 @@ public abstract class Enemy {
         this.inBattle = inBattle;
     }
   
+    public String getSimpleName() {
+        return null;
+    }
 }
 
