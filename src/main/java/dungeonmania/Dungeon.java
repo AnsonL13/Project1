@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.enemy.Enemy;
 import dungeonmania.enemy.Mercenary;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -37,6 +38,7 @@ public class Dungeon {
         this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
+        createMercenary();
         // Add more here
     }
 
@@ -45,6 +47,7 @@ public class Dungeon {
         int attack = configJson.get("zombie_health").getAsJsonObject().getAsInt();
         int spawnRate = configJson.get("zombie_spawn_rate").getAsJsonObject().getAsInt();
         spawners.add(new ZombieToastSpawner(attack, health, spawnRate, pos));
+        // add to static entities
 
     }
 
@@ -62,6 +65,10 @@ public class Dungeon {
 
             }
         }
+    }
+
+    public List<EntityResponse> getEntities () {
+        return null;
     }
 
     // Getters (Add more here)
