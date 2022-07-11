@@ -11,8 +11,7 @@ public class TreasureGoal implements Goal {
     @Override
     public boolean isCompleted() {
         // TODO Auto-generated method stub
-        // dungeon.getCollectable entities
-        // dungeon.getInventory
+        // dungeon.getCollectable entities == dungeon.getInventory
         return false;
     }
 
