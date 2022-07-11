@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.ExitGoal;
 import dungeonmania.goals.Goal;
+import dungeonmania.goals.TreasureGoal;
 import dungeonmania.util.Direction;
 
 import java.io.IOException;
@@ -41,11 +42,12 @@ public class Dungeon {
     private void setGoal() {
         String goal = dungeonJson.get("goal-condition").getAsJsonObject().get("goal").getAsString();
         if (goal == "AND" || goal == "OR") {
-            return;
+            setGoal();
         } else if (goal.equals("exit")) {
             goals.put("goal", new ExitGoal());
         } else if (goal.equals("treasure")) {
-            goals.put("goal", new ExitGoal());
+            System.out.println("IN");
+            goals.put("goal", new TreasureGoal());
         } else if (goal.equals("boulders")) {
             goals.put("goal", new ExitGoal());
         } else if (goal.equals("enemies")) {
