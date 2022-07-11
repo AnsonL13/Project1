@@ -77,7 +77,7 @@ public class DungeonManiaController {
         List<ItemResponse> inventory = null;
         List<BattleResponse> battles = null;
         List<String> buildables = null;
-        String goals = null;
+        String goals = dungeon.getGoal();
 
         DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
         inventory, battles, buildables, goals);
