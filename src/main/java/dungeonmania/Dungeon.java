@@ -39,16 +39,26 @@ public class Dungeon {
     }
 
     private void setGoal() {
-        String goal = dungeonJson.get("goal_condition").getAsJsonObject().get("goal").getAsString();
+        String goal = dungeonJson.get("goal-condition").getAsJsonObject().get("goal").getAsString();
         if (goal == "AND" || goal == "OR") {
             return;
-        } else if (goal == "exit") {
+        } else if (goal.equals("exit")) {
+            goals.put("goal", new ExitGoal());
+        } else if (goal.equals("treasure")) {
+            goals.put("goal", new ExitGoal());
+        } else if (goal.equals("boulders")) {
+            goals.put("goal", new ExitGoal());
+        } else if (goal.equals("enemies")) {
             goals.put("goal", new ExitGoal());
         }
     }
 
     public String getGoal() {
-        return goals.toString();
+        String mapAsString = (goals.keySet().stream()
+        .map(key -> key + ":" + goals.get(key).getString()))
+        .collect(Collectors.joining(", ", "{", "}"));
+        //System.out.println(mapAsString);
+        return mapAsString;
     }
 
     // Getters (Add more here)
