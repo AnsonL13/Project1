@@ -29,8 +29,8 @@ public class Dungeon {
     // Add any variables here when you need them.
     private String dungeonId;
     private String dungeonName;
-    private List<Enemy> enemies;
-    private List<EnemyFactory> spawners;
+    private List<Enemy> enemies = new ArrayList<Enemy>();
+    private List<EnemyFactory> spawners = new ArrayList<EnemyFactory>();
 
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -43,9 +43,9 @@ public class Dungeon {
     }
 
     private void createZombieSpawner(Position pos) {
-        int health = configJson.get("zombie_attack").getAsJsonObject().getAsInt();
-        int attack = configJson.get("zombie_health").getAsJsonObject().getAsInt();
-        int spawnRate = configJson.get("zombie_spawn_rate").getAsJsonObject().getAsInt();
+        int health = configJson.get("zombie_attack").getAsInt();
+        int attack = configJson.get("zombie_health").getAsInt();
+        int spawnRate = configJson.get("zombie_spawn_rate").getAsInt();
         spawners.add(new ZombieToastSpawner(attack, health, spawnRate, pos));
         // add to static entities
 
@@ -54,15 +54,14 @@ public class Dungeon {
     private void createMercenary() {
         JsonArray dungeonEntities = dungeonJson.get("entities").getAsJsonArray();
         for (JsonElement entities : dungeonEntities) {
-            String type = entities.getAsJsonObject().get("Type").getAsString();
-            if (type == "mercenary") {
+            String type = entities.getAsJsonObject().get("type").getAsString();
+            if (type.equals("mercenary")) {
                 int x = entities.getAsJsonObject().get("x").getAsInt();
                 int y = entities.getAsJsonObject().get("y").getAsInt();
-                int health = configJson.get("mercenary_attack").getAsJsonObject().getAsInt();
-                int attack = configJson.get("mercenary_health").getAsJsonObject().getAsInt();
+                int health = configJson.get("mercenary_attack").getAsInt();
+                int attack = configJson.get("mercenary_health").getAsInt();
                 Position pos = new Position(x, y);
                 enemies.add(new Mercenary(health, attack, pos));
-
             }
         }
     }
