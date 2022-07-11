@@ -33,7 +33,7 @@ public class TreasureGoalTests {
     @DisplayName("Treasure complete simple")
     public void testTresureSimple() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_movementTest_testMovementDown", "c_movementTest_testMovementDown");
+        DungeonResponse initDungonRes = dmc.newGame("d_treasureTest_simple", "c_movementTest_testMovementDown");
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertFalse(getGoals(initDungonRes).contains(":exit"));
         assertFalse(getGoals(initDungonRes).contains(":boulders"));
