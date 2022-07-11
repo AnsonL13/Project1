@@ -33,7 +33,7 @@ public class EnemyGoalTests {
     public void testEnemySpiderGoal() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpider.json", "c_complexGoalsTest_andAll");
+        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpider", "c_complexGoalsTest_andAll");
 
         assertTrue(getGoals(res).contains(":enemies"));
         assertFalse(getGoals(res).contains(":treasure"));
@@ -50,7 +50,7 @@ public class EnemyGoalTests {
     public void testEnemyMercenaryGoal() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_enemyGoal_mercenary.json", "c_movementTest_testMovementDown.json");
+        DungeonResponse res = dmc.newGame("d_enemyGoal_mercenary", "c_movementTest_testMovementDown");
 
         assertTrue(getGoals(res).contains(":enemies"));
         assertFalse(getGoals(res).contains(":treasure"));
@@ -67,7 +67,7 @@ public class EnemyGoalTests {
     public void testEnemySpawnerGoal() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpawner.json", "c_movementTest_testMovementDown.json");
+        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpawner", "c_movementTest_testMovementDown");
 
         assertTrue(getGoals(res).contains(":enemies"));
         assertFalse(getGoals(res).contains(":treasure"));
@@ -89,7 +89,7 @@ public class EnemyGoalTests {
     public void testMultipleEnemySpiderGoal() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_enemyGoal_multipleSpider.json", "c_complexGoalsTest_andAll");
+        DungeonResponse res = dmc.newGame("d_enemyGoal_multipleSpider", "c_complexGoalsTest_andAll");
 
         assertTrue(getGoals(res).contains(":enemies"));
         assertFalse(getGoals(res).contains(":treasure"));
