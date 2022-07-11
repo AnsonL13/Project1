@@ -16,14 +16,13 @@ public class ExitGoal implements Goal {
     }
 
     @Override
-    public boolean getSimpleName() {
-        // TODO Auto-generated method stub
-        return false;
+    public String getSimpleName() {
+        return "exit";
     }
 
     @Override
-    public boolean getString() {
+    public String getString() {
         // TODO Auto-generated method stub
-        return false;
+        return "exit";
     }
 }
