@@ -1,12 +1,18 @@
 package dungeonmania;
 
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.goals.ExitGoal;
+import dungeonmania.goals.Goal;
 import dungeonmania.util.Direction;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.google.gson.JsonObject;
 
 public class Dungeon {
@@ -21,15 +27,28 @@ public class Dungeon {
     private String dungeonName;
 
     // Add data structures here when you need them.
-
+    private Map<String, Goal> goals = new HashMap<String, Goal>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
         this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
-
+        setGoal();
         // Add more here
+    }
+
+    private void setGoal() {
+        String goal = dungeonJson.get("goal_condition").getAsJsonObject().get("goal").getAsString();
+        if (goal == "AND" || goal == "OR") {
+            return;
+        } else if (goal == "exit") {
+            goals.put("goal", new ExitGoal());
+        }
+    }
+
+    public String getGoal() {
+        return goals.toString();
     }
 
     // Getters (Add more here)
