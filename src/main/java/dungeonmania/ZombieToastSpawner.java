@@ -6,29 +6,55 @@ import dungeonmania.enemy.Enemy;
 import dungeonmania.enemy.ZombieToast;
 import dungeonmania.util.Position;
 
-public class ZombieToastSpawner extends EnemyFactory {
-    public ZombieToastSpawner(int attack, int health, int spawnRate, Position position) {
-        super(attack, health, spawnRate, position);
+public class ZombieToastSpawner {
+    private int spawnRate;
+    private Position pos;
+    private int nextSpawn;
+
+    public ZombieToastSpawner(int spawnRate, Position position) {
+        this.spawnRate = spawnRate;
+        this.pos = position;
+        this.nextSpawn = spawnRate;
     }
 
-    @Override
-    public Enemy spawn() {
-        if (super.getNextSpawn() == 1 && super.getSpawnRate() != 0) {
-            super.setNextSpawn();
-            Position spawnerPos = super.getPosition();
-            List<Position> adj = spawnerPos.getAdjacentPositions();
+    public Position spawn() {
+        if (getNextSpawn() == 1 && getSpawnRate() != 0) {
+            setNextSpawn();
+            List<Position> adj = pos.getAdjacentPositions();
 
             for (Position pos : adj) {
-                if (super.canSpawn(pos)) {
-                    return new ZombieToast(super.getEnemyHealth(), super.getEnemyAttack(), pos);
+                if (canSpawn(pos)) {
+                    return pos;
                 }
             }
-        } 
-        
-        if (super.getSpawnRate() != 0) {
-            super.minusNextSpawn();
+        } else if (getSpawnRate() != 0) {
+            minusNextSpawn();
         }
         return null;
+    }
+
+    public int getSpawnRate() {
+        return spawnRate;
+    }
+
+    public int getNextSpawn() {
+        return nextSpawn;
+    }
+
+    public void setNextSpawn() {
+        this.nextSpawn = spawnRate;
+    }
+
+    public void minusNextSpawn() {
+        --this.nextSpawn;
+    }
+
+    public Position getPosition() {
+        return pos;
+    }
+
+    public boolean canSpawn(Position pos) {
+        return true;
     }
     
 }

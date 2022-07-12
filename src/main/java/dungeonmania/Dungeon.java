@@ -30,7 +30,8 @@ public class Dungeon {
     private String dungeonId;
     private String dungeonName;
     private List<Enemy> enemies = new ArrayList<Enemy>();
-    private List<EnemyFactory> spawners = new ArrayList<EnemyFactory>();
+    private List<ZombieToastSpawner> spawners;
+    private EnemyFactory factory;
 
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -46,7 +47,7 @@ public class Dungeon {
         int health = configJson.get("zombie_attack").getAsInt();
         int attack = configJson.get("zombie_health").getAsInt();
         int spawnRate = configJson.get("zombie_spawn_rate").getAsInt();
-        spawners.add(new ZombieToastSpawner(attack, health, spawnRate, pos));
+        spawners.add(new ZombieToastSpawner(spawnRate, pos));
         // add to static entities
 
     }
@@ -95,6 +96,20 @@ public class Dungeon {
      */
     public void tick(Direction movementDirection) {
 
+        spawnEnemies();
+        //spawn.spawnTwo();
+    }
+
+    private void spawnEnemies() {
+        for (ZombieToastSpawner spawn : spawners) {
+            addZombie(spawn.spawn());
+        }
+        // addSpider()
+    }
+
+    private void addZombie(Position pos) {
+        if (pos == null) return;
+        enemies.add(factory.spawn("zombie", pos));
     }
 
     /**
