@@ -1,19 +1,17 @@
 package dungeonmania.BuildableEntities;
 
-import dungeonmania.util.Position;
+import dungeonmania.Weapon;
 
-public class Shield implements BuildableEntity {
+public class Shield implements BuildableEntity, Weapon {
     private String id;
     private String type;
-    private Position position;
     private boolean isInteractable;
     private int shieldDefence;
     private int shieldDurability;
 
-    public Shield(String id, String type, Position position, boolean isInteractable, int shieldDefence, int shieldDurability) {
+    public Shield(String id, String type, boolean isInteractable, int shieldDefence, int shieldDurability) {
         this.id = id;
         this.type = type;
-        this.position = position;
         this.isInteractable = isInteractable;
         this.shieldDefence = shieldDefence;
         this.shieldDurability = shieldDurability;
@@ -31,15 +29,15 @@ public class Shield implements BuildableEntity {
         return type;
     }
 
-    public final Position getPosition() {
-        return position;
-    }
-
     public int getShieldDefence() {
         return shieldDefence;
     }
 
     public int getShieldDurability() {
         return shieldDurability;
+    }
+
+    public void decreaseDurability() {
+        this.shieldDurability--;
     }
 }

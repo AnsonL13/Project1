@@ -1,8 +1,10 @@
 package dungeonmania.MovingEntities;
 
+import dungeonmania.InteractableEntity;
+import dungeonmania.Player;
 import dungeonmania.util.Position;
 
-public class Mercenary implements MovingEntity {
+public class Mercenary implements MovingEntity, InteractableEntity {
     private String id;
     private String type;
     private Position position;
@@ -66,5 +68,24 @@ public class Mercenary implements MovingEntity {
 
     public int getBribeRadius() {
         return bribeRadius;
+    }
+
+    public boolean interactActionCheck(Player player) {
+        int xTopBoundary = position.getX() + bribeRadius;
+        int xBottomBoundary = position.getX() - bribeRadius;
+        int yTopBoundary = position.getY() + bribeRadius;
+        int yBottomBoundary = position.getY() - bribeRadius;
+        // Check if player is within the specified bribing radius
+        if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
+            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
+                return true;
+        }
+
+        // Check if player has enough gold
+        if (player.treasureAmount() < bribeAmount) {
+            return false;
+        }
+
+        return true;
     }
 }

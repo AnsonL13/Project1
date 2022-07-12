@@ -1,5 +1,7 @@
 package dungeonmania;
 
+import dungeonmania.BuildableEntities.Bow;
+import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.CollectableEntities.Arrow;
 import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.InvincibilityPotion;
@@ -59,6 +61,7 @@ public class Dungeon {
 
     // Add data structures here when you need them.
     List<Entity> entities = new ArrayList<Entity>();
+    List<InteractableEntity> interactablEntities = new ArrayList<InteractableEntity>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
@@ -144,28 +147,131 @@ public class Dungeon {
      * /game/tick/item
      */
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        // Check if item is not in the inventory
+        boolean foundItem = false;
+        for (Item item : player.getInventory()) {
+            if (item.getId().equals(itemUsedId)) {
+                if (! (item.getType().equals("bomb") || 
+                    item.getType().equals("invincibility_potion") || 
+                    item.getType().equals("invisibility_potion"))) {
+                    throw new IllegalArgumentException("itemUsedId");
+                }
+                foundItem = true;
+            }
+        }
 
+        if (! foundItem) {
+            throw new InvalidActionException("itemUsedId");
+        }
+
+        // Player uses the item
+        player.useItem(itemUsedId);
+        // Enemy movement
+        
+        // Battles
+        player.battle();
+        // Spawn
+
+        // Update enemies
     }
 
     /**
      * /game/tick/movement
      */
     public void tick(Direction movementDirection) {
+        // Check if movement into a static entity
+        
+        // Move
 
+        // Check if moved into a collectable entity
+
+        // Check if moved into an enemy
+
+        // Move enemies
+        
+        // Check if Enemy has moved into a player
+
+        // Spawn enemies
     }
 
     /**
      * /game/build
      */
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
+        // Check if buildable is not a bow or shield
+        if (! (buildable.equals("shield") || buildable.equals("bow"))) {
+            throw new IllegalArgumentException(buildable);
+        }
 
+        // Check if possible to build, throw any excpetions
+        List<String> buildables = getBuildables();
+        boolean canBuild = false;
+        for (String item : buildables) {
+            if (item.equals(buildable)) {
+                canBuild = true;
+            }
+        }
+
+        if (! canBuild) {
+            throw new InvalidActionException(buildable);
+        }
+
+        // Build the item
+        // Add the item to the players inventory and remove items from players inventory
+        if (buildable.equals("shield")) {
+            Shield shield = new Shield(Integer.toString(latestUnusedId), "shield", false, configMap.get("shield_defence"), configMap.get("shield_durability"));
+            player.addToInventory(shield);
+            player.addToWeapons(shield);
+            player.removeForShield(); 
+        }
+
+        else if (buildable.equals("bow")) {
+            Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", false, configMap.get("bow_durability"));
+            player.addToInventory(bow);
+            player.addToWeapons(bow);
+            player.removeForBow();
+        }
     }
 
     /**
      * /game/interact
      */
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
+        // Check for IllegalArgumentException
+        boolean foundEntity = false;
+        for (Entity entity : interactablEntities) {
+            if (entity.getId().equals(entityId)) {
+                foundEntity = true;
+            }
+        }
 
+        if (! foundEntity) {
+            throw new IllegalArgumentException(entityId);
+        }
+
+        // Check for InvalidActionException
+        for (InteractableEntity entity : interactablEntities) {
+            if (entity.getId().equals(entityId)) {
+                // Check if invalidAction
+                if (! entity.interactActionCheck(player)) {
+                    throw new InvalidActionException(entityId);
+                }
+
+                else if (entity.getType().equals("mercenary")) {
+                    // Bribe the mercenary                    
+                    // Not done yet ...
+                }
+                
+                else if (entity.getType().equals("zombie_toast_spawner")) {
+                    // Destroy the zombie spawner
+                    this.entities.remove(entity);
+                    this.interactablEntities.remove(entity);
+
+                    // Decrease sword durability
+                    player.decreaseSwordDurability();
+                }
+            }
+        }
     }
 
     // Convert config.json to Hashmap<String, Integer>
@@ -243,6 +349,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     ZombieToastSpawner zombieToastSpawner = new ZombieToastSpawner(Integer.toString(latestUnusedId), "zombie_toast_spawner", new Position(xPosition, yPosition), true);
                     entities.add(zombieToastSpawner);
+                    interactablEntities.add(zombieToastSpawner);
                     this.latestUnusedId++;
                     break;
                 
@@ -270,6 +377,7 @@ public class Dungeon {
                                                         configMap.get("bribe_amount"), configMap.get("bribe_radius"), 
                                                         configMap.get("mercenary_attack"), configMap.get("mercenary_health"));
                     entities.add(mercenary);
+                    interactablEntities.add(mercenary);
                     this.latestUnusedId++;
                     break;
 

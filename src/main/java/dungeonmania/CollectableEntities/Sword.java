@@ -1,8 +1,9 @@
 package dungeonmania.CollectableEntities;
 
+import dungeonmania.Weapon;
 import dungeonmania.util.Position;
 
-public class Sword implements CollectableEntity {
+public class Sword implements CollectableEntity, Weapon {
     private String id;
     private String type;
     private Position position;
@@ -41,5 +42,9 @@ public class Sword implements CollectableEntity {
 
     public int getSwordDurability() {
         return swordDurability;
+    }
+
+    public void decreaseDurability() {
+        this.swordDurability--;
     }
 }
