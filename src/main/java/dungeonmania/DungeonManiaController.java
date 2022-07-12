@@ -42,7 +42,31 @@ public class DungeonManiaController {
     public static List<String> configs() {
         return FileLoader.listFileNamesInResourceDirectory("configs");
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void main(String[] args) {
+        String dungeonName = "exit_goal_order";
+        String configName = "simple";
 
+        String dungeonsString = null;
+        String configsString = null;
+        // Get the file
+        try {
+            dungeonsString = FileLoader.loadResourceFile("dungeons/" + dungeonName + ".json");
+            configsString = FileLoader.loadResourceFile("configs/" + configName + ".json");
+        }
+        catch(Exception IOException) {
+            throw new IllegalArgumentException();
+        }
+
+        // Turn the String into a JsonObject
+        JsonObject dungeonJson = JsonParser.parseString(dungeonsString).getAsJsonObject();
+        JsonObject configJson = JsonParser.parseString(configsString).getAsJsonObject();
+
+        
+        Dungeon dungeon = new Dungeon("dungeonName", dungeonJson, configJson);
+        System.out.println(dungeon.getGoals().listIncompleteGoals());
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * /game/new
      */
@@ -73,11 +97,27 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        List<EntityResponse> entities = null;
-        List<ItemResponse> inventory = null;
+
+        // Get all entities.
+        List<EntityResponse> entities = new ArrayList<EntityResponse>();
+        for (Entity entity : dungeon.getEntities()) {
+            EntityResponse entityResponse = new EntityResponse(entity.getId(), entity.getType(), entity.getPosition(), entity.isInteractable());
+            entities.add(entityResponse);
+        }
+        
+        // Get all items in the players inventory
+        List<ItemResponse> inventory = new ArrayList<ItemResponse>();
+        for (Item item : dungeon.getInventory()) {
+            ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
+            inventory.add(itemResponse);
+        }
+
         List<BattleResponse> battles = null;
-        List<String> buildables = null;
-        String goals = null;
+
+        List<String> buildables = dungeon.getBuildables();
+
+        // Get the list of incomplete goals
+        String goals = dungeon.getGoals().listIncompleteGoals();
 
         DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
         inventory, battles, buildables, goals);
