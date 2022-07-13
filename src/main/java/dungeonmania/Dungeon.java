@@ -77,6 +77,7 @@ public class Dungeon {
     List<Battle> battles = new ArrayList<Battle>();
     Map<String, Door> doors = new HashMap<String, Door>();
     Map<String, Portal> portals = new HashMap<String, Portal>();
+    Map<String, Bomb> bombs = new HashMap<String, Bomb>();
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     private List<Enemy> enemies = new ArrayList<Enemy>();
@@ -119,6 +120,10 @@ public class Dungeon {
 
     public void addToBattles(Battle battle) {
         this.battles.add(battle);
+    }
+
+    public void addToEntities(Entity entity) {
+        this.entities.add(entity);
     }
 
     public void removeEntity(String Id) {
@@ -235,11 +240,24 @@ public class Dungeon {
             Position collectablePosition = collectableEntities.get(collectableEntity).getPosition();
             // Check if collectable entity is in the same square as the player. 
             if (collectablePosition.getX() == targetSquare.getX() && collectablePosition.getY() == targetSquare.getY()) {
-                // Collect the item
-                player.addToInventory(collectableEntities.get(collectableEntity));
-                // Remove from list of entities
-                entities.remove(collectableEntities.get(collectableEntity));
-                collectableEntities.remove(collectableEntity);
+                // Check if the item is a bomb
+                if (collectableEntities.get(collectableEntity).getType().equals("bomb")) {
+                    for (String bomb : bombs.keySet()) {
+                        if (bombs.get(bomb).getId().equals(collectableEntities.get(collectableEntity).getId())) {
+                            // Change the state of the bomb
+                            bombs.get(bomb).pickUp();
+                            break;
+                        }
+                    }
+                }
+
+                else {
+                    // Collect the item
+                    player.addToInventory(collectableEntities.get(collectableEntity));
+                    // Remove from list of entities
+                    entities.remove(collectableEntities.get(collectableEntity));
+                    collectableEntities.remove(collectableEntity);
+                }
             }
         }
 
@@ -520,8 +538,9 @@ public class Dungeon {
                 case "bomb":
                     xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                    Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"));
+                    Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"), this, player);
                     entities.add(bomb);
+                    bombs.put(Integer.toString(latestUnusedId), bomb);
                     collectableEntities.put(Integer.toString(latestUnusedId), bomb);
                     this.latestUnusedId++;
                     break;

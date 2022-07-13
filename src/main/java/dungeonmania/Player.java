@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.Key;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
@@ -61,6 +62,14 @@ public class Player implements Entity {
 
     public void addToInventory(Item item) {
         this.inventory.add(item);
+
+        if (item instanceof Weapon) {
+            this.weapons.add((Weapon) item);
+        }
+
+        if (item instanceof Key) {
+            this.keys.put(item.getId(), (Key) item);
+        }
     }
 
     public void addToWeapons(Weapon weapon) {
@@ -220,7 +229,10 @@ public class Player implements Entity {
         for (Item item : inventory) {
             if (item.getId().equals(itemUsedId)) {
                 if (item.getType().equals("bomb")) {
-
+                    if (item instanceof Bomb) {
+                        // Put the bomb down
+                        ((Bomb) item).putDown();
+                    }    
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
