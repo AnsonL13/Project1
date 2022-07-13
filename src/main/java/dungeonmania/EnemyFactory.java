@@ -26,36 +26,57 @@ public class EnemyFactory {
         this.spiderHealth = spiderHealth;
     }
 
+    public void setSpawnRate (int spiderRate, int zombieRate) {
+        this.spiderRate = spiderRate;
+        this.zombieRate = zombieRate;
+        this.nextSpiderRate = spiderRate;
+        this.nextZombieRate = zombieRate;
+    }
+/*
     public Enemy spawn (String enemy, Position pos) {
         if (enemy == null || pos == null) return null;
         
         if (enemy.equalsIgnoreCase("Zombie")) {
-            return new ZombieToast(zombieHealth, zombieAttack, pos);
+            return new ZombieToast(0, zombieHealth, zombieAttack, pos);
         } else if (enemy.equalsIgnoreCase("Spider")) {
             return new Spider(spiderAttack, spiderHealth, pos);
         }
         return null;
-    } 
+    } */
 
-    public List<Enemy> spawnTwo () {    
-        List<Enemy> newEnemies = new ArrayList<Enemy>();  
+    public List<Entity> spawn (int latestId, List<ZombieToastSpawner> zombieSpawners, List<Entity> entities) {    
+        List<Entity> newEnemies = new ArrayList<Entity>();  
         --nextZombieRate;
         --nextSpiderRate;
 
-        if (nextZombieRate == 0) {
+        if (spawnZombie()) {
             nextZombieRate = zombieRate;
-            //for (ZombieToastSpawner spawner : zombieSpawners) {
-            //      newEnemies.add(new Zombie(zombieAttack, zombieHealth, pos));
-            //}
+            for (ZombieToastSpawner spawner : zombieSpawners) {
+                Position newSpawnPos = spawner.spawn(entities);
+                if (newSpawnPos != null) {
+                    newEnemies.add(new ZombieToast(latestId, zombieAttack, zombieHealth, newSpawnPos));
+                    latestId++;
+                }
+            }
         } 
-        if (nextSpiderRate == 0) {
+        
+        if (spawnSpider()) {
             nextSpiderRate = spiderRate;
             Position pos = null;
             //pos = spiderSpawn();
-            newEnemies.add(new Spider(spiderAttack, spiderHealth, pos));
+            newEnemies.add(new Spider(latestId, spiderAttack, spiderHealth, pos));
         }
         return newEnemies;
     }
 
+    private boolean spawnZombie() {
+        if (zombieRate > 0 && nextZombieRate == 0) return true;
+        return false;
+    }
+
+    private boolean spawnSpider() {
+        if (spiderRate > 0 && nextSpiderRate == 0) return true;
+        return false;
+    }
 
 }
