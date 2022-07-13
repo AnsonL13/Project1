@@ -1,5 +1,5 @@
 package dungeonmania.MovingEntities.PositionMovements;
 
-public class RandomMovement implements Movement{
+public interface Movement {
     
 }

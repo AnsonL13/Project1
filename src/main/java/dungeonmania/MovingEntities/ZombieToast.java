@@ -14,6 +14,9 @@ import dungeonmania.Round;
 import dungeonmania.Weapon;
 import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
+import dungeonmania.MovingEntities.PositionMovements.Movement;
+import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
+import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
@@ -24,15 +27,17 @@ public class ZombieToast extends MovingEntity implements Enemy {
     private String type;
     private boolean isInteractable;
 
-    //    private MovingPatterns;
-    //    private MovingPatterns = new RunAwayMovement;
-    //    private MovingPatterns = new RandomMovement;
+    private Movement movement;
+    private RunAwayMovement runAwayMovement = new RunAwayMovement();
+    private RandomMovement randomMovement = new RandomMovement();
 
 
     public ZombieToast(String id, String type, Position position, boolean isInteractable, int attack, int health) {
         super(id, health, attack, position);
         this.type = type;
         this.isInteractable = isInteractable;
+
+        
 
     }
 
@@ -196,8 +201,6 @@ public class ZombieToast extends MovingEntity implements Enemy {
     
                 // Update zombie health
                 BigDecimal c = BigDecimal.valueOf(super.getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
-
-
                 super.setHealth(c.doubleValue());
 
                 // Update player health

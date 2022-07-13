@@ -1,5 +1,7 @@
 package dungeonmania.MovingEntities;
 
+import java.util.List;
+
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
@@ -20,7 +22,7 @@ public class MovingEntity implements Entity {
         this.id = id;
     }
 
-    public boolean move (boolean isInvicible, boolean isInvisible, Position player) {
+    public boolean move (Position player, List<Entity> entities) {
         return isBattle(player);
     }
 
