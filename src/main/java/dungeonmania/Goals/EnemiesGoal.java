@@ -1,21 +1,27 @@
 package dungeonmania.Goals;
 
+import dungeonmania.Dungeon;
+
 public class EnemiesGoal implements Goal {
     private String name;
     private boolean isCompleted;
     private int enemyGoal;
+    private Dungeon dungeon;
 
-    public EnemiesGoal(String name, boolean isCompleted, int enemyGoal) {
+    public EnemiesGoal(String name, boolean isCompleted, int enemyGoal, Dungeon dungeon) {
         this.name = name;
         this.isCompleted = isCompleted;
         this.enemyGoal = enemyGoal;
+        this.dungeon = dungeon;
     }
 
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if required number of enemies have been destroyed. 
+        if (dungeon.getBattles().size() >= enemyGoal) {
+            return true;
+        }
         
-        // Logic not complete. Return false for now. 
 		return false;
 	}
 	

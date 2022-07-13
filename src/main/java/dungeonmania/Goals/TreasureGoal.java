@@ -1,21 +1,34 @@
 package dungeonmania.Goals;
 
+import dungeonmania.Dungeon;
+import dungeonmania.Item;
+
 public class TreasureGoal implements Goal {
     private String name;
     private boolean isCompleted;
     private int treasureGoal;
+    private Dungeon dungeon;
 
-    public TreasureGoal(String name, boolean isCompleted, int treasureGoal) {
+    public TreasureGoal(String name, boolean isCompleted, int treasureGoal, Dungeon dungeon) {
         this.name = name;
         this.isCompleted = isCompleted;
         this.treasureGoal = treasureGoal;
+        this.dungeon = dungeon;
     }
 
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if required number of treasure is found
-        
-        // Logic not complete. Return false for now. 
+        int treasureCount = 0;
+        for (Item item : dungeon.getPlayer().getInventory()) {
+            if (item.getType().equals("treasure")) {
+                treasureCount++;
+            }
+        }
+
+        if (treasureCount >= treasureGoal) {
+            return true;
+        }
 		return false;
 	}
 	

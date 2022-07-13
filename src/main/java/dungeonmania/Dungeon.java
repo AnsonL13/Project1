@@ -135,6 +135,10 @@ public class Dungeon {
         }
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public Goal getGoals() {
         return goals;
     }
@@ -724,16 +728,16 @@ public class Dungeon {
         else {
             switch (subGoal.get("goal").getAsString()) {
                 case "enemies":
-                    newgoal = new EnemiesGoal("enemies", false, configMap.get("enemy_goal"));
+                    newgoal = new EnemiesGoal("enemies", false, configMap.get("enemy_goal"), this);
                 break;
                 case "boulders":
-                    newgoal = new BouldersGoal("boulders", false);
+                    newgoal = new BouldersGoal("boulders", false, this);
                 break;
                 case "treasure":
-                    newgoal = new TreasureGoal("treasure", false, configMap.get("treasure_goal"));
+                    newgoal = new TreasureGoal("treasure", false, configMap.get("treasure_goal"), this);
                 break;
                 case "exit":
-                    newgoal = new ExitGoal("exit", false);
+                    newgoal = new ExitGoal("exit", false, this);
                 break;
             }
         }
