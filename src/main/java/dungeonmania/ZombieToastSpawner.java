@@ -7,53 +7,34 @@ import dungeonmania.enemy.ZombieToast;
 import dungeonmania.util.Position;
 
 public class ZombieToastSpawner {
-    private int spawnRate;
     private Position pos;
-    private int nextSpawn;
 
     public ZombieToastSpawner(int spawnRate, Position position) {
-        this.spawnRate = spawnRate;
         this.pos = position;
-        this.nextSpawn = spawnRate;
     }
 
-    public Position spawn() {
-        if (getNextSpawn() == 1 && getSpawnRate() != 0) {
-            setNextSpawn();
-            List<Position> adj = pos.getAdjacentPositions();
-
-            for (Position pos : adj) {
-                if (canSpawn(pos)) {
-                    return pos;
-                }
+    public Position spawn(List<Entity> entities) { 
+        List<Position> adj = pos.getAdjacentPositions();
+        for (Position pos : adj) {
+            if (canSpawn(pos, entities)) {
+                return pos;
             }
-        } else if (getSpawnRate() != 0) {
-            minusNextSpawn();
-        }
+        }  
         return null;
-    }
-
-    public int getSpawnRate() {
-        return spawnRate;
-    }
-
-    public int getNextSpawn() {
-        return nextSpawn;
-    }
-
-    public void setNextSpawn() {
-        this.nextSpawn = spawnRate;
-    }
-
-    public void minusNextSpawn() {
-        --this.nextSpawn;
     }
 
     public Position getPosition() {
         return pos;
     }
 
-    public boolean canSpawn(Position pos) {
+    public boolean canSpawn(Position pos, List<Entity> entities) {
+        for (Entity entity : entities) {
+            if (entity instanceof Enemy && entity.getPosition().equals(pos)) {
+                return false;
+            } else if (entity instanceof Enemy && entity.getPosition().equals(pos)) { //wall or door, boulder
+                return false;
+            }
+        }
         return true;
     }
     
