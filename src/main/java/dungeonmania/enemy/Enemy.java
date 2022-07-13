@@ -1,11 +1,13 @@
 package dungeonmania.enemy;
 
+import javax.tools.Diagnostic;
+
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 public class Enemy implements Entity {
-    private boolean isInvicible = false;
-    private boolean isInvisible = false;
+    private int isInvicible;
+    private int isInvisible;
     private int health;
     private int attack;
     private int id;
@@ -19,22 +21,18 @@ public class Enemy implements Entity {
         this.id = id;
     }
 
-    public void move (boolean isInvicible, boolean isInvisible, Position player) {
-        inBattle = isBattle(player);
+    public boolean move (boolean isInvicible, boolean isInvisible, Position player) {
+        return isBattle(player);
     }
 
     public boolean isBattle(Position player) {
-        if (isInvisible) return false;
+        if (isInvisible != 0) return false;
         if (player.equals(position)) return true;
         return false;
     }
     
     public int getHealth() {
         return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public int getAttack() {
@@ -63,34 +61,31 @@ public class Enemy implements Entity {
 
     @Override
     public boolean isInteractable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public String getId() {
-        // TODO Auto-generated method stub
-        return null;
+    public int getId() {
+        return id;
     }
 
     @Override
     public String getType() {
-        // TODO Auto-generated method stub
+        // TODO
         return null;
     }
 
     @Override
     public Position getPosition() {
-        // TODO Auto-generated method stub
-        return null;
+        return position;
     }
 
-    public void setInvisible() {
-        this.isInvisible = true;
+    public void setInvisible(int duration) {
+        this.isInvisible = duration;
     }
 
-    public void setInvincible() {
-        this.isInvicible = true;
+    public void setInvincible(int duration) {
+        this.isInvicible = duration;
     }
 
     public void calculateRound() {
@@ -98,11 +93,21 @@ public class Enemy implements Entity {
     }
 
     public boolean isInvicible() {
-        return isInvicible;
+        if (isInvicible > 0) return true;
+        return false;    
     }
 
     public boolean isInvisible() {
-        return isInvisible;
+        if (isInvisible > 0) return true;
+        return false;    
+    }
+
+    public void setPotions() {
+        if (isInvicible > 0) {
+            isInvicible--;
+        } else if (isInvisible > 0) {
+            isInvisible--;
+        }
     }
 
 
