@@ -107,6 +107,18 @@ public class Dungeon {
     public Goal getGoals() {
         return goals;
     }
+    
+    //remove the entity form the list
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
+    //add the entity in the list
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+    }
+
+
 
     public List<String> getBuildables() {
         int woodCount = 0;
@@ -541,5 +553,16 @@ public class Dungeon {
             }
         }
         return newgoal;
+    }
+
+    //we create a function to destroy things around bomb
+    public void bombDestroy(int x, int y) {
+        ArrayList<Entity> entity = (ArrayList<Entity>) getEntities();
+        List<String> bombProtect = Arrays.asList("player");
+        for (Entity oneEntity : entity) {
+            if (!bombProtect.contains(oneEntity.getType())) {
+                removeEntity(oneEntity);
+            }
+        }
     }
 }

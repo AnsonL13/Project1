@@ -1,5 +1,6 @@
 package dungeonmania.CollectableEntities;
 
+import dungeonmania.CollectableEntities.CollectableEntity;
 import dungeonmania.util.Position;
 
 public class Bomb implements CollectableEntity {
@@ -8,6 +9,7 @@ public class Bomb implements CollectableEntity {
     private Position position;
     private boolean isInteractable;
     private int bombRadius;
+    
 
     public Bomb(String id, String type, Position position, boolean isInteractable, int bombRadius) {
         this.id = id;
