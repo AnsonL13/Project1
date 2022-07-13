@@ -80,7 +80,6 @@ public class Dungeon {
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     private List<Enemy> enemies = new ArrayList<Enemy>();
-    private EnemyFactory factory;
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
@@ -209,7 +208,7 @@ public class Dungeon {
         startBattles();
 
         // TODO: Spawn enemies
-        List<Entity> newEnemy = factory.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
         entities.addAll(newEnemy);
         latestUnusedId+= newEnemy.size();
 
@@ -252,7 +251,7 @@ public class Dungeon {
         startBattles();
         
         // Spawn enemies
-        List<Entity> newEnemy = factory.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
         entities.addAll(newEnemy);
         latestUnusedId+= newEnemy.size();
     }
