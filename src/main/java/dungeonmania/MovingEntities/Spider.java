@@ -4,31 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dungeonmania.Battle;
-import dungeonmania.Enemy;
 import dungeonmania.Item;
 import dungeonmania.Player;
 import dungeonmania.Round;
 import dungeonmania.Weapon;
 import dungeonmania.util.Position;
 
-public class Spider implements MovingEntity, Enemy {
-    private String id;
+public class Spider extends MovingEntity {
     private String type;
-    private Position position;
     private boolean isInteractable;
-    private double spiderAttack;
-    private double spiderHealth;
-
     private boolean playerInvisible;
     private boolean playerInvincible;
 
-    public Spider(String id, String type, Position position, boolean isInteractable, double spiderAttack, double spiderHealth) {
-        this.id = id;
+    public Spider(String id, String type, Position position, boolean isInteractable, int attack, int health) {
+        super(id, health, attack, position);
         this.type = type;
-        this.position = position;
         this.isInteractable = isInteractable;
-        this.spiderAttack = spiderAttack;
-        this.spiderHealth = spiderHealth;
         this.playerInvisible = false;
         this.playerInvincible = false;
     }
@@ -37,24 +28,8 @@ public class Spider implements MovingEntity, Enemy {
         return isInteractable;
     }
 
-    public final String getId() {
-        return id;
-    }
-
     public final String getType() {
         return type;
-    }
-
-    public final Position getPosition() {
-        return position;
-    }
-
-    public double getSpiderAttack() {
-        return spiderAttack;
-    }
-
-    public double getSpiderHealth() {
-        return spiderHealth;
     }
 
     public Battle battleCalculate(Player player) {
@@ -63,8 +38,8 @@ public class Spider implements MovingEntity, Enemy {
         double playerBow = 1;
         double playerSword = 0;
         double playerShield = 0;
-        double enemyHealth = spiderHealth;
-        double enemyAttack = spiderAttack;
+        double enemyHealth = super.getHealth();
+        double enemyAttack = super.getAttack();
 
         // Get weapons. 
         List<Weapon> weaponryUsed = player.getPlayerWeapons();
@@ -99,20 +74,20 @@ public class Spider implements MovingEntity, Enemy {
         // Check if player is invinsible
         if (playerInvincible) {
             double deltaPlayerHealth = 0;
-            double deltaEnemyHealth = - this.spiderHealth;
-            this.spiderHealth = 0;
+            double deltaEnemyHealth = - super.getHealth();
+            super.setHealth(0);
             rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
         }
 
 
         else {
-            while (this.spiderHealth > 0 && player.getPlayerHealth() > 0) {
+            while (super.getHealth() > 0 || player.getPlayerHealth() > 0) {
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
                 double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
     
                 // Update spider health
-                this.spiderHealth = this.spiderHealth - ((playerBow * (playerSword + playerAttack)) / 5);
+                super.setHealth(  super.getHealth() - (int) ((playerBow * (playerSword + playerAttack)) / 5));
     
                 // Update player health
                 double health = player.getPlayerHealth() - ((enemyAttack - playerShield) / 10);
@@ -123,11 +98,11 @@ public class Spider implements MovingEntity, Enemy {
             }
         }
 
-        Battle battle = new Battle(type, rounds, playerHealth, enemyHealth, this.id);
+        Battle battle = new Battle(type, rounds, playerHealth, enemyHealth, super.getId());
 
         // Find the winner.
         // Spider won
-        if (this.spiderHealth > 0) {
+        if (super.getHealth() > 0) {
             battle.setEnemyWon(true);
         }
 

@@ -2,61 +2,132 @@ package dungeonmania.MovingEntities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dungeonmania.Battle;
 import dungeonmania.Enemy;
+import dungeonmania.Entity;
 import dungeonmania.Item;
 import dungeonmania.Player;
 import dungeonmania.Round;
 import dungeonmania.Weapon;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class ZombieToast implements MovingEntity, Enemy {
-    private String id;
+public class ZombieToast extends MovingEntity implements Enemy {
     private String type;
-    private Position position;
     private boolean isInteractable;
-    private double zombieAttack;
-    private double zombieHealth;
 
     private boolean playerInvisible;
     private boolean playerInvincible;
 
-    public ZombieToast(String id, String type, Position position, boolean isInteractable, double zombieAttack, double zombieHealth) {
-        this.id = id;
-        this.type = type;
-        this.position = position;
-        this.isInteractable = isInteractable;
-        this.zombieAttack = zombieAttack;
-        this.zombieHealth = zombieHealth;
+    //    private MovingPatterns;
+    //    private MovingPatterns = new RunAwayMovement;
+    //    private MovingPatterns = new RandomMovement;
 
-        this.playerInvisible = false;
-        this.playerInvincible = false;
+
+    public ZombieToast(String id, String type, Position position, boolean isInteractable, int attack, int health) {
+        super(id, health, attack, position);
+        this.type = type;
+        this.isInteractable = isInteractable;
+
+    }
+
+    public ZombieToast(String id, int attack, int health, Position position) {
+        super(id, health, attack, position);
+
     }
 
     public boolean isInteractable() {
         return isInteractable;
     }
 
-    public final String getId() {
-        return id;
-    }
-
     public final String getType() {
         return type;
     }
 
-    public final Position getPosition() {
-        return position;
+    public boolean move(Position player, List<Entity> entities) {  
+        Position newPos = null;
+        super.setPotions();
+
+        if (super.isInBattle()) {
+
+        } else if (super.isInvicible()) {
+            newPos = runAway(player);
+        } else {
+            newPos = randomMove();
+        }
+
+        if (canMove(newPos, entities)) {
+            super.setPos(newPos);
+        }  
+
+        return super.isBattle(player);
+    }
+    
+    private Position randomMove () {
+        Random rand = new Random(); //instance of random class
+        int upper = 4;
+        int randomdir = rand.nextInt(upper); 
+        Position pos = super.getPosition();
+        switch(randomdir) {
+            case 0:
+                pos = pos.translateBy(Direction.UP);
+                break;
+            case 1:
+                pos = pos.translateBy(Direction.LEFT);
+                break;
+            case 2:
+                pos = pos.translateBy(Direction.DOWN);
+                break;
+            case 3:
+                pos = pos.translateBy(Direction.RIGHT);
+                break;
+
+        }
+
+        return pos;  
+
     }
 
-    public double getZombieAttack() {
-        return zombieAttack;
+    private boolean canMove(Position position, List<Entity> entities) {
+        if (position == null) return false;
+        for (Entity entity : entities) {
+            if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+                return false;
+            } else if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+
+            }
+        }
+        return true;
     }
 
-    public double getZombieHealth() {
-        return zombieHealth;
+    private Position runAway(Position player) {
+        Position pos = super.getPosition();
+        if (player.getX() > super.getPosition().getX()) {
+            pos = pos.translateBy(Direction.LEFT);
+        } else {
+            pos = pos.translateBy(Direction.RIGHT);
+        }
+        return pos;
+   /*     if (canMove(pos)) {
+            super.setPos(pos);
+            return;
+        } else if (player.getY() > super.getPosition().getY()) {
+            pos.translateBy(Direction.UP);
+        } else {
+            pos.translateBy(Direction.DOWN);
+        }
+
+        if (canMove(pos)) {
+            super.setPos(pos);
+        }*/
     }
+
+    public String getSimpleName() {
+        return "zombie";
+    }
+
 
     public Battle battleCalculate(Player player) {
         double playerHealth = player.getPlayerHealth();
@@ -64,8 +135,8 @@ public class ZombieToast implements MovingEntity, Enemy {
         double playerBow = 1;
         double playerSword = 0;
         double playerShield = 0;
-        double enemyHealth = zombieHealth;
-        double enemyAttack = zombieAttack;
+        double enemyHealth = super.getHealth();
+        double enemyAttack = super.getAttack();
 
         // Get weapons. 
         List<Weapon> weaponryUsed = player.getPlayerWeapons();
@@ -100,20 +171,20 @@ public class ZombieToast implements MovingEntity, Enemy {
         // Check if player is invinsible
         if (playerInvincible) {
             double deltaPlayerHealth = 0;
-            double deltaEnemyHealth = - this.zombieHealth;
-            this.zombieHealth = 0;
+            double deltaEnemyHealth = - super.getHealth();
+            super.setHealth(0);
             rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
         }
 
 
         else {
-            while (this.zombieHealth > 0 && player.getPlayerHealth() > 0) {
+            while (super.getHealth() > 0 && player.getPlayerHealth() > 0) {
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
                 double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
     
                 // Update zombie health
-                this.zombieHealth = this.zombieHealth - ((playerBow * (playerSword + playerAttack)) / 5);
+                super.setHealth(super.getHealth() - (int) ((playerBow * (playerSword + playerAttack)) / 5));
     
                 // Update player health
                 double health = player.getPlayerHealth() - ((enemyAttack - playerShield) / 10);
@@ -124,11 +195,11 @@ public class ZombieToast implements MovingEntity, Enemy {
             }
         }
 
-        Battle battle = new Battle(type, rounds, playerHealth, enemyHealth, this.id);
+        Battle battle = new Battle(type, rounds, playerHealth, enemyHealth, super.getId());
 
         // Find the winner.
         // zombie won
-        if (this.zombieHealth > 0) {
+        if (super.getHealth() > 0) {
             battle.setEnemyWon(true);
         }
 

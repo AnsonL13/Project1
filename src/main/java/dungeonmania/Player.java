@@ -8,7 +8,7 @@ import java.util.Map;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
-public class Player implements MovingEntity {
+public class Player implements Entity {
     private String id;
     private String type;
     private Position position;
