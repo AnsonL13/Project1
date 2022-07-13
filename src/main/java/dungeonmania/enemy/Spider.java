@@ -30,7 +30,7 @@ public class Spider extends Enemy {
         return isBoulder;
     }
 
-    public void move(boolean isBoulder, Boulder boulder, int health, List<Entity> entities) {
+    public void move(boolean isBoulder, boolean isClockwise, Boulder boulder, int health, List<Entity> entities) {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
