@@ -1,7 +1,13 @@
 package dungeonmania.StaticEntities;
 
+import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
+import dungeonmania.MovingEntities.MovingEntity;
+import dungeonmania.util.Position;
+import java.util.List;
+
+
 import dungeonmania.util.Position;
 
 public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
@@ -16,6 +22,28 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
         this.position = position;
         this.isInteractable = isInteractable;
     }
+
+    public Position spawn(List<Entity> entities) { 
+        List<Position> adj = position.getAdjacentPositions();
+        for (Position pos : adj) {
+            if (canSpawn(pos, entities)) {
+                return pos;
+            }
+        }  
+        return null;
+    }
+
+    public boolean canSpawn(Position pos, List<Entity> entities) {
+        for (Entity entity : entities) {
+            if (entity instanceof MovingEntity && entity.getPosition().equals(pos)) {
+                return false;
+            } else if (entity instanceof StaticEntity && entity.getPosition().equals(pos)) { //wall or door, boulder
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public boolean isInteractable() {
         return isInteractable;
@@ -51,3 +79,4 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
         return false;
     }
 }
+
