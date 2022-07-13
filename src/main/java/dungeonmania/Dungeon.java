@@ -228,6 +228,9 @@ public class Dungeon {
         }
 
         // TODO: Spawn enemies
+        List<Entity> newEnemy = factory.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        entities.addAll(newEnemy);
+        latestUnusedId+= newEnemy.size();
 
         // TODO: Update Spawned enemy potion status
     }
@@ -297,9 +300,7 @@ public class Dungeon {
             player.addToInventory(shield);
             player.addToWeapons(shield);
             player.removeForShield(); 
-        }
-
-        else if (buildable.equals("bow")) {
+        } else if (buildable.equals("bow")) {
             Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", false, configMap.get("bow_durability"));
             player.addToInventory(bow);
             player.addToWeapons(bow);
