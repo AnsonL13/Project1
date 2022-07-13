@@ -2,10 +2,12 @@ package dungeonmania;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.enemy.Spider;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class EnemyFactory {
@@ -62,10 +64,49 @@ public class EnemyFactory {
         if (spawnSpider()) {
             nextSpiderRate = spiderRate;
             Position pos = null;
-            //pos = ifSpiderSpawn();
-            //newEnemies.add(new Spider(latestId, spiderAttack, spiderHealth, pos));
+            pos = ifSpiderSpawn();
+            newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
         return newEnemies;
+    }
+
+    
+
+    // cannot moving upwards immediately because of the exist of boulder ???
+    /*
+    private boolean canSpawn(Position position, Boulder boulder) {
+        Position spawnerPosition = super.getPosition();
+        if (spawnerPosition.equals(boulder.getPosition())) {
+            return false;
+        }
+        return true;
+    }*/
+
+
+    private Position ifSpiderSpawn() {
+        Random random = new Random();
+        int i = 15;
+        int randomY = random.nextInt(i);
+        int randomX = random.nextInt(i);
+       /*  
+        List<Position> spawnPositions = new ArrayList<Position>();
+        Position spawner = super.getPosition();
+        switch(randomPos) {
+            case 0:
+                spawnPositions.add(spawner.translateBy(Direction.UP));
+                break;
+            case 1:
+                spawnPositions.add(spawner.translateBy(Direction.DOWN));
+                break;
+            case 2:
+                spawnPositions.add(spawner.translateBy(Direction.LEFT));
+                break;
+            case 3:
+                spawnPositions.add(spawner.translateBy(Direction.RIGHT));
+                break;
+        }
+         */
+        return new Position(randomX, randomY);
     }
 
     private boolean spawnZombie() {
@@ -83,5 +124,7 @@ public class EnemyFactory {
         increment++;
         return String.valueOf(increment);
     }
+
+    
 
 }
