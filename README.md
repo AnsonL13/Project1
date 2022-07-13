@@ -31,11 +31,7 @@ This specification is broken into four parts:
 - Tue 5 Jul 10pm - Fix provided config files for allies
 - Mon 11 Jul 1pm - Fix `getEntitiesStream` in `TestUtils` to check prefixes instead of entire entity type
 - Sun 10 Jul 9am - Fix confusing exception and add precondiction in the JavaDoc for `FileLoader.loadResourceFile()`
-<<<<<<< HEAD
 - Tue 12 Jul 4pm - Fix sample battle test to have positive delta instead of negative for health in `RoundResponse`
-=======
-- Mon 11 Jul 1pm - Fix `getEntitiesStream` in `TestUtils` to check prefixes instead of entire entity type
->>>>>>> 120679c (Fix getEntitiesStream in TestUtils to check prefixes instead of entire entity type)
 
 ## 1. Aims
 
