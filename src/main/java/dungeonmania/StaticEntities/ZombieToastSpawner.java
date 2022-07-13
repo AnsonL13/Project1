@@ -34,13 +34,8 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
     }
 
     public boolean interactActionCheck(Player player) {
-        Position coordinate = player.getPosition();
-
         // Check if player cardinally adjacent to spawner
-        if ((position.getX() + 1 == coordinate.getX() && position.getY() == coordinate.getY()) ||
-            (position.getX() - 1 == coordinate.getX() && position.getY() == coordinate.getY()) ||
-            (position.getX() == coordinate.getX() && position.getY() + 1 == coordinate.getY()) ||
-            (position.getX() == coordinate.getX() && position.getY() - 1== coordinate.getY())) {
+        if (Position.isAdjacent(position, player.getPosition())) {
             return true;
         }
 

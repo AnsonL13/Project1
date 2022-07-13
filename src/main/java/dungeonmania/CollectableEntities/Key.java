@@ -7,12 +7,14 @@ public class Key implements CollectableEntity {
     private final String type;
     private final Position position;
     private final boolean isInteractable;
+    private int key;
 
-    public Key(String id, String type, Position position, boolean isInteractable) {
+    public Key(String id, String type, Position position, boolean isInteractable, int key) {
         this.id = id;
         this.type = type;
         this.position = position;
         this.isInteractable = isInteractable;
+        this.key = key;
     }
 
     public boolean isInteractable() {
@@ -29,5 +31,9 @@ public class Key implements CollectableEntity {
 
     public final Position getPosition() {
         return position;
+    }
+
+    public int getKey() {
+        return key;
     }
 }

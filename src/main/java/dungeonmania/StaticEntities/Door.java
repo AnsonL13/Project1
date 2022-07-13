@@ -3,16 +3,18 @@ package dungeonmania.StaticEntities;
 import dungeonmania.util.Position;
 
 public class Door implements StaticEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
+    private int key;
 
-    public Door(String id, String type, Position position, boolean isInteractable) {
+    public Door(String id, String type, Position position, boolean isInteractable, int key) {
         this.id = id;
         this.type = type;
         this.position = position;
         this.isInteractable = isInteractable;
+        this.key = key;
     }
 
     public boolean isInteractable() {
@@ -29,5 +31,9 @@ public class Door implements StaticEntity {
 
     public final Position getPosition() {
         return position;
+    }
+
+    public int getKey() {
+        return key;
     }
 }

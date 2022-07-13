@@ -34,4 +34,16 @@ public class Bow implements BuildableEntity, Weapon {
     public void decreaseDurability() {
         this.bowDurability--;
     }
+
+    public double getAttackDamage() {
+        return 0;
+    }
+
+    public double getDefenceDamage() {
+        return 0;
+    }
+
+    public double getDurability() {
+        return this.bowDurability;
+    }
 }

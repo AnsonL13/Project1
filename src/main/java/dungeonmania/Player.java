@@ -1,7 +1,9 @@
 package dungeonmania;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
@@ -11,14 +13,14 @@ public class Player implements MovingEntity {
     private String type;
     private Position position;
     private boolean isInteractable;
-    public int playerAttack;
-    public int playerHealth;
+    private double playerAttack;
+    private double playerHealth;
     List<Item> inventory = new ArrayList<Item>();
     List<Weapon> weapons = new ArrayList<Weapon>();
-    List<Enemy> enemy = new ArrayList<Enemy>();
+    List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
 
-    public Player(String id, String type, Position position, boolean isInteractable, int playerAttack, int playerHealth) {
+    public Player(String id, String type, Position position, boolean isInteractable, double playerAttack, double playerHealth) {
         this.id = id;
         this.type = type;
         this.position = position;
@@ -43,6 +45,14 @@ public class Player implements MovingEntity {
         return position;
     }
 
+    public double getPlayerAttack() {
+        return playerAttack;
+    }
+
+    public double getPlayerHealth() {
+        return playerHealth;
+    }
+
     public List<Item> getInventory() {
         return inventory;
     }
@@ -57,6 +67,57 @@ public class Player implements MovingEntity {
 
     public List<Weapon> getWeapons() {
         return weapons;
+    }
+
+    public Item currentPotion() {
+        // Gets the current potion being used by the player. 
+        return potionQueue.get(0);
+    }
+
+    // Get the players weapons
+    public List<Weapon> getPlayerWeapons() {
+        boolean foundSword = false;
+        boolean foundBow = false;
+        boolean foundShield = false;
+
+        List<Weapon> weaponsForBattle = new ArrayList<Weapon>();
+
+        for (Weapon weapon : weapons) {
+            if (weapon.getType().equals("sword") && !foundSword) {
+                weapon.decreaseDurability();
+                weaponsForBattle.add(weapon);
+                foundSword = true;
+
+                if (weapon.getDurability() == 0) {
+                    weapons.remove(weapon);
+                    inventory.remove(weapon);
+                }
+            }
+
+            if (weapon.getType().equals("bow") && !foundBow) {
+                weapon.decreaseDurability();
+                weaponsForBattle.add(weapon);
+                foundBow = true;
+
+                if (weapon.getDurability() == 0) {
+                    weapons.remove(weapon);
+                    inventory.remove(weapon);
+                }
+            }
+
+            if (weapon.getType().equals("shield") && !foundShield) {
+                weapon.decreaseDurability();
+                weaponsForBattle.add(weapon);
+                foundShield = false;
+
+                if (weapon.getDurability() == 0) {
+                    weapons.remove(weapon);
+                    inventory.remove(weapon);
+                }
+            }
+        }
+
+        return weaponsForBattle;
     }
 
     public void removeForShield() {
@@ -155,19 +216,43 @@ public class Player implements MovingEntity {
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
-                    
+                    // Remove from inventory
+                    // Add to potions queue
                 }
 
                 else if (item.getType().equals("invisibility_potion")) {
-                    
+                    // Remove from inventory
+                    // Add to potions queue
                 }
                 break;
             }
         }
     }
 
-    public void battle() {
-        
+    public List<Battle> battle() {
+        List<Battle> battles = new ArrayList<Battle>();
+        for (Enemy enemy : enemies) {
+            // Check if player and enemy is on the the same square. 
+            if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
+                // Start the battle.
+                Battle battle = enemy.battleCalculate(this);
+                battles.add(battle);
+                // Check if the player or enemy won
+                if (battle.isPlayerWon()) {
+                    // The player won, remove enemy from the list. 
+                    enemies.remove(enemy);
+                }
 
+                if (battle.isEnemyWon()) {
+                    // The enemy won. No more battles can occur
+                    break;
+                }
+            }
+        }
+        return battles;
+    }
+
+    public void setPlayerHealth(double playerHealth) {
+        this.playerHealth = playerHealth;
     }
 }

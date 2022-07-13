@@ -62,6 +62,7 @@ public class Dungeon {
     // Add data structures here when you need them.
     List<Entity> entities = new ArrayList<Entity>();
     List<InteractableEntity> interactablEntities = new ArrayList<InteractableEntity>();
+    List<Battle> battles = new ArrayList<Battle>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
@@ -93,6 +94,14 @@ public class Dungeon {
 
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public List<Battle> getBattles() {
+        return battles;
+    }
+
+    public void addToBattles(Battle battle) {
+        this.battles.add(battle);
     }
 
     public Goal getGoals() {
@@ -154,25 +163,59 @@ public class Dungeon {
                 if (! (item.getType().equals("bomb") || 
                     item.getType().equals("invincibility_potion") || 
                     item.getType().equals("invisibility_potion"))) {
-                    throw new IllegalArgumentException("itemUsedId");
+                    throw new IllegalArgumentException(itemUsedId);
                 }
                 foundItem = true;
             }
         }
 
         if (! foundItem) {
-            throw new InvalidActionException("itemUsedId");
+            throw new InvalidActionException(itemUsedId);
         }
 
         // Player uses the item
         player.useItem(itemUsedId);
-        // Enemy movement
+
+        // TODO: Enemy movement
         
         // Battles
-        player.battle();
-        // Spawn
+        List<Battle> newBattles = player.battle();
+        // Add all new battles to the list of battles.
+        this.battles.addAll(newBattles);
 
-        // Update enemies
+        // 
+        for (Battle battle : newBattles) {
+            if (battle.isEnemyWon()) {
+                entities.remove(player);
+                break;
+            }
+    
+            else if (battle.isPlayerWon()) {
+                String id = battle.getEnemyId();
+                for (Entity entity : entities) {
+                    if (entity.getId().equals(id)) {
+                        entities.remove(entity);
+                        break;
+                    }
+                }
+            }
+    
+            else {
+                // Both the enemy and player died
+                entities.remove(player);
+                String id = battle.getEnemyId();
+                for (Entity entity : entities) {
+                    if (entity.getId().equals(id)) {
+                        entities.remove(entity);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // TODO: Spawn enemies
+
+        // TODO: Update Spawned enemy potion status
     }
 
     /**
@@ -185,11 +228,11 @@ public class Dungeon {
 
         // Check if moved into a collectable entity
 
-        // Check if moved into an enemy
+        // Check if moved into an enemy (Battle)
 
         // Move enemies
         
-        // Check if Enemy has moved into a player
+        // Check if Enemy has moved into a player (Battle)
 
         // Spawn enemies
     }
@@ -286,6 +329,7 @@ public class Dungeon {
         for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
             int xPosition;
             int yPosition;
+            int keyId;
             switch (entityinfo.getAsJsonObject().get("type").getAsString()) {
                 case "player":
                     xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
@@ -331,7 +375,8 @@ public class Dungeon {
                 case "door":
                     xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                    Door door = new Door(Integer.toString(latestUnusedId), "door", new Position(xPosition, yPosition), false);
+                    keyId = entityinfo.getAsJsonObject().get("key").getAsInt();
+                    Door door = new Door(Integer.toString(latestUnusedId), "door", new Position(xPosition, yPosition), false, keyId);
                     entities.add(door);
                     this.latestUnusedId++;
                     break;
@@ -339,7 +384,8 @@ public class Dungeon {
                 case "portal":
                     xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                    Portal portal = new Portal(Integer.toString(latestUnusedId), "portal", new Position(xPosition, yPosition), false);
+                    String colour = entityinfo.getAsJsonObject().get("colour").getAsString();
+                    Portal portal = new Portal(Integer.toString(latestUnusedId), "portal", new Position(xPosition, yPosition), false, colour);
                     entities.add(portal);
                     this.latestUnusedId++;
                     break;
@@ -392,7 +438,8 @@ public class Dungeon {
                 case "key":
                     xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                    Key key = new Key(Integer.toString(latestUnusedId), "key", new Position(xPosition, yPosition), false);
+                    keyId = entityinfo.getAsJsonObject().get("key").getAsInt();
+                    Key key = new Key(Integer.toString(latestUnusedId), "key", new Position(xPosition, yPosition), false, keyId);
                     entities.add(key);
                     this.latestUnusedId++;
                     break;

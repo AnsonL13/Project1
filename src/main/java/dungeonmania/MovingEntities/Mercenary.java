@@ -13,11 +13,11 @@ public class Mercenary implements MovingEntity, InteractableEntity {
     private int allyDefence;
     private int bribeAmount;
     private int bribeRadius;
-    private int mercenaryAttack;
-    private int mercenaryHealth;
+    private double mercenaryAttack;
+    private double mercenaryHealth;
 
     public Mercenary(String id, String type, Position position, boolean isInteractable, 
-        int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, int mercenaryAttack, int mercenaryHealth) {
+        int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, double mercenaryAttack, double mercenaryHealth) {
         this.id = id;
         this.type = type;
         this.position = position;
@@ -30,11 +30,11 @@ public class Mercenary implements MovingEntity, InteractableEntity {
         this.mercenaryHealth = mercenaryHealth;
     }
 
-    public int getMercenaryAttack() {
+    public double getMercenaryAttack() {
         return mercenaryAttack;
     }
 
-    public int getMercenaryHealth() {
+    public double getMercenaryHealth() {
         return mercenaryHealth;
     }
 

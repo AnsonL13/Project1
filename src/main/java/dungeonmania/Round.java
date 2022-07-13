@@ -2,12 +2,12 @@ package dungeonmania;
 
 import java.util.List;
 
-public class Rounds {
-    private deltaPlayerHealth;
-    private deltaEnemyHealth;
-    private List<ItemResponse> weaponryUsed;
+public class Round {
+    private double deltaPlayerHealth;
+    private double deltaEnemyHealth;
+    private List<Item> weaponryUsed;
 
-    public RoundResponse(double deltaPlayerHealth, double deltaEnemyHealth, List<ItemResponse> weaponryUsed) {
+    public Round(double deltaPlayerHealth, double deltaEnemyHealth, List<Item> weaponryUsed) {
         this.deltaPlayerHealth = deltaPlayerHealth;
         this.deltaEnemyHealth = deltaEnemyHealth;
         this.weaponryUsed = weaponryUsed;
@@ -21,5 +21,5 @@ public class Rounds {
         return deltaEnemyHealth;
     }
 
-    public List<ItemResponse> getWeaponryUsed() { return weaponryUsed; }
+    public List<Item> getWeaponryUsed() { return weaponryUsed; }
 }

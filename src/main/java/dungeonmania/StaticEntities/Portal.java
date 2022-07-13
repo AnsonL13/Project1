@@ -3,16 +3,22 @@ package dungeonmania.StaticEntities;
 import dungeonmania.util.Position;
 
 public class Portal implements StaticEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
+    private String colour;
 
-    public Portal(String id, String type, Position position, boolean isInteractable) {
+    public Portal(String id, String type, Position position, boolean isInteractable, String colour) {
         this.id = id;
         this.type = type;
         this.position = position;
         this.isInteractable = isInteractable;
+        this.colour = colour;
+    }
+
+    public String getColour() {
+        return colour;
     }
 
     public boolean isInteractable() {

@@ -40,4 +40,16 @@ public class Shield implements BuildableEntity, Weapon {
     public void decreaseDurability() {
         this.shieldDurability--;
     }
+
+    public double getAttackDamage() {
+        return 0;
+    }
+
+    public double getDefenceDamage() {
+        return this.shieldDefence;
+    }
+
+    public double getDurability() {
+        return this.shieldDurability;
+    }
 }

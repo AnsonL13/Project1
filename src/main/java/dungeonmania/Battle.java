@@ -7,16 +7,19 @@ public class Battle {
     private String enemy;
     private double initialPlayerHealth;
     private double initialEnemyHealth;
-    private List<RoundResponse> rounds;
+    private List<Round> rounds;
+    private boolean playerWon = false;
+    private boolean enemyWon = false;
+    private String enemyId;
     
-    public BattleResponse(){
+    public Battle() {
         this.initialPlayerHealth = 0;
         this.initialEnemyHealth = 0;
         this.enemy = "";
-        this.rounds = new ArrayList<RoundResponse>();
+        this.rounds = new ArrayList<Round>();
     }
 
-    public BattleResponse(String enemy, List<RoundResponse> rounds, double initialPlayerHealth, double initialEnemyHealth) {
+    public Battle(String enemy, List<Round> rounds, double initialPlayerHealth, double initialEnemyHealth, String enemyId) {
         this.initialPlayerHealth = initialPlayerHealth;
         this.initialEnemyHealth = initialEnemyHealth;
         this.enemy = enemy;
@@ -35,7 +38,27 @@ public class Battle {
         return initialEnemyHealth;
     }
 
-    public final List<RoundResponse> getRounds(){
+    public final List<Round> getRounds(){
         return rounds;
+    }
+
+    public boolean isPlayerWon() {
+        return playerWon;
+    }
+
+    public void setPlayerWon(boolean playerWon) {
+        this.playerWon = playerWon;
+    }
+
+    public boolean isEnemyWon() {
+        return enemyWon;
+    }
+
+    public void setEnemyWon(boolean enemyWon) {
+        this.enemyWon = enemyWon;
+    }
+
+    public String getEnemyId() {
+        return enemyId;
     }
 }
