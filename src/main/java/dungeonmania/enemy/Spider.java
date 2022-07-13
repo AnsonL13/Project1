@@ -1,10 +1,13 @@
 package dungeonmania.enemy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import dungeonmania.SpiderSpawner;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.Entity;
+import dungeonmania.StaticEntities.Boulder;
 
 public class Spider extends Enemy {
     private boolean isClockwise;
@@ -27,11 +30,12 @@ public class Spider extends Enemy {
         return isBoulder;
     }
 
-    public void move(boolean isBoulder, Position position, Boulder boulder, int health) {
+    public void move(boolean isBoulder, Boulder boulder, int health, List<Entity> entities) {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
         ArrayList<Position> coordinates = new ArrayList<Position>();
+        Position position = null;
         Position newPos = super.getPos();
         coordinates.add(newPos.translateBy(Direction.UP));
         coordinates.add(newPos.translateBy(Direction.RIGHT));
@@ -44,17 +48,14 @@ public class Spider extends Enemy {
         coordinates.add(newPos.translateBy(Direction.RIGHT));
         if (super.isInBattle()) {
             if (SpiderSpawner.canSpawn(position, boulder)== true) {
-                
-                if (SpiderSpawner.canSpawn(position, boulder) == true) {
-                    moveUpwards(position);
-                    isClockwise = true;
-                    circling(health, coordinates, position);
+                moveUpwards(position);
+                isClockwise = true;
+                circling(health, coordinates, position);
 
-                    if ((isBoulder)) {
-                        isClockwise = false;
-                        reverseDirection(health, coordinates, position);
-                    }
-                } 
+                if ((isBoulder)) {
+                    isClockwise = false;
+                    reverseDirection(health, coordinates, position);
+                }
             }
         }
     }
@@ -63,7 +64,7 @@ public class Spider extends Enemy {
         position = super.getPos();
         //Direction direction;
         position.translateBy(Direction.UP);
-        if (canMove(position)) {
+        if (canMove(position, entities)) {
             super.setPos(position);
         }
     }
@@ -72,7 +73,7 @@ public class Spider extends Enemy {
         position = super.getPos();
         //Direction direction;
         if (health != 0) {
-            if (canMove(position)) {
+            if (canMove(position, entities)) {
                 for (int i = 0; i < coordinates.size(); i++) {
                     super.setPos(coordinates.get(i));
                 }
@@ -83,7 +84,7 @@ public class Spider extends Enemy {
     private void reverseDirection(int health, ArrayList<Position> coordinates, Position position) {
         position = super.getPos();
         if (health != 0) {
-            if (canMove(position)) {
+            if (canMove(position, entities)) {
                 for (int i = coordinates.size() - 1; i >= 0; i--) {
                     super.setPos(coordinates.get(i));
                 }
@@ -91,7 +92,18 @@ public class Spider extends Enemy {
         }
     }
 
-    private boolean canMove(Position position) {
+    private boolean canMove(Position position, List<Entity> entities) {
+        if (position == null) {
+            return false;
+        }
+        for (Entity entity : entities) {
+            if (entity instanceof MovingEntity && entity.getPosition().equals(position)) {
+                return false;
+            }
+            else if (entity instanceof Boulder && entity.getPosition().equals(position)) {
+                return false;
+            }
+        }
         return true;
     }
 

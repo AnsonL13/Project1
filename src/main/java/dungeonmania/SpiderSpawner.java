@@ -13,12 +13,21 @@ public class SpiderSpawner extends EnemyFactory {
     public SpiderSpawner(int attack, int health, int spawnRate, Position position) {
         super(attack, health, spawnRate, position);
     }
-
-    // cannot moving upwards immediately because of the exist of boulder ???
+    /* 
+    cannot moving upwards immediately because of the exist of boulder ???
     private boolean isSpawnSuccess(Position position, Boulder boulder) {
         Position spawnerPosition = super.getPosition();
         Position upPos = spawnerPosition.translateBy(Direction.UP);
         if (upPos.equals(boulder.getPosition())) {
+            return false;
+        }
+        return true;
+    }
+    */
+    // the spider do not spawn on the boulder
+    private boolean canSpawn(Position position, Boulder boulder) {
+        Position spawnerPosition = super.getPosition();
+        if (spawnerPosition.equals(boulder.getPosition())) {
             return false;
         }
         return true;
