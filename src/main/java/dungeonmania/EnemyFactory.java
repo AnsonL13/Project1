@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
-import dungeonmania.enemy.Spider;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
