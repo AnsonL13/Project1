@@ -11,15 +11,15 @@ import dungeonmania.Item;
 import dungeonmania.Player;
 import dungeonmania.Round;
 import dungeonmania.Weapon;
+import dungeonmania.StaticEntities.Boulder;
+import dungeonmania.StaticEntities.Door;
+import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class ZombieToast extends MovingEntity implements Enemy {
     private String type;
     private boolean isInteractable;
-
-    private boolean playerInvisible;
-    private boolean playerInvincible;
 
     //    private MovingPatterns;
     //    private MovingPatterns = new RunAwayMovement;
@@ -93,9 +93,14 @@ public class ZombieToast extends MovingEntity implements Enemy {
     private boolean canMove(Position position, List<Entity> entities) {
         if (position == null) return false;
         for (Entity entity : entities) {
-            if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+            if (entity instanceof MovingEntity && entity.getPosition().equals(position)) {
                 return false;
-            } else if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+            } else if (entity instanceof Boulder && entity.getPosition().equals(position)) {
+                return false;
+            } else if (entity instanceof Wall && entity.getPosition().equals(position)) {
+                return false;
+            } else if (entity instanceof Door && entity.getPosition().equals(position)) {
+                return false;
 
             }
         }
@@ -162,14 +167,14 @@ public class ZombieToast extends MovingEntity implements Enemy {
         items.addAll(weaponryUsed);
 
         // If a player is using a potion, add it to the list of items.
-        if (playerInvisible || playerInvincible) {
+        if (super.isInvicible() || super.isInvisible()) {
             items.add(player.currentPotion());
         }
 
         List<Round> rounds = new ArrayList<Round>();
         
-        // Check if player is invinsible
-        if (playerInvincible) {
+        // Check if player is invincible
+        if (super.isInvicible()) {
             double deltaPlayerHealth = 0;
             double deltaEnemyHealth = - super.getHealth();
             super.setHealth(0);
