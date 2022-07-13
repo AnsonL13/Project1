@@ -4,6 +4,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
@@ -73,11 +74,47 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        List<EntityResponse> entities = null;
-        List<ItemResponse> inventory = null;
-        List<BattleResponse> battles = null;
-        List<String> buildables = null;
-        String goals = null;
+
+        // Get all entities.
+        List<EntityResponse> entities = new ArrayList<EntityResponse>();
+        for (Entity entity : dungeon.getEntities()) {
+            EntityResponse entityResponse = new EntityResponse(entity.getId(), entity.getType(), entity.getPosition(), entity.isInteractable());
+            entities.add(entityResponse);
+        }
+        
+        // Get all items in the players inventory
+        List<ItemResponse> inventory = new ArrayList<ItemResponse>();
+        for (Item item : dungeon.getInventory()) {
+            ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
+            inventory.add(itemResponse);
+        }
+
+        // Get all the battles that have happened
+        List<BattleResponse> battles = new ArrayList<BattleResponse>();
+        for (Battle battle : dungeon.getBattles()) {
+
+            List<RoundResponse> roundResponses = new ArrayList<RoundResponse>();
+            for (Round round : battle.getRounds()) {
+
+                List<ItemResponse> weaponryUsed = new ArrayList<ItemResponse>();
+                for (Item item : round.getWeaponryUsed()) {
+                    ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
+                    weaponryUsed.add(itemResponse);
+                }
+
+                RoundResponse roundResponse = new RoundResponse(round.getDeltaCharacterHealth(), round.getDeltaEnemyHealth(), weaponryUsed);
+                roundResponses.add(roundResponse);
+
+            }
+
+            BattleResponse battleResponse = new BattleResponse(battle.getEnemy(), roundResponses, battle.getInitialPlayerHealth(), battle.getInitialEnemyHealth());
+            battles.add(battleResponse);
+        }
+
+        List<String> buildables = dungeon.getBuildables();
+
+        // Get the list of incomplete goals
+        String goals = dungeon.getGoals().listIncompleteGoals();
 
         DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
         inventory, battles, buildables, goals);
