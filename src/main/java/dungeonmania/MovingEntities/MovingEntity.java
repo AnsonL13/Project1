@@ -6,6 +6,7 @@ import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 public class MovingEntity implements Entity {
+    
     private int isInvicible;
     private int isInvisible;
     private double health;
@@ -13,7 +14,6 @@ public class MovingEntity implements Entity {
     private String id;
     private Position position;
     private boolean inBattle;
-    private String type;
 
     public MovingEntity (String id, int health, int attack, Position position) { 
         this.health = (double) health;
@@ -76,7 +76,8 @@ public class MovingEntity implements Entity {
 
     @Override
     public String getType() {
-        return type;
+        // TODO
+        return null;
     }
 
     @Override

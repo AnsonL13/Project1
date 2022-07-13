@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
@@ -47,8 +45,7 @@ public class zombieTest {
         assertEquals(expectedPlayer, actualPlayer);
 
         // check for zombie after tick
-        int zombieCount = actualDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
-
+        int zombieCount = countEntityOfType(actualDungonRes, "zombie");
         assertEquals(1, zombieCount);
 
     }  
@@ -77,7 +74,7 @@ public class zombieTest {
         assertEquals(expectedPlayer, actualPlayer);
 
         // check for zombie after tick
-        int zombieCount = actualDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        int zombieCount = countEntityOfType(actualDungonRes, "zombie");
         assertEquals(0, zombieCount);
 
     } 
@@ -86,22 +83,22 @@ public class zombieTest {
     @DisplayName("Test zombiespawner after 10 ticks")
     public void testZombieSpawerAfter10() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_zombieTest_simpleSpawn", "c_zombieTest_highSpawn");
+        DungeonResponse initDungonRes = dmc.newGame("d_zombieTest_simpleSpawn", "c_zombieTest_simpleSpawn");
 
         // create the expected result
         initDungonRes = dmc.tick(Direction.RIGHT);
         // check for zombie after tick
-        int zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        int zombieCount = countEntityOfType(initDungonRes, "zombie");
         assertEquals(0, zombieCount);
 
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 9; ++i) {
             initDungonRes = dmc.tick(Direction.LEFT);
-            zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+            zombieCount = countEntityOfType(initDungonRes, "zombie");
             assertEquals(0, zombieCount);
     
         }
         initDungonRes = dmc.tick(Direction.RIGHT);
-        zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        zombieCount = countEntityOfType(initDungonRes, "zombie");
         assertEquals(1, zombieCount);
 
 
@@ -115,15 +112,15 @@ public class zombieTest {
         
         // move player downward
         initDungonRes = dmc.tick(Direction.DOWN);
-        int zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        int zombieCount = countEntityOfType(initDungonRes, "zombieToast");
         assertEquals(1, zombieCount);
 
         initDungonRes = dmc.tick(Direction.DOWN);
-        zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        zombieCount = countEntityOfType(initDungonRes, "zombieToast");
         assertEquals(2, zombieCount);
 
         initDungonRes = dmc.tick(Direction.DOWN);
-        zombieCount = initDungonRes.getEntities().stream().filter(it -> it.getType().equals("zombie_toast")).collect(Collectors.toList()).size();
+        zombieCount = countEntityOfType(initDungonRes, "zombieToast");
         assertEquals(3, zombieCount);
     } 
 

@@ -43,8 +43,6 @@ public class ZombieToast extends MovingEntity implements Enemy {
 
     public ZombieToast(String id, int attack, int health, Position position) {
         super(id, health, attack, position);
-        this.isInteractable = false;
-        this.type = "zombie_toast";
 
     }
 
