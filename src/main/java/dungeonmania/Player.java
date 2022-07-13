@@ -9,7 +9,7 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
-public class Player implements MovingEntity {
+public class Player implements Entity {
     private String id;
     private String type;
     private Position position;
@@ -73,6 +73,7 @@ public class Player implements MovingEntity {
 
     public Item currentPotion() {
         // Gets the current potion being used by the player. 
+        if (potionQueue.size() < 1) return null;
         return potionQueue.get(0);
     }
 
@@ -83,7 +84,7 @@ public class Player implements MovingEntity {
         boolean foundShield = false;
 
         List<Weapon> weaponsForBattle = new ArrayList<Weapon>();
-
+        List<Weapon> removeWeapons = new ArrayList<Weapon>();
         for (Weapon weapon : weapons) {
             if (weapon.getType().equals("sword") && !foundSword) {
                 weapon.decreaseDurability();
@@ -91,7 +92,8 @@ public class Player implements MovingEntity {
                 foundSword = true;
 
                 if (weapon.getDurability() == 0) {
-                    weapons.remove(weapon);
+                    removeWeapons.add(weapon);
+                    //weapons.remove(weapon);
                     inventory.remove(weapon);
                 }
             }
@@ -102,7 +104,9 @@ public class Player implements MovingEntity {
                 foundBow = true;
 
                 if (weapon.getDurability() == 0) {
-                    weapons.remove(weapon);
+                    removeWeapons.add(weapon);
+
+                    //weapons.remove(weapon);
                     inventory.remove(weapon);
                 }
             }
@@ -113,12 +117,14 @@ public class Player implements MovingEntity {
                 foundShield = false;
 
                 if (weapon.getDurability() == 0) {
-                    weapons.remove(weapon);
+                    removeWeapons.add(weapon);
+
+                   // weapons.remove(weapon);
                     inventory.remove(weapon);
                 }
             }
         }
-
+        weapons.removeAll(removeWeapons);
         return weaponsForBattle;
     }
 

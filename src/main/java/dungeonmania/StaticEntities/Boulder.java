@@ -3,7 +3,7 @@ package dungeonmania.StaticEntities;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
-public class Boulder implements StaticEntity, MovingEntity {
+public class Boulder implements StaticEntity {
     private String id;
     private String type;
     private Position position;

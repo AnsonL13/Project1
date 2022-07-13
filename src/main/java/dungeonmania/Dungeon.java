@@ -27,7 +27,9 @@ import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
+//import dungeonmania.enemy.Mercenary;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -36,9 +38,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -67,6 +78,9 @@ public class Dungeon {
     Map<String, Door> doors = new HashMap<String, Door>();
     Map<String, Portal> portals = new HashMap<String, Portal>();
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
+
+    private List<Enemy> enemies = new ArrayList<Enemy>();
+    private EnemyFactory factory;
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
@@ -195,6 +209,9 @@ public class Dungeon {
         startBattles();
 
         // TODO: Spawn enemies
+        List<Entity> newEnemy = factory.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        entities.addAll(newEnemy);
+        latestUnusedId+= newEnemy.size();
 
         // TODO: Update Spawned enemy potion status
     }
@@ -235,7 +252,24 @@ public class Dungeon {
         startBattles();
         
         // Spawn enemies
+        List<Entity> newEnemy = factory.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        entities.addAll(newEnemy);
+        latestUnusedId+= newEnemy.size();
     }
+
+    private List<ZombieToastSpawner> getSpawner() {
+        List<ZombieToastSpawner> allSpawners = entities.stream().filter( o -> o instanceof ZombieToastSpawner).map(ZombieToastSpawner.class::cast).collect(Collectors.toList());
+
+       // List<ZombieToastSpawner> allSpawners = new ArrayList<ZombieToastSpawner>();
+
+        //for (InteractableEntity entity : interactablEntities) {
+          //  if (entity.getType().equalsIgnoreCase("ZombieToastSpawner")) {
+              //  allSpawners.add((ZombieToastSpawner)entity);
+           // }
+        //}
+        return allSpawners;
+    }
+
 
     /**
      * /game/build
@@ -266,9 +300,7 @@ public class Dungeon {
             player.addToInventory(shield);
             player.addToWeapons(shield);
             player.removeForShield(); 
-        }
-
-        else if (buildable.equals("bow")) {
+        } else if (buildable.equals("bow")) {
             Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", false, configMap.get("bow_durability"));
             player.addToInventory(bow);
             player.addToWeapons(bow);
@@ -650,9 +682,8 @@ public class Dungeon {
 
     // Sets this.spawner to an instance of an EnemyFactory class
     public void generateSpawner() {
-        configMap.get("spider_spawn_rate");
-        configMap.get("zombie_spawn_rate");
-        this.spawner = new EnemyFactory(configMap.get("spider_spawn_rate"), configMap.get("zombie_spawn_rate"));
+        this.spawner = new EnemyFactory(configMap.get("zombie_attack"), configMap.get("zombie_health"), configMap.get("spider_attack"), configMap.get("spider_health"));
+        spawner.setSpawnRate(configMap.get("spider_spawn_rate"), configMap.get("zombie_spawn_rate"));
     }
 
     // Make the goals composite pattern
@@ -690,4 +721,6 @@ public class Dungeon {
         }
         return newgoal;
     }
+
+    //public void 
 }
