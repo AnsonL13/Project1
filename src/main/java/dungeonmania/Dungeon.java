@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +35,8 @@ public class Dungeon {
     private List<Enemy> enemies = new ArrayList<Enemy>();
     private List<ZombieToastSpawner> spawners;
     private EnemyFactory factory;
+    private int latestUnusedId;
+    List<Entity> entities = new ArrayList<Entity>();
 
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -62,7 +67,7 @@ public class Dungeon {
                 int health = configJson.get("mercenary_attack").getAsInt();
                 int attack = configJson.get("mercenary_health").getAsInt();
                 Position pos = new Position(x, y);
-                enemies.add(new Mercenary(health, attack, pos));
+                enemies.add(new Mercenary(0, health, attack, pos));
             }
         }
     }
@@ -70,7 +75,7 @@ public class Dungeon {
     public List<EntityResponse> getEntities() {
         List<EntityResponse> entities = new ArrayList<EntityResponse>();
         for (Enemy enemy : enemies) {
-            entities.add(new EntityResponse("0", enemy.getSimpleName(), enemy.getPos(), false));
+            entities.add(new EntityResponse("0", enemy.getSimpleName(), enemy.getPosition(), false));
         }
         return entities;
     }
@@ -95,22 +100,23 @@ public class Dungeon {
      * /game/tick/movement
      */
     public void tick(Direction movementDirection) {
-
-        spawnEnemies();
-        //spawn.spawnTwo();
+       // List<ZombieToastSpawner> allSpawners = entities.stream().filter(final ZombieToastSpawner o -> o.getType().equalsIgnoreCase("ZombieToastSpawner")).collect(Collectors.toList());
+        List<Entity> newEnemy = factory.spawn(latestUnusedId, getSpawner(), entities);
+        entities.addAll(newEnemy);
+        latestUnusedId+= newEnemy.size();
     }
 
-    private void spawnEnemies() {
-        for (ZombieToastSpawner spawn : spawners) {
-            addZombie(spawn.spawn());
+    private List<ZombieToastSpawner> getSpawner() {
+        List<ZombieToastSpawner> allSpawners = new ArrayList<ZombieToastSpawner>();
+
+        for (Entity entity : entities) {
+            if (entity.getType().equalsIgnoreCase("ZombieToastSpawner")) {
+                allSpawners.add((ZombieToastSpawner)entity);
+            }
         }
-        // addSpider()
+        return allSpawners;
     }
 
-    private void addZombie(Position pos) {
-        if (pos == null) return;
-        enemies.add(factory.spawn("zombie", pos));
-    }
 
     /**
      * /game/build
