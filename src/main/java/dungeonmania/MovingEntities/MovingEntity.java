@@ -7,14 +7,14 @@ public class MovingEntity implements Entity {
     
     private int isInvicible;
     private int isInvisible;
-    private int health;
+    private double health;
     private int attack;
     private String id;
     private Position position;
     private boolean inBattle;
 
     public MovingEntity (String id, int health, int attack, Position position) { 
-        this.health = health;
+        this.health = (double) health;
         this.attack = attack;
         this.position = position;
         this.id = id;
@@ -30,7 +30,7 @@ public class MovingEntity implements Entity {
         return false;
     }
     
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
@@ -42,7 +42,7 @@ public class MovingEntity implements Entity {
         this.attack = attack;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 
