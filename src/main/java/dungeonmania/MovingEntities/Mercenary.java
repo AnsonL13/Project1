@@ -7,8 +7,14 @@ import dungeonmania.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 public class Mercenary extends MovingEntity implements InteractableEntity {
@@ -38,56 +44,67 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         
     }
 
-    public boolean move(boolean isInvicible, boolean isInvisible, Position player) {
-        /*  Position leftMove = super.getPosition().translateBy(Direction.LEFT);
-          Position rightMove = super.getPosition().translateBy(Direction.RIGHT);
-          Position upMove = super.getPosition().translateBy(Direction.UP);
-          Position downMove = super.getPosition().translateBy(Direction.DOWN);
+    public boolean move(Position player) {
+        Position leftMove = super.getPosition().translateBy(Direction.LEFT);
+        Position rightMove = super.getPosition().translateBy(Direction.RIGHT);
+        Position upMove = super.getPosition().translateBy(Direction.UP);
+        Position downMove = super.getPosition().translateBy(Direction.DOWN);
+
+        //if any pos = player pos return and set battle
+
+        Position leftVector = Position.calculatePositionBetween(leftMove, player);
+        Position rightVector = Position.calculatePositionBetween(rightMove, player);
+        Position upVector = Position.calculatePositionBetween(upMove, player);
+        Position downVector = Position.calculatePositionBetween(downMove, player);
+
+        List<Double> distance = new ArrayList<>();
+        distance.add(calculateLenth(leftVector));
+        distance.add(calculateLenth(rightVector));
+        distance.add(calculateLenth(upVector));
+        distance.add(calculateLenth(downVector));
+        int minIndex = distance.indexOf(Collections.min(distance));
+        
+        Map<Position, Double> mapShortest = new HashMap<Position, Double>();
+        LinkedHashMap<Position, Double> sortedMap = new LinkedHashMap<>();
+
+     //   mapShortest = mapShortest.entrySet()
+       //     .stream()
+        //    .sorted(Entry.comparingByValue()).collect(Collectors.toMap(Entry::getKey, Entry::getValue, (o, c) -> o, LinkedHashMap::new));
+        mapShortest.entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByValue())
+            .forEachOrdered(o -> sortedMap.put(o.getKey(), o.getValue()));
+        Position smallest = sortedMap.keySet().stream().findFirst().get();
+        //sort map by double value
+
+        if (canMove(smallest)) {
+
+        } /*else if (canMove(null)) {
+
+        } else if (canMove(null)) {
+
+        } else if (canMove(null)) {
+
+        } */
+
+        return false;
+    }
   
-          //if any pos = player pos return and set battle
-  
-          Position leftVector = Position.calculatePositionBetween(leftMove, player);
-          Position rightVector = Position.calculatePositionBetween(rightMove, player);
-          Position upVector = Position.calculatePositionBetween(upMove, player);
-          Position downVector = Position.calculatePositionBetween(downMove, player);
-  
-          List<Double> distance = new ArrayList<>();
-          Map<Position, Double> mapShortest = null;
-          distance.add(calculateLenth(leftVector));
-          distance.add(calculateLenth(rightVector));
-          distance.add(calculateLenth(upVector));
-          distance.add(calculateLenth(downVector));
-          int minIndex = distance.indexOf(Collections.min(distance));
-          //sort map by double value
-  
-          if (canMove(leftMove)) {
-  
-          } else if (canMove(null)) {
-  
-          } else if (canMove(null)) {
-  
-          } else if (canMove(null)) {
-  
-          }*/
-  
-          return false;
-      }
-  /*
-      private Double calculateLenth(Position vector) {
-          double squareX = Math.pow(vector.getX(), vector.getX());
-          double squareY = Math.pow(vector.getY(), vector.getY());
-          double addXY = squareX + squareY;
-  
-          return Math.sqrt(addXY);
-      }*/
-  
-      public String getSimpleName() {
-          return "mercenary";
-      }
-  
-      private boolean canMove(Position pos) {
-          return false;
-      }
+    private Double calculateLenth(Position vector) {
+        double squareX = Math.pow(vector.getX(), vector.getX());
+        double squareY = Math.pow(vector.getY(), vector.getY());
+        double addXY = squareX + squareY;
+
+        return Math.sqrt(addXY);
+    }
+
+    public String getSimpleName() {
+        return "mercenary";
+    }
+
+    private boolean canMove(Position pos) {
+        return false;
+    }
 
 
     public int getAllyAttack() {
