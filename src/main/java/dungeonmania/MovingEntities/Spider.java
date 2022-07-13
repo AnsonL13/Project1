@@ -81,13 +81,13 @@ public class Spider extends MovingEntity {
 
 
         else {
-            while (super.getHealth() > 0 || player.getPlayerHealth() > 0) {
+            while (super.getHealth() > 0 && player.getPlayerHealth() > 0) {
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
                 double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
     
                 // Update spider health
-                super.setHealth(  super.getHealth() - (int) ((playerBow * (playerSword + playerAttack)) / 5));
+                super.setHealth(  super.getHealth() -  ((playerBow * (playerSword + playerAttack)) / 5));
     
                 // Update player health
                 double health = player.getPlayerHealth() - ((enemyAttack - playerShield) / 10);
