@@ -17,7 +17,11 @@ import org.junit.jupiter.api.Test;
 import dungeonmania.DungeonManiaController;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
+import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.ZombieToast;
+import dungeonmania.StaticEntities.Boulder;
+import dungeonmania.StaticEntities.Door;
+import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -183,23 +187,22 @@ public class zombieTest {
         assertEquals(zombie.getId(), "0");
     } 
 
-    // TODO
     @Test
     @DisplayName("Test zombie stuck move")
     public void testZombieRandomMoveStuck() {
         List<Entity> stuck = new ArrayList<Entity>();
-        stuck.add(new Door())
-        //stuck.add(new Boulder)
-        //stuck.add(new wall)
-        //stuck.add(new Spider("0", 5 ,5 , new Position(-1, 0)));
+        stuck.add(new Door("0", "door", new Position(5, 4), false, 0));
+        stuck.add(new Boulder("0", "boulder", new Position(6, 5), false));
+        stuck.add(new Wall("0", "Wall", new Position(5, 6), false));
+        stuck.add(new Mercenary("0", "mercenary", new Position(4, 5), false, 1, 1, 1, 1, 1, 1));
 
 
-        Position intial = new Position(0, 0);
+        Position intial = new Position(5, 5);
         ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
-        zombie.move(new Position(5,5), stuck);
+        zombie.move(new Position(0,0), stuck);
 
-        assertEquals(zombie.getPosition(), new Position(0, 0));
-        assertEquals(zombie.getId(), 0);
+        assertEquals(new Position(5, 5), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
     } 
 
     @Test
