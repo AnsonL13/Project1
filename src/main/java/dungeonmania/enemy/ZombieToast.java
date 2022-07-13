@@ -1,58 +1,100 @@
 package dungeonmania.enemy;
 
+import java.util.List;
 import java.util.Random;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class ZombieToast extends Enemy{
 
-    public ZombieToast (int health, int attack, Position position) {
-        super(health, attack, position);
+//    private MovingPatterns;
+//    private MovingPatterns = new RunAwayMovement;
+//    private MovingPatterns = new RandomMovement;
+
+
+
+    public ZombieToast (int id, int health, int attack, Position position) {
+        super(id, health, attack, position);
     }
 
-    public void move(boolean isInvicible, boolean isInvisible, Position player) {  
+    public boolean move(Position player, List<Entity> entities) {  
+        Position newPos = null;
+        super.setPotions();
+
         if (super.isInBattle()) {
 
-        } else if (isInvicible) {
-            runAway();
+        } else if (super.isInvicible()) {
+            newPos = runAway(player);
         } else {
-            randomMove();
+            newPos = randomMove();
         }
 
-        super.isBattle(player);
+        if (canMove(newPos, entities)) {
+            super.setPos(newPos);
+        }  
+
+        return super.isBattle(player);
     }
     
-    private void randomMove () {
+    private Position randomMove () {
         Random rand = new Random(); //instance of random class
         int upper = 4;
         int randomdir = rand.nextInt(upper); 
-        Position pos = super.getPos();
+        Position pos = super.getPosition();
         switch(randomdir) {
             case 0:
-                pos.translateBy(Direction.UP);
+                pos = pos.translateBy(Direction.UP);
                 break;
             case 1:
-                pos.translateBy(Direction.LEFT);
+                pos = pos.translateBy(Direction.LEFT);
                 break;
             case 2:
-                pos.translateBy(Direction.DOWN);
+                pos = pos.translateBy(Direction.DOWN);
                 break;
             case 3:
-                pos.translateBy(Direction.RIGHT);
+                pos = pos.translateBy(Direction.RIGHT);
                 break;
-          }
-        if (canMove(pos)) {
-            super.setPos(pos);
-        }  
+
+        }
+
+        return pos;  
+
     }
 
-    private boolean canMove(Position position) {
+    private boolean canMove(Position position, List<Entity> entities) {
+        if (position == null) return false;
+        for (Entity entity : entities) {
+            if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+                return false;
+            } else if (entity instanceof Enemy && entity.getPosition().equals(position)) {
+
+            }
+        }
         return true;
     }
 
-    private void runAway() {
-        
+    private Position runAway(Position player) {
+        Position pos = super.getPosition();
+        if (player.getX() > super.getPosition().getX()) {
+            pos = pos.translateBy(Direction.LEFT);
+        } else {
+            pos = pos.translateBy(Direction.RIGHT);
+        }
+        return pos;
+   /*     if (canMove(pos)) {
+            super.setPos(pos);
+            return;
+        } else if (player.getY() > super.getPosition().getY()) {
+            pos.translateBy(Direction.UP);
+        } else {
+            pos.translateBy(Direction.DOWN);
+        }
+
+        if (canMove(pos)) {
+            super.setPos(pos);
+        }*/
     }
 
     public String getSimpleName() {
