@@ -5,10 +5,10 @@ import dungeonmania.Player;
 import dungeonmania.util.Position;
 
 public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
 
     public ZombieToastSpawner(String id, String type, Position position, boolean isInteractable) {
         this.id = id;
@@ -31,6 +31,10 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
 
     public final Position getPosition() {
         return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public boolean interactActionCheck(Player player) {

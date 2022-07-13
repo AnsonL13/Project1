@@ -36,4 +36,8 @@ public class InvincibilityPotion implements CollectableEntity {
     public int getInvincibilityPotionDuration() {
         return invincibilityPotionDuration;
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }

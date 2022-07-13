@@ -70,6 +70,10 @@ public class Mercenary implements MovingEntity, InteractableEntity {
         return bribeRadius;
     }
 
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     public boolean interactActionCheck(Player player) {
         int xTopBoundary = position.getX() + bribeRadius;
         int xBottomBoundary = position.getX() - bribeRadius;

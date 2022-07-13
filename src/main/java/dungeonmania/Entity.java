@@ -7,4 +7,5 @@ public interface Entity {
     public String getId();
     public String getType();
     public Position getPosition();
+    public void setPosition(Position position);
 }

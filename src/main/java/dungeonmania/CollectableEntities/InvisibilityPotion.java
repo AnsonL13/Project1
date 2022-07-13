@@ -37,4 +37,8 @@ public class InvisibilityPotion implements CollectableEntity {
     public int getInvisibilityPotionPuration() {
         return invisibilityPotionPuration;
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }

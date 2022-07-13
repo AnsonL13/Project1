@@ -36,4 +36,8 @@ public class Bomb implements CollectableEntity {
     public int getBombRadius() {
         return bombRadius;
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dungeonmania.CollectableEntities.Key;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
@@ -16,6 +17,7 @@ public class Player implements MovingEntity {
     private double playerAttack;
     private double playerHealth;
     List<Item> inventory = new ArrayList<Item>();
+    Map<String, Key> keys = new HashMap<String, Key>();
     List<Weapon> weapons = new ArrayList<Weapon>();
     List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
@@ -252,7 +254,35 @@ public class Player implements MovingEntity {
         return battles;
     }
 
+    // Unlock a door
+    public boolean unlockDoor(int KeyId) {
+        boolean foundKey = false;
+        for (String key : keys.keySet()) {
+            // Check if the corresponding key exists.
+            if (keys.get(key).getKey() == KeyId) {
+                // Remove key from inventory
+                removeFromInventory(key);
+                keys.remove(key);
+                foundKey = true;
+            }
+        }
+        return foundKey;
+    }
+
     public void setPlayerHealth(double playerHealth) {
         this.playerHealth = playerHealth;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public void removeFromInventory(String Id) {
+        for (Item item : inventory) {
+            if (item.getId().equals(Id)) {
+                inventory.remove(item);
+                break;
+            }
+        }
     }
 }

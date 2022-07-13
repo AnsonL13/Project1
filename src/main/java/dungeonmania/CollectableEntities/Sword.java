@@ -59,4 +59,8 @@ public class Sword implements CollectableEntity, Weapon {
     public double getDurability() {
         return this.swordDurability;
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }

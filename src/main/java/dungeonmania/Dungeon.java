@@ -4,6 +4,7 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.CollectableEntities.Arrow;
 import dungeonmania.CollectableEntities.Bomb;
+import dungeonmania.CollectableEntities.CollectableEntity;
 import dungeonmania.CollectableEntities.InvincibilityPotion;
 import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
@@ -31,10 +32,10 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
@@ -63,6 +64,9 @@ public class Dungeon {
     List<Entity> entities = new ArrayList<Entity>();
     List<InteractableEntity> interactablEntities = new ArrayList<InteractableEntity>();
     List<Battle> battles = new ArrayList<Battle>();
+    Map<String, Door> doors = new HashMap<String, Door>();
+    Map<String, Portal> portals = new HashMap<String, Portal>();
+    Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
@@ -102,6 +106,15 @@ public class Dungeon {
 
     public void addToBattles(Battle battle) {
         this.battles.add(battle);
+    }
+
+    public void removeEntity(String Id) {
+        for (Entity entity : entities) {
+            if (entity.getId().equals(Id)) {
+                entities.remove(entity);
+                break;
+            }
+        }
     }
 
     public Goal getGoals() {
@@ -179,39 +192,7 @@ public class Dungeon {
         // TODO: Enemy movement
         
         // Battles
-        List<Battle> newBattles = player.battle();
-        // Add all new battles to the list of battles.
-        this.battles.addAll(newBattles);
-
-        // 
-        for (Battle battle : newBattles) {
-            if (battle.isEnemyWon()) {
-                entities.remove(player);
-                break;
-            }
-    
-            else if (battle.isPlayerWon()) {
-                String id = battle.getEnemyId();
-                for (Entity entity : entities) {
-                    if (entity.getId().equals(id)) {
-                        entities.remove(entity);
-                        break;
-                    }
-                }
-            }
-    
-            else {
-                // Both the enemy and player died
-                entities.remove(player);
-                String id = battle.getEnemyId();
-                for (Entity entity : entities) {
-                    if (entity.getId().equals(id)) {
-                        entities.remove(entity);
-                        break;
-                    }
-                }
-            }
-        }
+        startBattles();
 
         // TODO: Spawn enemies
 
@@ -222,18 +203,37 @@ public class Dungeon {
      * /game/tick/movement
      */
     public void tick(Direction movementDirection) {
+        // Check the square that the player will move into
+        Position targetSquare = player.getPosition().translateBy(movementDirection);
+
         // Check if movement into a static entity
-        
-        // Move
+        boolean normalMove = moveIntoStaticEntity(movementDirection, targetSquare);
+
+        // Normal player movement
+        if (normalMove) {
+            player.setPosition(targetSquare);
+        }
 
         // Check if moved into a collectable entity
+        for (String collectableEntity : collectableEntities.keySet()) {
+            Position collectablePosition = collectableEntities.get(collectableEntity).getPosition();
+            // Check if collectable entity is in the same square as the player. 
+            if (collectablePosition.getX() == targetSquare.getX() && collectablePosition.getY() == targetSquare.getY()) {
+                // Collect the item
+                player.addToInventory(collectableEntities.get(collectableEntity));
+                // Remove from list of entities
+                entities.remove(collectableEntities.get(collectableEntity));
+                collectableEntities.remove(collectableEntity);
+            }
+        }
 
         // Check if moved into an enemy (Battle)
-
+        startBattles();
         // Move enemies
         
         // Check if Enemy has moved into a player (Battle)
-
+        startBattles();
+        
         // Spawn enemies
     }
 
@@ -378,6 +378,7 @@ public class Dungeon {
                     keyId = entityinfo.getAsJsonObject().get("key").getAsInt();
                     Door door = new Door(Integer.toString(latestUnusedId), "door", new Position(xPosition, yPosition), false, keyId);
                     entities.add(door);
+                    doors.put(Integer.toString(latestUnusedId), door);
                     this.latestUnusedId++;
                     break;
                     
@@ -387,6 +388,7 @@ public class Dungeon {
                     String colour = entityinfo.getAsJsonObject().get("colour").getAsString();
                     Portal portal = new Portal(Integer.toString(latestUnusedId), "portal", new Position(xPosition, yPosition), false, colour);
                     entities.add(portal);
+                    portals.put(Integer.toString(latestUnusedId), portal);
                     this.latestUnusedId++;
                     break;
 
@@ -432,6 +434,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Treasure treasure = new Treasure(Integer.toString(latestUnusedId), "treasure", new Position(xPosition, yPosition), false);
                     entities.add(treasure);
+                    collectableEntities.put(Integer.toString(latestUnusedId), treasure);
                     this.latestUnusedId++;
                     break;
                 
@@ -441,6 +444,7 @@ public class Dungeon {
                     keyId = entityinfo.getAsJsonObject().get("key").getAsInt();
                     Key key = new Key(Integer.toString(latestUnusedId), "key", new Position(xPosition, yPosition), false, keyId);
                     entities.add(key);
+                    collectableEntities.put(Integer.toString(latestUnusedId), key);
                     this.latestUnusedId++;
                     break;
 
@@ -450,6 +454,7 @@ public class Dungeon {
                     InvincibilityPotion invincibilityPotion = new InvincibilityPotion(Integer.toString(latestUnusedId), "invincibility_potion", 
                                         new Position(xPosition, yPosition), false, configMap.get("invincibility_potion_duration"));
                     entities.add(invincibilityPotion);
+                    collectableEntities.put(Integer.toString(latestUnusedId), invincibilityPotion);
                     this.latestUnusedId++;
                     break;
 
@@ -459,6 +464,7 @@ public class Dungeon {
                     InvisibilityPotion invisibilityPotion = new InvisibilityPotion(Integer.toString(latestUnusedId), "invisibility_potion", 
                                         new Position(xPosition, yPosition), false, configMap.get("invisibility_potion_duration"));
                     entities.add(invisibilityPotion);
+                    collectableEntities.put(Integer.toString(latestUnusedId), invisibilityPotion);
                     this.latestUnusedId++;
                     break;
 
@@ -467,6 +473,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Wood wood = new Wood(Integer.toString(latestUnusedId), "wood", new Position(xPosition, yPosition), false);
                     entities.add(wood);
+                    collectableEntities.put(Integer.toString(latestUnusedId), wood);
                     this.latestUnusedId++;
                     break;
 
@@ -475,6 +482,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Arrow arrow = new Arrow(Integer.toString(latestUnusedId), "arrow", new Position(xPosition, yPosition), false);
                     entities.add(arrow);
+                    collectableEntities.put(Integer.toString(latestUnusedId), arrow);
                     this.latestUnusedId++;
                     break;
 
@@ -483,6 +491,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"));
                     entities.add(bomb);
+                    collectableEntities.put(Integer.toString(latestUnusedId), bomb);
                     this.latestUnusedId++;
                     break;
 
@@ -491,6 +500,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Sword sword = new Sword(Integer.toString(latestUnusedId), "sword", new Position(xPosition, yPosition), false, configMap.get("sword_attack"), configMap.get("sword_durability"));
                     entities.add(sword);
+                    collectableEntities.put(Integer.toString(latestUnusedId), sword);
                     this.latestUnusedId++;
                     break;
 
@@ -498,6 +508,144 @@ public class Dungeon {
                     break;
             }
         }
+    }
+
+    public void startBattles() {
+        List<Battle> newBattles = player.battle();
+        // Add all new battles to the list of battles.
+        this.battles.addAll(newBattles);
+
+        // 
+        for (Battle battle : newBattles) {
+            if (battle.isEnemyWon()) {
+                entities.remove(player);
+                break;
+            }
+    
+            else if (battle.isPlayerWon()) {
+                String id = battle.getEnemyId();
+                removeEntity(id);
+            }
+    
+            else {
+                // Both the enemy and player died
+                entities.remove(player);
+                String id = battle.getEnemyId();
+                removeEntity(id);
+            }
+        }
+    }
+
+    // Checks if players movement will be a static entity and handles it. 
+    public boolean moveIntoStaticEntity(Direction movementDirection, Position targetSquare) {
+        boolean normalMove = true;
+        for (Entity entity : entities) {
+            // Check if the entity is in the position the player is going to move into.
+            if (entity.getPosition().getX() == targetSquare.getX() && entity.getPosition().getY() == targetSquare.getY()) {
+                switch (entity.getType()) {
+                    case "wall":
+                        // Player does not move because there is a wall in front.
+                        normalMove = false;
+                        break;
+    
+                    case "boulder":
+                        // Check if the boulder can move
+                        Position nextTargetSquare = targetSquare.translateBy(movementDirection);
+                        for (Entity nextEntity : entities) {
+    
+                            if (nextEntity.getType().equals("boulder") && 
+                                nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                                nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                                // Player cannot push the boulder
+                                normalMove = false;
+                            }
+    
+                            else if (nextEntity.getType().equals("wall") && 
+                                    nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                                    nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                                // Player cannot push the boulder
+                                normalMove = false;
+                            }
+                        }
+    
+                        if (normalMove == true) {
+                            // Move the boulder
+                            entity.setPosition(nextTargetSquare);
+                        }
+                        break;
+    
+                    case "door":
+                        // Check if the door is already open
+                        if (doors.get(entity.getId()).isOpen()) {
+                            normalMove = true;
+                        }
+    
+                        // Check if the player can unlock the door
+                        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
+                            // Player unlocked door
+                            doors.get(entity.getId()).setOpen(true);
+                        }
+    
+                        // Player cannot open the door
+                        else {
+                            normalMove = false;
+                        }
+    
+                        break;
+    
+                    case "portal":
+                        boolean foundFinalSquare = false;
+                        Position portalExitSquare = player.getPosition();
+                        Portal tempPortal = null;
+
+                        // Find the portal in the portals Hashmap.
+                        for (String portal : portals.keySet()) {
+                            if (entity.getId().equals(portals.get(portal).getId())) {
+                                tempPortal = portals.get(portal);
+                            }
+                        }
+
+                        while (! foundFinalSquare) {
+                            portalExitSquare = portalExitSquare(tempPortal, movementDirection);
+
+                            foundFinalSquare = true;
+
+                            // Check if there is another portal on the portalExitSquare
+                            for (String portal : portals.keySet()) {
+                                int xPostion = portals.get(portal).getPosition().getX();
+                                int yPosition = portals.get(portal).getPosition().getY();
+                                if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
+                                    tempPortal = portals.get(portal);
+                                    foundFinalSquare = false;
+                                }
+                            }
+                        }
+
+                        // TODO: Check if the portalExitSquare contains a wall, boulder or door.
+                        
+                        player.setPosition(portalExitSquare);
+                        normalMove = false;
+                        break;
+    
+                    default:
+                        break;
+                }
+            }
+        }
+        return normalMove;
+    }
+
+    // Given one portal and movementDirection, find the square the player will move to. 
+    public Position portalExitSquare(Portal portal, Direction movementDirection) {
+        // Get the corresponding portal
+        for (String otherPortal : portals.keySet()) {
+            // if (!Same ID && Same colour)
+            if (!otherPortal.equals(portal.getId()) && portals.get(otherPortal).getColour().equals(portal.getColour())) {
+                // Get the position
+                return portals.get(otherPortal).getPosition().translateBy(movementDirection);
+            }
+        }
+        return null;
     }
 
     // Sets this.spawner to an instance of an EnemyFactory class

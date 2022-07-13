@@ -58,6 +58,10 @@ public class ZombieToast implements MovingEntity, Enemy {
         return zombieHealth;
     }
 
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     public Battle battleCalculate(Player player) {
         double playerHealth = player.getPlayerHealth();
         double playerAttack = player.getPlayerAttack();

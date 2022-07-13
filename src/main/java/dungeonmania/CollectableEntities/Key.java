@@ -3,10 +3,10 @@ package dungeonmania.CollectableEntities;
 import dungeonmania.util.Position;
 
 public class Key implements CollectableEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
     private int key;
 
     public Key(String id, String type, Position position, boolean isInteractable, int key) {
@@ -35,5 +35,9 @@ public class Key implements CollectableEntity {
 
     public int getKey() {
         return key;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }
