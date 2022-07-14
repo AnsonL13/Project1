@@ -73,7 +73,7 @@ public class Dungeon {
 
     // Add data structures here when you need them.
     List<Entity> entities = new ArrayList<Entity>();
-    List<InteractableEntity> interactablEntities = new ArrayList<InteractableEntity>();
+    List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
     List<Battle> battles = new ArrayList<Battle>();
     Map<String, Door> doors = new HashMap<String, Door>();
     Map<String, Portal> portals = new HashMap<String, Portal>();
@@ -336,7 +336,7 @@ public class Dungeon {
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
-        for (Entity entity : interactablEntities) {
+        for (Entity entity : interactableEntities) {
             if (entity.getId().equals(entityId)) {
                 foundEntity = true;
             }
@@ -347,7 +347,7 @@ public class Dungeon {
         }
 
         // Check for InvalidActionException
-        for (InteractableEntity entity : interactablEntities) {
+        for (InteractableEntity entity : interactableEntities) {
             if (entity.getId().equals(entityId)) {
                 // Check if invalidAction
                 if (! entity.interactActionCheck(player)) {
@@ -362,10 +362,11 @@ public class Dungeon {
                 else if (entity.getType().equals("zombie_toast_spawner")) {
                     // Destroy the zombie spawner
                     this.entities.remove(entity);
-                    this.interactablEntities.remove(entity);
+                    this.interactableEntities.remove(entity);
 
                     // Decrease sword durability
                     player.decreaseSwordDurability();
+                    break;
                 }
             }
         }
@@ -451,7 +452,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     ZombieToastSpawner zombieToastSpawner = new ZombieToastSpawner(Integer.toString(latestUnusedId), "zombie_toast_spawner", new Position(xPosition, yPosition), true);
                     entities.add(zombieToastSpawner);
-                    interactablEntities.add(zombieToastSpawner);
+                    interactableEntities.add(zombieToastSpawner);
                     this.latestUnusedId++;
                     break;
                 
@@ -479,7 +480,7 @@ public class Dungeon {
                                                         configMap.get("bribe_amount"), configMap.get("bribe_radius"), 
                                                         configMap.get("mercenary_attack"), configMap.get("mercenary_health"));
                     entities.add(mercenary);
-                    interactablEntities.add(mercenary);
+                    interactableEntities.add(mercenary);
                     this.latestUnusedId++;
                     break;
 
