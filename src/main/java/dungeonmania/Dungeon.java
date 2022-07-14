@@ -34,7 +34,6 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
