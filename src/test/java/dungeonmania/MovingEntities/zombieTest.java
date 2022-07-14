@@ -11,16 +11,13 @@ import java.util.stream.Collectors;
 import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 
-import static dungeonmania.TestUtils.countEntityOfType;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
-import dungeonmania.MovingEntities.Mercenary;
-import dungeonmania.MovingEntities.ZombieToast;
+
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
@@ -218,6 +215,23 @@ public class zombieTest {
 
         assertEquals(new Position(-1, 0), zombie.getPosition());
         assertEquals(zombie.getId(), "0");
+    } 
+
+    @Test
+    @DisplayName("Test zombie back to random move")
+    public void testZombieRandomAfterPotion() {
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
+        zombie.setInvincible(1);
+        zombie.move(new Position(5,5), new ArrayList<Entity>());
+
+        assertEquals(new Position(-1, 0), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
+
+        zombie.move(new Position(5,5), new ArrayList<Entity>());
+        assertEquals(false, zombie.isInvicible());
+
+
     } 
 
 }
