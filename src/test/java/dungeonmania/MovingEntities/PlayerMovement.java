@@ -116,5 +116,24 @@ public class PlayerMovement {
         assertFalse(getGoals(res).contains(":exit"));
     }
 
-    
+    @Test
+    @DisplayName("Test player through portal")
+    public void testPlayerThroughPortal() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_walkThroughPortal", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(1, 2), false);
+
+        // move player downward
+        DungeonResponse actualDungonRes = dmc.tick(Direction.DOWN);
+        actualDungonRes = dmc.tick(Direction.DOWN);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // assert after movement
+        System.out.print(actualPlayer.getPosition().getX());
+        System.out.print(actualPlayer.getPosition().getY());
+        assertEquals(expectedPlayer, actualPlayer);
+    }
 }
