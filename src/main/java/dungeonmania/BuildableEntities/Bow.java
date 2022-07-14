@@ -1,18 +1,16 @@
 package dungeonmania.BuildableEntities;
 
-import dungeonmania.util.Position;
+import dungeonmania.Weapon;
 
-public class Bow implements BuildableEntity {
+public class Bow implements BuildableEntity, Weapon {
     private String id;
     private String type;
-    private Position position;
     private boolean isInteractable;
     private int bowDurability;
 
-    public Bow(String id, String type, Position position, boolean isInteractable, int bowDurability) {
+    public Bow(String id, String type, boolean isInteractable, int bowDurability) {
         this.id = id;
         this.type = type;
-        this.position = position;
         this.isInteractable = isInteractable;
         this.bowDurability = bowDurability;
     }
@@ -29,11 +27,23 @@ public class Bow implements BuildableEntity {
         return type;
     }
 
-    public final Position getPosition() {
-        return position;
-    }
-
     public int getBowDurability() {
         return bowDurability;
+    }
+
+    public void decreaseDurability() {
+        this.bowDurability--;
+    }
+
+    public double getAttackDamage() {
+        return 0;
+    }
+
+    public double getDefenceDamage() {
+        return 0;
+    }
+
+    public double getDurability() {
+        return this.bowDurability;
     }
 }

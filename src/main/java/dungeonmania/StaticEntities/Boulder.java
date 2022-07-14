@@ -1,12 +1,13 @@
 package dungeonmania.StaticEntities;
 
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
 public class Boulder implements StaticEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
 
     public Boulder(String id, String type, Position position, boolean isInteractable) {
         this.id = id;
@@ -29,5 +30,9 @@ public class Boulder implements StaticEntity {
 
     public final Position getPosition() {
         return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

@@ -3,10 +3,10 @@ package dungeonmania.CollectableEntities;
 import dungeonmania.util.Position;
 
 public class Wood implements CollectableEntity {
-    private final String id;
-    private final String type;
-    private final Position position;
-    private final boolean isInteractable;
+    private String id;
+    private String type;
+    private Position position;
+    private boolean isInteractable;
 
     public Wood(String id, String type, Position position, boolean isInteractable) {
         this.id = id;
@@ -29,5 +29,9 @@ public class Wood implements CollectableEntity {
 
     public final Position getPosition() {
         return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

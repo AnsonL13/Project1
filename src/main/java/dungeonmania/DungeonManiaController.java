@@ -4,6 +4,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
@@ -112,7 +113,27 @@ public class DungeonManiaController {
             inventory.add(itemResponse);
         }
 
-        List<BattleResponse> battles = null;
+        // Get all the battles that have happened
+        List<BattleResponse> battles = new ArrayList<BattleResponse>();
+        for (Battle battle : dungeon.getBattles()) {
+
+            List<RoundResponse> roundResponses = new ArrayList<RoundResponse>();
+            for (Round round : battle.getRounds()) {
+
+                List<ItemResponse> weaponryUsed = new ArrayList<ItemResponse>();
+                for (Item item : round.getWeaponryUsed()) {
+                    ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
+                    weaponryUsed.add(itemResponse);
+                }
+
+                RoundResponse roundResponse = new RoundResponse(round.getDeltaCharacterHealth(), round.getDeltaEnemyHealth(), weaponryUsed);
+                roundResponses.add(roundResponse);
+
+            }
+
+            BattleResponse battleResponse = new BattleResponse(battle.getEnemy(), roundResponses, battle.getInitialPlayerHealth(), battle.getInitialEnemyHealth());
+            battles.add(battleResponse);
+        }
 
         List<String> buildables = dungeon.getBuildables();
 
