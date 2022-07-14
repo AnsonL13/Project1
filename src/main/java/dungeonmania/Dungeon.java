@@ -18,6 +18,7 @@ import dungeonmania.Goals.ExitGoal;
 import dungeonmania.Goals.Goal;
 import dungeonmania.Goals.TreasureGoal;
 import dungeonmania.MovingEntities.Mercenary;
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.Boulder;
@@ -203,6 +204,13 @@ public class Dungeon {
         player.useItem(itemUsedId);
 
         // TODO: Enemy movement
+        List<MovingEntity> enemies = entities.stream().filter( o -> o instanceof MovingEntity).map(MovingEntity.class::cast).collect(Collectors.toList());
+
+        for (MovingEntity enemy: enemies) {
+            if (enemies instanceof MovingEntity) {
+                enemy.move(player.getPosition() ,entities);
+            }
+        }
         
         // Battles
         startBattles();
@@ -246,7 +254,13 @@ public class Dungeon {
         // Check if moved into an enemy (Battle)
         startBattles();
         // Move enemies
-        
+        List<MovingEntity> enemies = entities.stream().filter( o -> o instanceof MovingEntity).map(MovingEntity.class::cast).collect(Collectors.toList());
+
+        for (MovingEntity enemy: enemies) {
+            if (enemies instanceof MovingEntity) {
+                enemy.move(player.getPosition() ,entities);
+            }
+        }
         // Check if Enemy has moved into a player (Battle)
         startBattles();
         

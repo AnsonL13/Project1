@@ -42,5 +42,7 @@ public class mercenaryTest {
         int mercCount = countEntityOfType(initDungonRes, "mercenary");
         assertEquals(0, mercCount);
     }
+
+    // White box testing
     
 }
