@@ -14,6 +14,7 @@ import static dungeonmania.TestUtils.countEntityOfType;
 import static dungeonmania.TestUtils.getValueFromConfigFile;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -126,7 +127,7 @@ public class PlayerMovement {
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(1, 2), false);
 
-        // move player downward
+        // move player through portal
         DungeonResponse actualDungonRes = dmc.tick(Direction.DOWN);
         actualDungonRes = dmc.tick(Direction.DOWN);
         EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
@@ -145,7 +146,7 @@ public class PlayerMovement {
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(3, 3), false);
 
-        // move player downward
+        // move player through portal
         DungeonResponse actualDungonRes = dmc.tick(Direction.LEFT);
         actualDungonRes = dmc.tick(Direction.LEFT);
         actualDungonRes = dmc.tick(Direction.DOWN);
@@ -165,7 +166,7 @@ public class PlayerMovement {
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(5, 0), false);
 
-        // move player downward
+        // Move player through portals
         DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
         EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
 
@@ -183,7 +184,7 @@ public class PlayerMovement {
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(-5, -4), false);
 
-        // move player downward
+        // Move player through portals
         DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
         actualDungonRes = dmc.tick(Direction.RIGHT);
         actualDungonRes = dmc.tick(Direction.DOWN);
@@ -193,5 +194,75 @@ public class PlayerMovement {
         assertEquals(expectedPlayer, actualPlayer);
     }
 
-    
+    @Test
+    @DisplayName("Test player moving consecutive boulders")
+    public void testPlayerMovingConsecutiveBoulders() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_moveBouldersTest", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+        List<EntityResponse> initialBoulders = getEntities(initDungonRes, "boulder");
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(0, 0), false);
+
+        // move player to two consecutive boulders (No movement)
+        DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // Assert no movement
+        assertEquals(expectedPlayer, actualPlayer);
+
+        List<EntityResponse> boulders = getEntities(initDungonRes, "boulder");
+
+        assertEquals(boulders.size(), initialBoulders.size());
+        int i = 0;
+        while (i < boulders.size()) {
+            assertTrue(boulders.get(i).getPosition().equals(initialBoulders.get(i).getPosition()));
+            i++;
+        }
+    }
+
+    @Test
+    @DisplayName("Test player moving boulder")
+    public void testPlayerMovingBoulder() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_moveBouldersTest", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(-1, 0), false);
+
+        // move player to a boulder. 
+        DungeonResponse actualDungonRes = dmc.tick(Direction.LEFT);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // Assert correct movement
+        assertEquals(expectedPlayer, actualPlayer);
+    }
+
+    @Test
+    @DisplayName("Test player moving boulder into wall")
+    public void testPlayerMovingBoulderintoWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_moveBouldersTest", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(-1, 0), false);
+
+        // move player to a boulder. 
+        DungeonResponse actualDungonRes = dmc.tick(Direction.LEFT);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // correct
+        assertEquals(expectedPlayer, actualPlayer);
+
+        // Move boulder into wall
+        actualDungonRes = dmc.tick(Direction.UP);
+        actualPlayer = getPlayer(actualDungonRes).get();
+
+        // Assert no movement
+        assertEquals(expectedPlayer, actualPlayer);
+
+    }
 }
