@@ -330,7 +330,7 @@ public class Player implements Entity {
         movingEntities.stream().forEach(o -> o.setInvisible(duration));
     };
 
-    // return if enetity if battle
+    // return if entity if battle
     public MovingEntity moveMovingEntities(Position player, 
                 List<Entity> entities) {
         MovingEntity newBattle = null;

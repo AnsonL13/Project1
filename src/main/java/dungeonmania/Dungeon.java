@@ -212,7 +212,8 @@ public class Dungeon {
         // Player uses the item
         player.useItem(itemUsedId);
 
-        // TODO: Enemy movement
+        //Move movingentities
+        player.moveMovingEntities(player.getPosition(), entities);
         
         // Battles
         startBattles();
@@ -270,8 +271,9 @@ public class Dungeon {
         // Check if moved into an enemy (Battle)
         startBattles();
 
-        // Move enemies should be done in player
-        
+        //Move movingentities
+        player.moveMovingEntities(player.getPosition(), entities);
+
         // Check if Enemy has moved into a player (Battle)
         startBattles();
         
