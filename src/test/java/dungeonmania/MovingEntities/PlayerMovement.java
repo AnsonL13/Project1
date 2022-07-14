@@ -76,4 +76,43 @@ public class PlayerMovement {
         // assert after movement
         assertEquals(expectedPlayer, actualPlayer);
     }
+
+    @Test
+    @DisplayName("Test player through door then exit")
+    public void testPlayerThroughDoorExit() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_DoorsKeysTest_useKeyWalkThroughOpenDoor", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+
+        // pick up key
+        res = dmc.tick(Direction.RIGHT);
+        Position pos = getEntities(res, "player").get(0).getPosition();
+        assertEquals(1, getInventory(res, "key").size());
+
+        // walk through door and check key is gone
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(0, getInventory(res, "key").size());
+        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+
+        EntityResponse actualPlayer = getPlayer(res).get();
+        EntityResponse expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(8, 8), false);
+        assertEquals(expectedPlayer, actualPlayer);
+
+        // Check the exit goal is done
+        assertFalse(getGoals(res).contains(":exit"));
+    }
 }
