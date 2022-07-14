@@ -1,21 +1,15 @@
 package dungeonmania.MovingEntities;
 
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
+import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
+import dungeonmania.MovingEntities.PositionMovements.Movement;
+import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
+import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 
 public class Mercenary extends MovingEntity implements InteractableEntity {
     private String type;
@@ -27,113 +21,159 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int bribeAmount;
     private int bribeRadius;
 
-//    private MovingPatterns;
-//    private MovingPatterns = new RunAwayMovement;
-//    private MovingPatterns = new RandomMovement;
-//    private MovingPatterns = new FollowMovement;
-//    private MovingPatterns = new AlliedMovement;
+    private Movement movement;
+    private RunAwayMovement runAwayMovement = new RunAwayMovement(this);
+    private RandomMovement randomMovement = new RandomMovement(this);
+    private FollowMovement followMovement = new FollowMovement(this);
 
+    /**
+     * Constructor
+     * @param id
+     * @param type string name
+     * @param position position in game
+     * @param isInteractable if player can interact
+     * @param allyAttack
+     * @param allyDefence
+     * @param bribeAmount
+     * @param bribeRadius
+     * @param mercenaryAttack
+     * @param mercenaryHealth
+     */
     public Mercenary(String id, String type, Position position, boolean isInteractable, 
-        int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, int mercenaryAttack, int mercenaryHealth) {
+            int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, 
+            int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
+
         this.type = type;
         this.isInteractable = isInteractable;
-
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
+        this.movement = followMovement;
         
     }
 
-    public boolean move(Position player) {
-        Position leftMove = super.getPosition().translateBy(Direction.LEFT);
-        Position rightMove = super.getPosition().translateBy(Direction.RIGHT);
-        Position upMove = super.getPosition().translateBy(Direction.UP);
-        Position downMove = super.getPosition().translateBy(Direction.DOWN);
+    /**
+     * Constructor
+     * @param id
+     * @param position
+     * @param allyAttack
+     * @param allyDefence
+     * @param bribeAmount
+     * @param bribeRadius
+     * @param mercenaryAttack
+     * @param mercenaryHealth
+     */
+    public Mercenary(String id, Position position, int allyAttack,
+            int allyDefence,  int bribeAmount, int bribeRadius, 
+            int mercenaryAttack, int mercenaryHealth) {
+        super(id, mercenaryAttack, mercenaryHealth, position);
 
-        //if any pos = player pos return and set battle
-
-        Position leftVector = Position.calculatePositionBetween(leftMove, player);
-        Position rightVector = Position.calculatePositionBetween(rightMove, player);
-        Position upVector = Position.calculatePositionBetween(upMove, player);
-        Position downVector = Position.calculatePositionBetween(downMove, player);
-
-        List<Double> distance = new ArrayList<>();
-        distance.add(calculateLenth(leftVector));
-        distance.add(calculateLenth(rightVector));
-        distance.add(calculateLenth(upVector));
-        distance.add(calculateLenth(downVector));
-        int minIndex = distance.indexOf(Collections.min(distance));
+        this.type = "mercenary";
+        this.isInteractable = false;
+        this.bribeAmount = bribeAmount;
+        this.bribeRadius = bribeRadius;
+        this.movement = followMovement;
+                
+    }
+    
+    /** 
+     * @param player
+     * @param entities
+     * @return boolean
+     */
+    @Override
+    public boolean move(Position player, List<Entity> entities) {
+        Position newPos = movement.moveEnemy(player, entities);
+        if (newPos != null) {
+            super.setPosition(newPos);
+        }  
         
-        Map<Position, Double> mapShortest = new HashMap<Position, Double>();
-        LinkedHashMap<Position, Double> sortedMap = new LinkedHashMap<>();
-
-     //   mapShortest = mapShortest.entrySet()
-       //     .stream()
-        //    .sorted(Entry.comparingByValue()).collect(Collectors.toMap(Entry::getKey, Entry::getValue, (o, c) -> o, LinkedHashMap::new));
-        mapShortest.entrySet()
-            .stream()
-            .sorted(Map.Entry.comparingByValue())
-            .forEachOrdered(o -> sortedMap.put(o.getKey(), o.getValue()));
-        Position smallest = sortedMap.keySet().stream().findFirst().get();
-        //sort map by double value
-
-        if (canMove(smallest)) {
-
-        } /*else if (canMove(null)) {
-
-        } else if (canMove(null)) {
-
-        } else if (canMove(null)) {
-
-        } */
-
-        return false;
+        setPotions();
+        return super.isBattle(player);
     }
-  
-    private Double calculateLenth(Position vector) {
-        double squareX = Math.pow(vector.getX(), vector.getX());
-        double squareY = Math.pow(vector.getY(), vector.getY());
-        double addXY = squareX + squareY;
-
-        return Math.sqrt(addXY);
+    
+    /** 
+     * @param duration
+     */
+    @Override
+    public void setInvincible(int duration) {
+        super.setInvincible(duration);
+        movement = runAwayMovement;
+    }
+    
+    /** 
+     * @param duration
+     */
+    @Override
+    public void setInvisible(int duration) {
+        super.setInvisible(duration);
+        movement = randomMovement;
     }
 
+    @Override
+    public void setPotions() {
+        super.setPotions();
+        if (super.isInvisible() != true && super.isInvicible() != true) {
+            movement = followMovement;
+        }
+    }
+    
+    /** 
+     * @return String
+     */
     public String getSimpleName() {
         return "mercenary";
     }
-
-    private boolean canMove(Position pos) {
-        return false;
-    }
-
-
+    
+    /** 
+     * @return int
+     */
     public int getAllyAttack() {
         return allyAttack;
     }
 
+    /** 
+     * @return int
+     */
     public int getAllyDefence() {
         return allyDefence;
     }
-
+    
+    /** 
+     * @return boolean
+     */
+    @Override
     public boolean isInteractable() {
         return isInteractable;
     }
-
-
+    
+    /** 
+     * @return String
+     */
+    @Override
     public final String getType() {
         return type;
     }
 
-
+    /** 
+     * @return int
+     */
     public int getBribeAmount() {
         return bribeAmount;
     }
-
+    
+    /** 
+     * @return int
+     */
     public int getBribeRadius() {
         return bribeRadius;
     }
-
-
+    
+    /** 
+     * @param player
+     * @return boolean
+     */
+    @Override
     public boolean interactActionCheck(Player player) {
         int xTopBoundary = super.getPosition().getX() + bribeRadius;
         int xBottomBoundary = super.getPosition().getX() - bribeRadius;

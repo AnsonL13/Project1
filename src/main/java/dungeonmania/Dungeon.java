@@ -18,6 +18,7 @@ import dungeonmania.Goals.ExitGoal;
 import dungeonmania.Goals.Goal;
 import dungeonmania.Goals.TreasureGoal;
 import dungeonmania.MovingEntities.Mercenary;
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.Boulder;
@@ -211,17 +212,18 @@ public class Dungeon {
         // Player uses the item
         player.useItem(itemUsedId);
 
-        // TODO: Enemy movement
+        //Move movingentities
+        player.moveMovingEntities(player.getPosition(), entities);
         
         // Battles
         startBattles();
 
-        // TODO: Spawn enemies
-        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        // Spawn enemies
+        String nextID = Integer.toString(latestUnusedId);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, getSpawner(), entities);
         entities.addAll(newEnemy);
+        player.addAllEnemies(newEnemy);
         latestUnusedId+= newEnemy.size();
-
-        // TODO: Update Spawned enemy potion status
     }
 
     /**
@@ -268,27 +270,26 @@ public class Dungeon {
 
         // Check if moved into an enemy (Battle)
         startBattles();
-        // Move enemies
-        
+
+        //Move movingentities
+        player.moveMovingEntities(player.getPosition(), entities);
+
         // Check if Enemy has moved into a player (Battle)
         startBattles();
         
         // Spawn enemies
-        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
+        String nextID = Integer.toString(latestUnusedId);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, getSpawner(), entities);
         entities.addAll(newEnemy);
+        player.addAllEnemies(newEnemy);
         latestUnusedId+= newEnemy.size();
     }
 
     private List<ZombieToastSpawner> getSpawner() {
-        List<ZombieToastSpawner> allSpawners = entities.stream().filter( o -> o instanceof ZombieToastSpawner).map(ZombieToastSpawner.class::cast).collect(Collectors.toList());
-
-       // List<ZombieToastSpawner> allSpawners = new ArrayList<ZombieToastSpawner>();
-
-        //for (InteractableEntity entity : interactablEntities) {
-          //  if (entity.getType().equalsIgnoreCase("ZombieToastSpawner")) {
-              //  allSpawners.add((ZombieToastSpawner)entity);
-           // }
-        //}
+        List<ZombieToastSpawner> allSpawners = entities.stream()
+            .filter( o -> o instanceof ZombieToastSpawner)
+            .map(ZombieToastSpawner.class::cast)
+            .collect(Collectors.toList());
         return allSpawners;
     }
 
@@ -381,6 +382,8 @@ public class Dungeon {
     // Generate entities from Dungeon.json
     public void generateEntities(JsonObject dungeonJson) {
         // Read from dungeon json file. Generate all entities. 
+        List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
+
         for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
             int xPosition;
             int yPosition;
@@ -461,6 +464,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     Spider spider = new Spider(Integer.toString(latestUnusedId), "spider", new Position(xPosition, yPosition), false, configMap.get("spider_attack"), configMap.get("spider_health"));
                     entities.add(spider);
+                    movingEntities.add(spider);
                     this.latestUnusedId++;
                     break;
                 
@@ -469,6 +473,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     ZombieToast zombieToast = new ZombieToast(Integer.toString(latestUnusedId), "zombie_toast", new Position(xPosition, yPosition), false, configMap.get("zombie_attack"), configMap.get("zombie_health"));
                     entities.add(zombieToast);
+                    movingEntities.add(zombieToast);
                     this.latestUnusedId++;
                     break;
 
@@ -481,6 +486,7 @@ public class Dungeon {
                                                         configMap.get("mercenary_attack"), configMap.get("mercenary_health"));
                     entities.add(mercenary);
                     interactableEntities.add(mercenary);
+                    movingEntities.add(mercenary);
                     this.latestUnusedId++;
                     break;
 
@@ -564,6 +570,7 @@ public class Dungeon {
                     break;
             }
         }
+        player.addAllEnemies(movingEntities);
     }
 
     public void startBattles() {
@@ -764,7 +771,6 @@ public class Dungeon {
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(0).getAsJsonObject()));
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(1).getAsJsonObject()));
         }
-
         else {
             switch (subGoal.get("goal").getAsString()) {
                 case "enemies":

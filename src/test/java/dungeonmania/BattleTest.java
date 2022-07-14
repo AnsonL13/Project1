@@ -34,9 +34,9 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 public class BattleTest {
     // White box testing
-
+/*
     // TODO
-  /*  @Test
+    @Test
     @DisplayName("Test zombie no battle invisible")
     public void testZombieInvisible() {
         Position intial = new Position(0, 0);

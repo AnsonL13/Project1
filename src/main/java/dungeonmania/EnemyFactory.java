@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class EnemyFactory {
@@ -33,20 +33,9 @@ public class EnemyFactory {
         this.nextSpiderRate = spiderRate;
         this.nextZombieRate = zombieRate;
     }
-/*
-    public Enemy spawn (String enemy, Position pos) {
-        if (enemy == null || pos == null) return null;
-        
-        if (enemy.equalsIgnoreCase("Zombie")) {
-            return new ZombieToast(0, zombieHealth, zombieAttack, pos);
-        } else if (enemy.equalsIgnoreCase("Spider")) {
-            return new Spider(spiderAttack, spiderHealth, pos);
-        }
-        return null;
-    } */
 
-    public List<Entity> spawn (String latestId, List<ZombieToastSpawner> zombieSpawners, List<Entity> entities) {    
-        List<Entity> newEnemies = new ArrayList<Entity>();  
+    public List<MovingEntity> spawn (String latestId, List<ZombieToastSpawner> zombieSpawners, List<Entity> entities) {    
+        List<MovingEntity> newEnemies = new ArrayList<MovingEntity>();  
         --nextZombieRate;
         --nextSpiderRate;
 
@@ -124,7 +113,5 @@ public class EnemyFactory {
         increment++;
         return String.valueOf(increment);
     }
-
-    
 
 }

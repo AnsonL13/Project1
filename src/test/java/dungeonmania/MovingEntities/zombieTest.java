@@ -11,16 +11,13 @@ import java.util.stream.Collectors;
 import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 
-import static dungeonmania.TestUtils.countEntityOfType;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.Enemy;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
-import dungeonmania.MovingEntities.Mercenary;
-import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
@@ -140,7 +137,7 @@ public class zombieTest {
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(1, 1);
-        List<Entity> newZombie = factory.spawn("1", spawners, new ArrayList<Entity>());
+        List<MovingEntity> newZombie = factory.spawn("1", spawners, new ArrayList<Entity>());
         
         // Check correct return
         ZombieToast expected = new ZombieToast("1", 5, 5, new Position(-1, -1));
@@ -162,7 +159,7 @@ public class zombieTest {
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(5, 1);
-        List<Entity> newZombies = factory.spawn("1", spawners, new ArrayList<Entity>());
+        List<MovingEntity> newZombies = factory.spawn("1", spawners, new ArrayList<Entity>());
         assertEquals(3, newZombies.size());
         
         // Check correct return
@@ -218,6 +215,23 @@ public class zombieTest {
 
         assertEquals(new Position(-1, 0), zombie.getPosition());
         assertEquals(zombie.getId(), "0");
+    } 
+
+    @Test
+    @DisplayName("Test zombie back to random move")
+    public void testZombieRandomAfterPotion() {
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
+        zombie.setInvincible(1);
+        zombie.move(new Position(5,5), new ArrayList<Entity>());
+
+        assertEquals(new Position(-1, 0), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
+
+        zombie.move(new Position(5,5), new ArrayList<Entity>());
+        assertEquals(false, zombie.isInvicible());
+
+
     } 
 
 }
