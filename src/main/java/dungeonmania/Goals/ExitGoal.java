@@ -1,19 +1,34 @@
 package dungeonmania.Goals;
 
+import dungeonmania.Dungeon;
+import dungeonmania.Entity;
+import dungeonmania.util.Position;
+
 public class ExitGoal implements Goal {
     private String name;
     private boolean isCompleted;
+    private Dungeon dungeon;
 
-    public ExitGoal(String name, boolean isCompleted) {
+    public ExitGoal(String name, boolean isCompleted, Dungeon dungeon) {
         this.name = name;
         this.isCompleted = isCompleted;
+        this.dungeon = dungeon;
     }
 
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if player is at the exit
+        Position playerPosition = dungeon.getPlayer().getPosition();
         
-        // Logic not complete. Return false for now. 
+        for (Entity entity : dungeon.getEntities()) {
+            if (entity.getType().equals("exit")) {
+                Position exitPosition = entity.getPosition();
+                if (playerPosition.getX() == exitPosition.getX() && playerPosition.getY() == exitPosition.getY()) {
+                    return true;
+                }
+            }
+        }
+
 		return false;
 	}
 	

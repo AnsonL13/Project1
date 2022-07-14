@@ -9,6 +9,7 @@ import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 import dungeonmania.util.Position;
 
 public class ZombieToast extends MovingEntity {
+
     private String type;
     private boolean isInteractable;
 

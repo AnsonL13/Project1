@@ -724,7 +724,6 @@ public class Dungeon {
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(0).getAsJsonObject()));
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(1).getAsJsonObject()));
         }
-/*
         else {
             switch (subGoal.get("goal").getAsString()) {
                 case "enemies":
@@ -740,7 +739,7 @@ public class Dungeon {
                     newgoal = new ExitGoal("exit", false, this);
                 break;
             }
-        }*/
+        }
         return newgoal;
     }
 

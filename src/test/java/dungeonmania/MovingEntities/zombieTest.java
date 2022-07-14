@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import dungeonmania.DungeonManiaController;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
-
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;

@@ -225,11 +225,14 @@ public class Player implements Entity {
 
     // Use an item
     public void useItem(String itemUsedId) {
+
         for (Item item : inventory) {
             if (item.getId().equals(itemUsedId)) {
-                if (item instanceof Bomb) {
-                    // Put the bomb down
-                    ((Bomb) item).putDown();
+                if (item.getType().equals("bomb")) {
+                    if (item instanceof Bomb) {
+                        // Put the bomb down
+                        ((Bomb) item).putDown();
+                    }    
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
