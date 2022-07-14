@@ -132,8 +132,66 @@ public class PlayerMovement {
         EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
 
         // assert after movement
-        System.out.print(actualPlayer.getPosition().getX());
-        System.out.print(actualPlayer.getPosition().getY());
         assertEquals(expectedPlayer, actualPlayer);
     }
+
+    @Test
+    @DisplayName("Test player through another portal 2")
+    public void testPlayerThroughPortal2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_walkThroughPortal", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(3, 3), false);
+
+        // move player downward
+        DungeonResponse actualDungonRes = dmc.tick(Direction.LEFT);
+        actualDungonRes = dmc.tick(Direction.LEFT);
+        actualDungonRes = dmc.tick(Direction.DOWN);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // assert after movement
+        assertEquals(expectedPlayer, actualPlayer);
+    }
+
+    @Test
+    @DisplayName("Test player through 2 consecutive portals")
+    public void testPlayerThroughConsecutivePortals() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_walkThroughMultiplePortals", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(5, 0), false);
+
+        // move player downward
+        DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // assert after movement
+        assertEquals(expectedPlayer, actualPlayer);
+    }
+
+    @Test
+    @DisplayName("Test player through multiple consecutive portals")
+    public void testPlayerThroughMultiplePortals() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_walkThroughMultiplePortals", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(-5, -4), false);
+
+        // move player downward
+        DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
+        actualDungonRes = dmc.tick(Direction.RIGHT);
+        actualDungonRes = dmc.tick(Direction.DOWN);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // assert after movement
+        assertEquals(expectedPlayer, actualPlayer);
+    }
+
+    
 }
