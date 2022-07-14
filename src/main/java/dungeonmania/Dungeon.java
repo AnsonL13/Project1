@@ -254,13 +254,14 @@ public class Dungeon {
                         }
                     }
                 }
-
+                
                 else {
                     // Collect the item
                     player.addToInventory(collectableEntities.get(collectableEntity));
                     // Remove from list of entities
                     entities.remove(collectableEntities.get(collectableEntity));
                     collectableEntities.remove(collectableEntity);
+                    break;
                 }
             }
         }
@@ -607,22 +608,7 @@ public class Dungeon {
                         break;
     
                     case "door":
-                        // Check if the door is already open
-                        if (doors.get(entity.getId()).isOpen()) {
-                            normalMove = true;
-                        }
-    
-                        // Check if the player can unlock the door
-                        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
-                            // Player unlocked door
-                            doors.get(entity.getId()).setOpen(true);
-                        }
-    
-                        // Player cannot open the door
-                        else {
-                            normalMove = false;
-                        }
-    
+                        normalMove = moveIntoDoor(entity);
                         break;
     
                     case "portal":
@@ -690,6 +676,25 @@ public class Dungeon {
         // Move the boulder
         entity.setPosition(nextTargetSquare);
         return true;
+    }
+
+    public boolean moveIntoDoor(Entity entity) {
+        // Check if the door is already open
+        if (doors.get(entity.getId()).isOpen()) {
+            return true;
+        }
+
+        // Check if the player can unlock the door
+        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
+            // Player unlocked door
+            doors.get(entity.getId()).setOpen(true);
+            return true;
+        }
+
+        // Player cannot open the door
+        else {
+            return false;
+        }
     }
 
     // Given one portal and movementDirection, find the square the player will move to. 
