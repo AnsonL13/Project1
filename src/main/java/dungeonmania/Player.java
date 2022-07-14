@@ -282,6 +282,7 @@ public class Player implements Entity {
                 removeFromInventory(key);
                 keys.remove(key);
                 foundKey = true;
+                break;
             }
         }
         return foundKey;
