@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.Enemy;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
@@ -136,7 +137,7 @@ public class zombieTest {
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(1, 1);
-        List<Entity> newZombie = factory.spawn("1", spawners, new ArrayList<Entity>());
+        List<MovingEntity> newZombie = factory.spawn("1", spawners, new ArrayList<Entity>());
         
         // Check correct return
         ZombieToast expected = new ZombieToast("1", 5, 5, new Position(-1, -1));
@@ -158,7 +159,7 @@ public class zombieTest {
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(5, 1);
-        List<Entity> newZombies = factory.spawn("1", spawners, new ArrayList<Entity>());
+        List<MovingEntity> newZombies = factory.spawn("1", spawners, new ArrayList<Entity>());
         assertEquals(3, newZombies.size());
         
         // Check correct return

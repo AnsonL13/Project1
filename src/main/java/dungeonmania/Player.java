@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import dungeonmania.CollectableEntities.Bomb;
+import dungeonmania.CollectableEntities.InvincibilityPotion;
+import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
@@ -22,6 +24,8 @@ public class Player implements Entity {
     List<Weapon> weapons = new ArrayList<Weapon>();
     List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
+
+    List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
     public Player(String id, String type, Position position, boolean isInteractable, double playerAttack, double playerHealth) {
         this.id = id;
@@ -236,11 +240,18 @@ public class Player implements Entity {
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
+                    // Changing enemy status
+                    InvincibilityPotion potion = (InvincibilityPotion)item;
+                    setMovingEntitiesInvincible( potion.getInvincibilityPotionDuration());
                     // Remove from inventory
                     // Add to potions queue
                 }
 
                 else if (item.getType().equals("invisibility_potion")) {
+                    // Changing enemy status
+                    InvisibilityPotion potion = (InvisibilityPotion)item;
+                    setMovingEntitiesInvisible( potion.getInvisibilityPotionPuration() );
+
                     // Remove from inventory
                     // Add to potions queue
                 }
@@ -304,4 +315,31 @@ public class Player implements Entity {
             }
         }
     }
+
+    public void addAllEnemies (List<MovingEntity> newMovingEntities) {
+        if (newMovingEntities == null) return;
+        if (newMovingEntities.size() == 0) return;
+        movingEntities.addAll(newMovingEntities);
+    }
+
+    private void setMovingEntitiesInvincible(int duration) {
+        movingEntities.stream().forEach(o -> o.setInvincible(duration));
+    };
+
+    private void setMovingEntitiesInvisible(int duration) {
+        movingEntities.stream().forEach(o -> o.setInvisible(duration));
+    };
+
+    // return if enetity if battle
+    public MovingEntity moveMovingEntities(Position player, 
+                List<Entity> entities) {
+        MovingEntity newBattle = null;
+        for (MovingEntity entity : movingEntities) {
+            Boolean ifBattle = entity.move(player, entities);
+            if (ifBattle) newBattle = entity;
+        }
+        return newBattle;
+    };
+
+
 }
