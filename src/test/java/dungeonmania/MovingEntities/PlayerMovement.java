@@ -231,6 +231,33 @@ public class PlayerMovement {
     }
 
     @Test
+    @DisplayName("Test player through 2 consecutive portals")
+    public void testPlayerThroughPortalWithObstacles() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_portalswithObstacles", "c_movementTest_testMovementDown");
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+
+        // create the expected result
+        EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(0, 0), false);
+
+        // Move player through portals. No move because there is a wall on the other side. 
+        DungeonResponse actualDungonRes = dmc.tick(Direction.RIGHT);
+        actualDungonRes = dmc.tick(Direction.RIGHT);
+        EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
+
+        // assert after movement
+        assertEquals(expectedPlayer, actualPlayer);
+
+        // Move through portal with boulder on the other side. 
+        expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(2, 1), false);
+        actualDungonRes = dmc.tick(Direction.UP);
+        actualDungonRes = dmc.tick(Direction.RIGHT);
+        actualDungonRes = dmc.tick(Direction.DOWN);
+        actualPlayer = getPlayer(actualDungonRes).get();
+        assertEquals(expectedPlayer, actualPlayer);
+    }
+
+    @Test
     @DisplayName("Test player moving consecutive boulders")
     public void testPlayerMovingConsecutiveBoulders() {
         DungeonManiaController dmc = new DungeonManiaController();
