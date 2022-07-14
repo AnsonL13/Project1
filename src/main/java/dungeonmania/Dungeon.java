@@ -603,29 +603,7 @@ public class Dungeon {
                         break;
     
                     case "boulder":
-                        // Check if the boulder can move
-                        Position nextTargetSquare = targetSquare.translateBy(movementDirection);
-                        for (Entity nextEntity : entities) {
-    
-                            if (nextEntity.getType().equals("boulder") && 
-                                nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
-                                nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
-                                // Player cannot push the boulder
-                                normalMove = false;
-                            }
-    
-                            else if (nextEntity.getType().equals("wall") && 
-                                    nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
-                                    nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
-                                // Player cannot push the boulder
-                                normalMove = false;
-                            }
-                        }
-    
-                        if (normalMove == true) {
-                            // Move the boulder
-                            entity.setPosition(nextTargetSquare);
-                        }
+                        normalMove = moveIntoBoulder(movementDirection, targetSquare, entity);
                         break;
     
                     case "door":
@@ -687,6 +665,31 @@ public class Dungeon {
             }
         }
         return normalMove;
+    }
+
+    public boolean moveIntoBoulder(Direction movementDirection, Position targetSquare, Entity entity) {
+        // Check if the boulder can move
+        Position nextTargetSquare = targetSquare.translateBy(movementDirection);
+        for (Entity nextEntity : entities) {
+
+            if (nextEntity.getType().equals("boulder") && 
+                nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                // Player cannot push the boulder
+                return false;
+            }
+
+            else if (nextEntity.getType().equals("wall") && 
+                    nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                    nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                // Player cannot push the boulder
+                return false;
+            }
+        }
+
+        // Move the boulder
+        entity.setPosition(nextTargetSquare);
+        return true;
     }
 
     // Given one portal and movementDirection, find the square the player will move to. 
