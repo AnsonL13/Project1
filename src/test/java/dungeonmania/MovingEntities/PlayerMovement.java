@@ -115,4 +115,6 @@ public class PlayerMovement {
         // Check the exit goal is done
         assertFalse(getGoals(res).contains(":exit"));
     }
+
+    
 }
