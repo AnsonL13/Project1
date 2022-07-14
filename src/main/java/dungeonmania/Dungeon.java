@@ -73,7 +73,7 @@ public class Dungeon {
 
     // Add data structures here when you need them.
     List<Entity> entities = new ArrayList<Entity>();
-    List<InteractableEntity> interactablEntities = new ArrayList<InteractableEntity>();
+    List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
     List<Battle> battles = new ArrayList<Battle>();
     Map<String, Door> doors = new HashMap<String, Door>();
     Map<String, Portal> portals = new HashMap<String, Portal>();
@@ -254,13 +254,14 @@ public class Dungeon {
                         }
                     }
                 }
-
+                
                 else {
                     // Collect the item
                     player.addToInventory(collectableEntities.get(collectableEntity));
                     // Remove from list of entities
                     entities.remove(collectableEntities.get(collectableEntity));
                     collectableEntities.remove(collectableEntity);
+                    break;
                 }
             }
         }
@@ -335,7 +336,7 @@ public class Dungeon {
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
-        for (Entity entity : interactablEntities) {
+        for (Entity entity : interactableEntities) {
             if (entity.getId().equals(entityId)) {
                 foundEntity = true;
             }
@@ -346,7 +347,7 @@ public class Dungeon {
         }
 
         // Check for InvalidActionException
-        for (InteractableEntity entity : interactablEntities) {
+        for (InteractableEntity entity : interactableEntities) {
             if (entity.getId().equals(entityId)) {
                 // Check if invalidAction
                 if (! entity.interactActionCheck(player)) {
@@ -361,10 +362,11 @@ public class Dungeon {
                 else if (entity.getType().equals("zombie_toast_spawner")) {
                     // Destroy the zombie spawner
                     this.entities.remove(entity);
-                    this.interactablEntities.remove(entity);
+                    this.interactableEntities.remove(entity);
 
                     // Decrease sword durability
                     player.decreaseSwordDurability();
+                    break;
                 }
             }
         }
@@ -450,7 +452,7 @@ public class Dungeon {
                     yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                     ZombieToastSpawner zombieToastSpawner = new ZombieToastSpawner(Integer.toString(latestUnusedId), "zombie_toast_spawner", new Position(xPosition, yPosition), true);
                     entities.add(zombieToastSpawner);
-                    interactablEntities.add(zombieToastSpawner);
+                    interactableEntities.add(zombieToastSpawner);
                     this.latestUnusedId++;
                     break;
                 
@@ -478,7 +480,7 @@ public class Dungeon {
                                                         configMap.get("bribe_amount"), configMap.get("bribe_radius"), 
                                                         configMap.get("mercenary_attack"), configMap.get("mercenary_health"));
                     entities.add(mercenary);
-                    interactablEntities.add(mercenary);
+                    interactableEntities.add(mercenary);
                     this.latestUnusedId++;
                     break;
 
@@ -603,80 +605,15 @@ public class Dungeon {
                         break;
     
                     case "boulder":
-                        // Check if the boulder can move
-                        Position nextTargetSquare = targetSquare.translateBy(movementDirection);
-                        for (Entity nextEntity : entities) {
-    
-                            if (nextEntity.getType().equals("boulder") && 
-                                nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
-                                nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
-                                // Player cannot push the boulder
-                                normalMove = false;
-                            }
-    
-                            else if (nextEntity.getType().equals("wall") && 
-                                    nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
-                                    nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
-                                // Player cannot push the boulder
-                                normalMove = false;
-                            }
-                        }
-    
-                        if (normalMove == true) {
-                            // Move the boulder
-                            entity.setPosition(nextTargetSquare);
-                        }
+                        normalMove = moveIntoBoulder(movementDirection, targetSquare, entity);
                         break;
     
                     case "door":
-                        // Check if the door is already open
-                        if (doors.get(entity.getId()).isOpen()) {
-                            normalMove = true;
-                        }
-    
-                        // Check if the player can unlock the door
-                        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
-                            // Player unlocked door
-                            doors.get(entity.getId()).setOpen(true);
-                        }
-    
-                        // Player cannot open the door
-                        else {
-                            normalMove = false;
-                        }
-    
+                        normalMove = moveIntoDoor(entity);
                         break;
     
                     case "portal":
-                        boolean foundFinalSquare = false;
-                        Position portalExitSquare = player.getPosition();
-                        Portal tempPortal = null;
-
-                        // Find the portal in the portals Hashmap.
-                        for (String portal : portals.keySet()) {
-                            if (entity.getId().equals(portals.get(portal).getId())) {
-                                tempPortal = portals.get(portal);
-                            }
-                        }
-
-                        while (! foundFinalSquare) {
-                            portalExitSquare = portalExitSquare(tempPortal, movementDirection);
-
-                            foundFinalSquare = true;
-
-                            // Check if there is another portal on the portalExitSquare
-                            for (String portal : portals.keySet()) {
-                                int xPostion = portals.get(portal).getPosition().getX();
-                                int yPosition = portals.get(portal).getPosition().getY();
-                                if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
-                                    tempPortal = portals.get(portal);
-                                    foundFinalSquare = false;
-                                }
-                            }
-                        }
-
-                        // TODO: Check if the portalExitSquare contains a wall, boulder or door.
-                        
+                        Position portalExitSquare = moveIntoPortal(entity, movementDirection);
                         player.setPosition(portalExitSquare);
                         normalMove = false;
                         break;
@@ -687,6 +624,109 @@ public class Dungeon {
             }
         }
         return normalMove;
+    }
+
+    public boolean moveIntoBoulder(Direction movementDirection, Position targetSquare, Entity entity) {
+        // Check if the boulder can move
+        Position nextTargetSquare = targetSquare.translateBy(movementDirection);
+        for (Entity nextEntity : entities) {
+
+            if (nextEntity.getType().equals("boulder") && 
+                nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                // Player cannot push the boulder
+                return false;
+            }
+
+            else if (nextEntity.getType().equals("wall") && 
+                    nextEntity.getPosition().getX() == nextTargetSquare.getX() && 
+                    nextEntity.getPosition().getY() == nextTargetSquare.getY()) {
+                // Player cannot push the boulder
+                return false;
+            }
+        }
+
+        // Move the boulder
+        entity.setPosition(nextTargetSquare);
+        return true;
+    }
+
+    public boolean moveIntoDoor(Entity entity) {
+        // Check if the door is already open
+        if (doors.get(entity.getId()).isOpen()) {
+            return true;
+        }
+
+        // Check if the player can unlock the door
+        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
+            // Player unlocked door
+            doors.get(entity.getId()).setOpen(true);
+            return true;
+        }
+
+        // Player cannot open the door
+        else {
+            return false;
+        }
+    }
+
+    public Position moveIntoPortal(Entity entity, Direction movementDirection) {
+        boolean foundFinalSquare = false;
+            Position portalExitSquare = player.getPosition();
+            Portal tempPortal = null;
+
+            // Find the portal in the portals Hashmap.
+            for (String portal : portals.keySet()) {
+                if (entity.getId().equals(portals.get(portal).getId())) {
+                    tempPortal = portals.get(portal);
+                }
+            }
+
+            while (! foundFinalSquare) {
+                portalExitSquare = portalExitSquare(tempPortal, movementDirection);
+
+                foundFinalSquare = true;
+
+                // Check if there is another portal on the portalExitSquare
+                for (String portal : portals.keySet()) {
+                    int xPostion = portals.get(portal).getPosition().getX();
+                    int yPosition = portals.get(portal).getPosition().getY();
+                    if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
+                        tempPortal = portals.get(portal);
+                        foundFinalSquare = false;
+                    }
+                }
+            }
+
+            // Check if the portalExitSquare contains a wall, boulder or door.
+            boolean normalMove = true;
+            for (Entity i : entities) {
+                // Check if the entity is in the position the player is going to move into.
+                if (i.getPosition().getX() == portalExitSquare.getX() && entity.getPosition().getY() == portalExitSquare.getY()) {
+                    switch (i.getType()) {
+                        case "wall":
+                            // Player does not move because there is a wall in front.
+                            normalMove = false;
+                            break;
+        
+                        case "boulder":
+                            normalMove = moveIntoBoulder(movementDirection, portalExitSquare, entity);
+                            break;
+        
+                        case "door":
+                            normalMove = moveIntoDoor(entity);
+                            break;
+        
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (! normalMove) {
+                return player.getPosition();
+            }
+        return portalExitSquare;
     }
 
     // Given one portal and movementDirection, find the square the player will move to. 
