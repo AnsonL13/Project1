@@ -291,6 +291,13 @@ public class Dungeon {
         return allSpawners;
     }
 
+    /**
+     * /game/place bomb
+     */
+    public void placeBomb(Bomb bomb) {
+        bomb.putDown();
+    }
+    //not sure what needs to add here
 
     /**
      * /game/build

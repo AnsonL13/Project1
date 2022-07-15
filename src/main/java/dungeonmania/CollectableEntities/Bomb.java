@@ -31,6 +31,7 @@ public class Bomb implements CollectableEntity {
         inactiveBombState = new InactiveBombState(this, dungeon, player);
         inventoryBombState = new InventoryBombState(this, dungeon, player);
         activeBombState = new ActiveBombState(this, dungeon, player);
+        state = inactiveBombState;
     }
 
     // State pattern functionality

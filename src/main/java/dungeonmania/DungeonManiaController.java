@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -159,6 +160,14 @@ public class DungeonManiaController {
      */
     public DungeonResponse tick(Direction movementDirection) {
         dungeon.tick(movementDirection);
+        return getDungeonResponseModel();
+    }
+
+    /**
+     * /game/put down bomb
+     */
+    public DungeonResponse placeBomb(Bomb bomb){
+        dungeon.placeBomb(bomb);
         return getDungeonResponseModel();
     }
 
