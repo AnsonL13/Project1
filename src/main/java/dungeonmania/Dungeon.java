@@ -315,7 +315,7 @@ public class Dungeon {
         if (! canBuild) {
             throw new InvalidActionException(buildable);
         }
-
+        
         // Build the item
         // Add the item to the players inventory and remove items from players inventory
         if (buildable.equals("shield")) {
