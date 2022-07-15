@@ -81,6 +81,8 @@ public class Dungeon {
     Map<String, Bomb> bombs = new HashMap<String, Bomb>();
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
+    private List<Enemy> enemies = new ArrayList<Enemy>();
+
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonJson = dungeonJson;
         this.configJson = configJson;
