@@ -40,12 +40,13 @@ public class MovingEntitySystemTest {
 
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(0, 0), false);
-        EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initPlayer.getType(), new Position(-1, 0), true);
+        EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initMerc.getType(), new Position(-1, 0), true);
 
         //Check for goals and moving entity
         assertTrue(getGoals(initDungonRes).contains(":exit"));
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, initPlayer);
+
         assertEquals(expectedMerc, initMerc);
 
         // move player right
@@ -56,7 +57,7 @@ public class MovingEntitySystemTest {
         // create expected over exit
         expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(1, 0), false);
         expectedMerc = new EntityResponse(actualMerc.getId(), actualMerc.getType(), new Position(0, 0), true);
-
+        System.out.println(getGoals(actualDungonRes));
         //Check for goals and moving entity
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertTrue(getGoals(actualDungonRes).contains(":treasure"));
