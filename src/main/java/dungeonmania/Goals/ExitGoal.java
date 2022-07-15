@@ -70,4 +70,10 @@ public class ExitGoal implements Goal {
     public void setCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
+
+    @Override
+    public boolean canComplete() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 }

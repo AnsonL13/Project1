@@ -74,4 +74,10 @@ public class TreasureGoal implements Goal {
     public int getTreasureGoal() {
         return treasureGoal;
     }
+
+    @Override
+    public boolean canComplete() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 }

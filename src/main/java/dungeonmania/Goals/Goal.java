@@ -6,4 +6,6 @@ public interface Goal {
     public String listIncompleteGoals();
     public boolean add(Goal child);
 	public boolean remove(Goal child);
+	public boolean canComplete();
+
 }

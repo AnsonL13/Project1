@@ -24,7 +24,7 @@ public class MovingEntity implements Entity {
     private boolean inBattle;
     private String type;
 
-    public MovingEntity (String id, int health, int attack, Position position) { 
+    public MovingEntity (String id, int attack, int health, Position position) { 
         this.health = (double) health;
         this.attack = attack;
         this.position = position;
@@ -63,13 +63,6 @@ public class MovingEntity implements Entity {
     public int getAttack() {
         return attack;
     }
-
-    /** 
-     * @param attack
-     */
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
     
     /** 
      * @param health
@@ -90,13 +83,6 @@ public class MovingEntity implements Entity {
      */
     public void setInBattle(boolean inBattle) {
         this.inBattle = inBattle;
-    }
-    
-    /** 
-     * @return String
-     */
-    public String getSimpleName() {
-        return null;
     }
 
     /** 
@@ -242,7 +228,6 @@ public class MovingEntity implements Entity {
                 // Update player health
                 c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                 player.setPlayerHealth(c.doubleValue());
-                
                 // Add round info to list
                 rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
             }

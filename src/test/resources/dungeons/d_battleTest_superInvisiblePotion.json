@@ -33,7 +33,7 @@
             "goal": "exit"
           },
           {
-            "goal": "enemy"
+            "goal": "enemies"
           }
         ]
       }

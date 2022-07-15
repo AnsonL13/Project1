@@ -3,7 +3,6 @@ package dungeonmania.MovingEntities;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,18 +17,18 @@ import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.countEntityOfType;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class MovingEntitySystemTest {/*
+public class MovingEntitySystemTest {
     @Test
     @DisplayName("Test multiple mobs and movement")
     public void testMultipleMobsMovement() {
@@ -40,12 +39,13 @@ public class MovingEntitySystemTest {/*
 
         // create the expected result
         EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(0, 0), false);
-        EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initPlayer.getType(), new Position(-1, 0), true);
+        EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initMerc.getType(), new Position(-1, 0), true);
 
         //Check for goals and moving entity
         assertTrue(getGoals(initDungonRes).contains(":exit"));
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, initPlayer);
+
         assertEquals(expectedMerc, initMerc);
 
         // move player right
@@ -62,26 +62,27 @@ public class MovingEntitySystemTest {/*
         assertTrue(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(expectedMerc, actualMerc);
+        EntityResponse actualKey = getEntities(actualDungonRes, "treasure").get(0);
 
         // move player right pick up treasure
         actualDungonRes = dmc.tick(Direction.RIGHT);
         actualPlayer = getPlayer(actualDungonRes).get();
         actualMerc = getEntities(actualDungonRes, "mercenary").get(0);
-        EntityResponse actualKey = getEntities(actualDungonRes, "treasure").get(0);
 
         // create expected after move
         expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(2, 0), false);
         expectedMerc = new EntityResponse(actualMerc.getId(), actualMerc.getType(), new Position(1, 0), true);
-        EntityResponse treasure = new EntityResponse(actualKey.getId(), actualKey.getType(), new Position(2, 0), false);
+        ItemResponse treasure = new ItemResponse(actualKey.getId(), actualKey.getType());
 
         //Check for goals and moving entity
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(expectedMerc, actualMerc);
-        assertEquals(treasure, getInventory(actualDungonRes, "treasure").get(0));
+
+        assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
         assertEquals(1, countEntityOfType(actualDungonRes, "zombie_toast_spawner"));
-        int zombieCount = initDungonRes.getEntities()
+        int zombieCount = actualDungonRes.getEntities()
             .stream()
             .filter(it -> it.getType().equals("zombie_toast"))
             .collect(Collectors.toList()).size();
@@ -98,7 +99,7 @@ public class MovingEntitySystemTest {/*
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
-        assertEquals(treasure, getInventory(actualDungonRes, "treasure").get(0));
+        assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
         assertEquals(0, countEntityOfType(actualDungonRes, "mercenary"));
 
         // Get battle response
@@ -107,17 +108,17 @@ public class MovingEntitySystemTest {/*
         assertEquals(2, rounds.size());
 
         //Check round one
-        assertEquals(9.9, rounds.get(0).getDeltaCharacterHealth());
-        assertEquals(1, rounds.get(0).getDeltaEnemyHealth());
+        assertEquals(-0.1, rounds.get(0).getDeltaCharacterHealth());
+        assertEquals(-1, rounds.get(0).getDeltaEnemyHealth());
 
         //Check round two
-        assertEquals(9.8, rounds.get(1).getDeltaCharacterHealth());
-        assertEquals(0, rounds.get(1).getDeltaEnemyHealth());
+        assertEquals(-0.1, rounds.get(1).getDeltaCharacterHealth());
+        assertEquals(-1, rounds.get(1).getDeltaEnemyHealth());
 
         // Spawn spider and zombie
         actualDungonRes = dmc.tick(Direction.DOWN);
         actualDungonRes = dmc.tick(Direction.LEFT);
-        zombieCount = initDungonRes.getEntities()
+        zombieCount = actualDungonRes.getEntities()
             .stream()
             .filter(it -> it.getType().equals("zombie_toast"))
             .collect(Collectors.toList()).size();
@@ -125,7 +126,8 @@ public class MovingEntitySystemTest {/*
         assertEquals(1, countEntityOfType(actualDungonRes, "spider"));
 
         // End game
-        actualDungonRes = dmc.tick(Direction.LEFT);
+        actualDungonRes = dmc.tick(Direction.UP);
+
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
 
@@ -151,16 +153,17 @@ public class MovingEntitySystemTest {/*
         assertTrue(getGoals(actualDungonRes).contains(":enemies"));
 
         //Check assert throw potion not in inventory yet
-        assertThrows(InvalidActionException.class, () -> dmc.tick(Direction.RIGHT));
+        assertThrows(InvalidActionException.class, () -> dmc.tick(potion.getId()));
 
         // Pick up potion
         actualDungonRes = dmc.tick(Direction.RIGHT);
 
         //Check expected
+        ItemResponse itemPotion = new ItemResponse(potion.getId(), potion.getType());
         EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
         EntityResponse expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(2, 0), false);
         assertEquals(expectedPlayer, actualPlayer);
-        assertEquals(potion, getInventory(actualDungonRes, "invisibility_potion").get(0));
+        assertEquals(itemPotion.getId(), getInventory(actualDungonRes, "invisibility_potion").get(0).getId());
 
         // Use potion
         assertDoesNotThrow(() -> dmc.tick(potion.getId()));
@@ -187,5 +190,5 @@ public class MovingEntitySystemTest {/*
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":enemies"));
         assertEquals(0,  actualDungonRes.getBattles().size());
-    }*/
+    }
 }

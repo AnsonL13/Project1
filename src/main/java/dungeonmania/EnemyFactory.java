@@ -74,7 +74,7 @@ public class EnemyFactory {
 
     private Position ifSpiderSpawn() {
         Random random = new Random();
-        int i = 15;
+        int i = 10;
         int randomY = random.nextInt(i);
         int randomX = random.nextInt(i);
        /*  
