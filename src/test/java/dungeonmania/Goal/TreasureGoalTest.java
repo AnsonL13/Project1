@@ -26,7 +26,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class TreasureGoalTest {/* 
+public class TreasureGoalTest {
 
     @Test
     @DisplayName("Treasure complete simple")
@@ -63,6 +63,6 @@ public class TreasureGoalTest {/*
         assertEquals(3, getInventory(initDungonRes, "treasure").size());
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertEquals("", getGoals(initDungonRes));
-    }*/
+    }
     
 }

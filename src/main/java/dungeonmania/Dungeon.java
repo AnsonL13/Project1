@@ -465,6 +465,7 @@ public class Dungeon {
                     Spider spider = new Spider(Integer.toString(latestUnusedId), "spider", new Position(xPosition, yPosition), false, configMap.get("spider_attack"), configMap.get("spider_health"));
                     entities.add(spider);
                     movingEntities.add(spider);
+                    player.add
                     this.latestUnusedId++;
                     break;
                 

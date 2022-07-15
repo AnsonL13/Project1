@@ -27,7 +27,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class ExitGoalTest {/*
+public class ExitGoalTest {
 
     @Test
     @DisplayName("Exit complete")
@@ -43,7 +43,7 @@ public class ExitGoalTest {/*
         dmc.tick(Direction.DOWN);
         initDungonRes = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(initDungonRes));
-    }*/
+    }
     
 }
 

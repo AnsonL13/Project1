@@ -27,7 +27,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class EnemyGoalTest {/* 
+public class EnemyGoalTest {
     @Test
     @DisplayName("Testing killing spider goal")
     public void testEnemySpiderGoal() {
@@ -108,6 +108,6 @@ public class EnemyGoalTest {/*
 
         assertEquals(0, getEntities(res, "spider").size());
         assertEquals("", getGoals(res));
-    } */
+    } 
 }
 
