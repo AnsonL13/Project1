@@ -47,6 +47,7 @@ public class ComplexGoal implements Goal {
 
     @Override
     public String listIncompleteGoals() {
+
         if (name.equals("OR") && ! goalComplete()) {
             String answer = "(" + children.get(0).listIncompleteGoals() + " " + this.getName() + " " + children.get(1).listIncompleteGoals() + ")";
             return answer;
@@ -54,12 +55,12 @@ public class ComplexGoal implements Goal {
 
         else if (name.equals("AND") && ! goalComplete()) {
             // Case where only one first goal complete.
-            if (children.get(0).goalComplete()) {
+            if (children.get(0).goalComplete() && canComplete()) {
                 return children.get(1).listIncompleteGoals();
             }
             
             // Case where only second goal complete.
-            else if (children.get(1).goalComplete()) {
+            else if (children.get(1).goalComplete() && canComplete()) {
                 return children.get(0).listIncompleteGoals();
             }
 
@@ -98,5 +99,17 @@ public class ComplexGoal implements Goal {
 
     public void setCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
+    }
+
+    // Check if exit is completed before others
+    public boolean canComplete() {
+        if (nameString().equals("OR")) return true;
+
+        if (children.get(0).nameString().contains("exit") && children.get(1).goalComplete()) {
+            return true;
+        } else if (children.get(1).nameString().contains("exit") && children.get(0).goalComplete()) {
+            return true;
+        }
+        return false;
     }
 }

@@ -766,7 +766,6 @@ public class Dungeon {
         Goal newgoal = null;
         if (subGoal.get("goal").getAsString().equals("AND") || 
             subGoal.get("goal").getAsString().equals("OR")) {
-
             newgoal = new ComplexGoal(subGoal.get("goal").getAsString(), false);
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(0).getAsJsonObject()));
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(1).getAsJsonObject()));

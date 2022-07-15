@@ -67,4 +67,10 @@ public class EnemiesGoal implements Goal {
     public int getEnemyGoal() {
         return enemyGoal;
     }
+
+    @Override
+    public boolean canComplete() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 }

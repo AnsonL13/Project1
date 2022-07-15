@@ -42,7 +42,7 @@ public class ExitGoal implements Goal {
         if (! goalComplete()) {
             return ":" + this.name;
         }
-        return "";
+        return ":" + this.name;
     }
 
     public boolean add(Goal child) {
@@ -69,5 +69,11 @@ public class ExitGoal implements Goal {
 
     public void setCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
+    }
+
+    @Override
+    public boolean canComplete() {
+        // TODO Auto-generated method stub
+        return true;
     }
 }

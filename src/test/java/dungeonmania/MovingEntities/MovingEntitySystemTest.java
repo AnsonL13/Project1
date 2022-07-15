@@ -25,6 +25,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -57,32 +58,33 @@ public class MovingEntitySystemTest {
         // create expected over exit
         expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(1, 0), false);
         expectedMerc = new EntityResponse(actualMerc.getId(), actualMerc.getType(), new Position(0, 0), true);
-        System.out.println(getGoals(actualDungonRes));
+
         //Check for goals and moving entity
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertTrue(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(expectedMerc, actualMerc);
+        EntityResponse actualKey = getEntities(actualDungonRes, "treasure").get(0);
 
         // move player right pick up treasure
         actualDungonRes = dmc.tick(Direction.RIGHT);
         actualPlayer = getPlayer(actualDungonRes).get();
         actualMerc = getEntities(actualDungonRes, "mercenary").get(0);
-        EntityResponse actualKey = getEntities(actualDungonRes, "treasure").get(0);
 
         // create expected after move
         expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(2, 0), false);
         expectedMerc = new EntityResponse(actualMerc.getId(), actualMerc.getType(), new Position(1, 0), true);
-        EntityResponse treasure = new EntityResponse(actualKey.getId(), actualKey.getType(), new Position(2, 0), false);
+        ItemResponse treasure = new ItemResponse(actualKey.getId(), actualKey.getType());
 
         //Check for goals and moving entity
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(expectedMerc, actualMerc);
-        assertEquals(treasure, getInventory(actualDungonRes, "treasure").get(0));
+
+        assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
         assertEquals(1, countEntityOfType(actualDungonRes, "zombie_toast_spawner"));
-        int zombieCount = initDungonRes.getEntities()
+        int zombieCount = actualDungonRes.getEntities()
             .stream()
             .filter(it -> it.getType().equals("zombie_toast"))
             .collect(Collectors.toList()).size();
@@ -99,8 +101,8 @@ public class MovingEntitySystemTest {
         assertTrue(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
-        assertEquals(treasure, getInventory(actualDungonRes, "treasure").get(0));
-        assertEquals(0, countEntityOfType(actualDungonRes, "mercenary"));
+        assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
+        assertEquals(1, countEntityOfType(actualDungonRes, "mercenary"));
 
         // Get battle response
         BattleResponse battle = actualDungonRes.getBattles().get(0);
