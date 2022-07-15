@@ -3,7 +3,6 @@ package dungeonmania.MovingEntities;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,7 +17,6 @@ import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.countEntityOfType;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.exceptions.InvalidActionException;

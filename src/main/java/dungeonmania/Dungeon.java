@@ -1,16 +1,7 @@
 package dungeonmania;
 
-import dungeonmania.BuildableEntities.Bow;
-import dungeonmania.BuildableEntities.Shield;
-import dungeonmania.CollectableEntities.Arrow;
 import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.CollectableEntity;
-import dungeonmania.CollectableEntities.InvincibilityPotion;
-import dungeonmania.CollectableEntities.InvisibilityPotion;
-import dungeonmania.CollectableEntities.Key;
-import dungeonmania.CollectableEntities.Sword;
-import dungeonmania.CollectableEntities.Treasure;
-import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.Goals.BouldersGoal;
 import dungeonmania.Goals.ComplexGoal;
 import dungeonmania.Goals.EnemiesGoal;
@@ -28,29 +19,18 @@ import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
-//import dungeonmania.enemy.Mercenary;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;

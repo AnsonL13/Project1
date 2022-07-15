@@ -2,51 +2,20 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static dungeonmania.TestUtils.getPlayer;
-import static dungeonmania.TestUtils.getEntities;
-
-import static dungeonmania.TestUtils.countEntityOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.DungeonManiaController;
-import dungeonmania.EnemyFactory;
-import dungeonmania.Entity;
 import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.CollectableEntities.Sword;
-import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.ZombieToast;
-import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Wall;
-import dungeonmania.StaticEntities.ZombieToastSpawner;
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
+
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 public class BattleTest {
     // White box testing
-/*
-    // TODO
-    @Test
-    @DisplayName("Test zombie no battle invisible")
-    public void testZombieInvisible() {
-        Position intial = new Position(0, 0);
-        ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
-        zombie.setInvisible(5);
-        zombie.move(new Position(1,5), new ArrayList<Entity>());
-
-        assertEquals(new Position(-1, 0), zombie.getPosition());
-        assertEquals(zombie.getId(), "0");
-    } */
 
     @Test
     @DisplayName("Test zombie battle invicible")
