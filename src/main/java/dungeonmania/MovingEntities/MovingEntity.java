@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dungeonmania.Battle;
-import dungeonmania.Enemy;
 import dungeonmania.Entity;
 import dungeonmania.Item;
 import dungeonmania.Player;
@@ -15,7 +14,7 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.util.Position;
 
-public class MovingEntity implements Entity, Enemy {
+public class MovingEntity implements Entity {
     private int isInvicible;
     private int isInvisible;
     private double health;
@@ -234,7 +233,7 @@ public class MovingEntity implements Entity, Enemy {
             while (getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
-                double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
+                double deltaEnemyHealth = - (playerAttack / 5);
     
                 // Update zombie health
                 BigDecimal c = BigDecimal.valueOf(getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
