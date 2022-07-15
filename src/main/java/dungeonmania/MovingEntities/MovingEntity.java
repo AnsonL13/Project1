@@ -229,13 +229,11 @@ public class MovingEntity implements Entity, Enemy {
         }
 
         else {
-            playerAttack = playerAttack + playerSword;
-            playerAttack *= playerBow;
             while (getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
                 double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
-    
+                
                 // Update zombie health
                 BigDecimal c = BigDecimal.valueOf(getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
                 setHealth(c.doubleValue());

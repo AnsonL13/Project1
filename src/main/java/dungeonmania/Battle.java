@@ -24,6 +24,7 @@ public class Battle {
         this.initialEnemyHealth = initialEnemyHealth;
         this.enemy = enemy;
         this.rounds = rounds;
+        this.enemyId = enemyId;
     }
 
     public final String getEnemy(){

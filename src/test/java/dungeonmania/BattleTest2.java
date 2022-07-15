@@ -37,10 +37,10 @@ public class BattleTest2 {
         double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
 
         for (RoundResponse round : rounds) {
-            assertEquals(round.getDeltaCharacterHealth(), enemyAttack / 10);
-            assertEquals(round.getDeltaEnemyHealth(), playerAttack / 5);
-            enemyHealth -= round.getDeltaEnemyHealth();
-            playerHealth -= round.getDeltaCharacterHealth();
+            assertEquals(round.getDeltaCharacterHealth(), -(enemyAttack / 10));
+            assertEquals(round.getDeltaEnemyHealth(), -(playerAttack / 5));
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
         }
 
         if (enemyDies) {
@@ -63,6 +63,8 @@ public class BattleTest2 {
         DungeonResponse postBattleResponse = controller.tick(Direction.RIGHT);
         BattleResponse battle = postBattleResponse.getBattles().get(0);
 
-        assertBattleCalculations("zombie_toast", battle, true, "c_battleTest_superInvisiblePotion");
+        assertBattleCalculations("zombie", battle, true, "c_battleTest_superInvisiblePotion");
+        assertEquals(1, getEntities(postBattleResponse, "player").size());
+        assertEquals(0, getEntities(postBattleResponse, "zombie_toast").size());
     }
 }

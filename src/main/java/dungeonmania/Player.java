@@ -99,7 +99,7 @@ public class Player implements Entity {
     }
 
     public void addToMovingEntites(Enemy enemy) {
-        this.movingEntities.add(enemy);
+        //this.movingEntities.add(enemy);
     }
 
     // Get the players weapons
@@ -258,8 +258,10 @@ public class Player implements Entity {
 
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
-        for (Enemy enemy : enemies) {
-            // Check if player and enemy is on the the same square. 
+        Iterator<Enemy> enemyIterator = enemies.iterator();
+        Enemy enemy;
+        while(enemyIterator.hasNext()) {     
+            enemy = enemyIterator.next();
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
                 // Start the battle.
                 Battle battle = enemy.battleCalculate(this);
@@ -267,7 +269,8 @@ public class Player implements Entity {
                 // Check if the player or enemy won
                 if (battle.isPlayerWon()) {
                     // The player won, remove enemy from the list. 
-                    enemies.remove(enemy);
+                    enemyIterator.remove();
+                    // Remove from movingentities
                 }
 
                 if (battle.isEnemyWon()) {

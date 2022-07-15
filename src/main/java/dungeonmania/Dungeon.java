@@ -474,6 +474,7 @@ public class Dungeon {
                     ZombieToast zombieToast = new ZombieToast(Integer.toString(latestUnusedId), "zombie_toast", new Position(xPosition, yPosition), false, configMap.get("zombie_attack"), configMap.get("zombie_health"));
                     entities.add(zombieToast);
                     movingEntities.add(zombieToast);
+                    player.addToEnemies(zombieToast);
                     this.latestUnusedId++;
                     break;
 
@@ -577,7 +578,6 @@ public class Dungeon {
         List<Battle> newBattles = player.battle();
         // Add all new battles to the list of battles.
         this.battles.addAll(newBattles);
-        System.out.println(battles.size());
 
         // 
         for (Battle battle : newBattles) {
