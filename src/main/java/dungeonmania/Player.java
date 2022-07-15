@@ -94,6 +94,14 @@ public class Player implements Entity {
         return potionQueue.get(0);
     }
 
+    public void addToEnemies(Enemy enemy) {
+        this.enemies.add(enemy);
+    }
+
+    public void addToMovingEntites(Enemy enemy) {
+        this.movingEntities.add(enemy);
+    }
+
     // Get the players weapons
     public List<Weapon> getPlayerWeapons() {
         boolean foundSword = false;
