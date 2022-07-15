@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dungeonmania.Battle;
-import dungeonmania.Enemy;
 import dungeonmania.Entity;
 import dungeonmania.Item;
 import dungeonmania.Player;
@@ -15,7 +14,7 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.util.Position;
 
-public class MovingEntity implements Entity, Enemy {
+public class MovingEntity implements Entity {
     private int isInvicible;
     private int isInvisible;
     private double health;

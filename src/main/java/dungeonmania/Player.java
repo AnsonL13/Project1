@@ -26,7 +26,6 @@ public class Player implements Entity {
     List<Item> inventory = new ArrayList<Item>();
     Map<String, Key> keys = new HashMap<String, Key>();
     List<Weapon> weapons = new ArrayList<Weapon>();
-    List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
@@ -94,12 +93,8 @@ public class Player implements Entity {
         return potionQueue.get(0);
     }
 
-    public void addToEnemies(Enemy enemy) {
-        this.enemies.add(enemy);
-    }
-
-    public void addToMovingEntites(Enemy enemy) {
-        //this.movingEntities.add(enemy);
+    public void addToMovingEntites(MovingEntity entity) {
+        this.movingEntities.add(entity);
     }
 
     // Get the players weapons
@@ -258,8 +253,8 @@ public class Player implements Entity {
 
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
-        Iterator<Enemy> enemyIterator = enemies.iterator();
-        Enemy enemy;
+        Iterator<MovingEntity> enemyIterator = movingEntities.iterator();
+        MovingEntity enemy;
         while(enemyIterator.hasNext()) {     
             enemy = enemyIterator.next();
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
