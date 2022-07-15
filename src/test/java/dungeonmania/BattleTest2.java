@@ -107,43 +107,4 @@ public class BattleTest2 {
         assertEquals(0, getEntities(postBattleResponse, "zombie_toast").size());
         assertEquals(0, getEntities(postBattleResponse, "sword").size());
     }
-
-    @Test
-    @DisplayName("Test zombie battle with bow")
-    public void testZombieBattleWithBow() {
-        DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse initialResponse = controller.newGame("d_battleZombieWithBow", "c_battleTest_superInvisiblePotion");
-        int zombieCount = countEntityOfType(initialResponse, "zombie_toast"); 
-        assertEquals(1, countEntityOfType(initialResponse, "bow"));
-        assertEquals(1, countEntityOfType(initialResponse, "player"));
-        assertEquals(1, zombieCount);
-        
-        // Push the player into the zombie
-        DungeonResponse postBattleResponse = controller.tick(Direction.RIGHT);
-        BattleResponse battle = postBattleResponse.getBattles().get(0);
-
-        List<RoundResponse> rounds = battle.getRounds();
-        double playerHealth = Double.parseDouble(getValueFromConfigFile("player_health", "c_battleTest_superInvisiblePotion"));
-        double enemyHealth = Double.parseDouble(getValueFromConfigFile("zombie" + "_health", "c_battleTest_superInvisiblePotion"));
-        double playerAttack = Double.parseDouble(getValueFromConfigFile("player_attack", "c_battleTest_superInvisiblePotion"));
-        double enemyAttack = Double.parseDouble(getValueFromConfigFile("zombie" + "_attack", "c_battleTest_superInvisiblePotion"));
-
-        double bow = 2;
-
-        for (RoundResponse round : rounds) {
-            assertEquals(round.getDeltaCharacterHealth(), -(enemyAttack / 10));
-            assertEquals(round.getDeltaEnemyHealth(), -((playerAttack * bow) / 5));
-            enemyHealth += round.getDeltaEnemyHealth();
-            playerHealth += round.getDeltaCharacterHealth();    
-        }
-
-        assertTrue(enemyHealth <= 0);
-        assertTrue(playerHealth > 0);
-
-        assertEquals(3, rounds.size());
-        
-        assertEquals(1, getEntities(postBattleResponse, "player").size());
-        assertEquals(0, getEntities(postBattleResponse, "zombie_toast").size());
-        assertEquals(0, getEntities(postBattleResponse, "bow").size());
-    }
 }
