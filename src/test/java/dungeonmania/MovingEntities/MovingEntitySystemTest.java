@@ -44,7 +44,6 @@ public class MovingEntitySystemTest {
         EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initMerc.getType(), new Position(-1, 0), true);
 
         //Check for goals and moving entity
-        System.out.println(getGoals(initDungonRes));
         assertTrue(getGoals(initDungonRes).contains(":exit"));
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, initPlayer);
@@ -103,7 +102,7 @@ public class MovingEntitySystemTest {
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
-        assertEquals(1, countEntityOfType(actualDungonRes, "mercenary"));
+        assertEquals(0, countEntityOfType(actualDungonRes, "mercenary"));
 
         // Get battle response
         BattleResponse battle = actualDungonRes.getBattles().get(0);
@@ -111,12 +110,12 @@ public class MovingEntitySystemTest {
         assertEquals(2, rounds.size());
 
         //Check round one
-        assertEquals(9.9, rounds.get(0).getDeltaCharacterHealth());
-        assertEquals(1, rounds.get(0).getDeltaEnemyHealth());
+        assertEquals(-0.1, rounds.get(0).getDeltaCharacterHealth());
+        assertEquals(-1, rounds.get(0).getDeltaEnemyHealth());
 
         //Check round two
-        assertEquals(9.8, rounds.get(1).getDeltaCharacterHealth());
-        assertEquals(0, rounds.get(1).getDeltaEnemyHealth());
+        assertEquals(-0.1, rounds.get(1).getDeltaCharacterHealth());
+        assertEquals(-1, rounds.get(1).getDeltaEnemyHealth());
 
         // Spawn spider and zombie
         actualDungonRes = dmc.tick(Direction.DOWN);
@@ -183,9 +182,6 @@ public class MovingEntitySystemTest {
         String spawnerID = getEntities(actualDungonRes, "zombie_toast_spawner").get(0).getId();
 
         //Destory Spawner
-        System.out.println(getPlayer(actualDungonRes).get().getPosition());
-        System.out.println(getEntities(actualDungonRes, "zombie_toast_spawner").get(0).getPosition());
-
         assertDoesNotThrow(() ->  dmc.interact(spawnerID));
 
         // Move to exit

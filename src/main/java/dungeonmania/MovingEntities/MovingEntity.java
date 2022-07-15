@@ -242,7 +242,6 @@ public class MovingEntity implements Entity {
                 // Update player health
                 c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                 player.setPlayerHealth(c.doubleValue());
-                
                 // Add round info to list
                 rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
             }

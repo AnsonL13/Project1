@@ -257,6 +257,7 @@ public class Player implements Entity {
         MovingEntity enemy;
         while(enemyIterator.hasNext()) {     
             enemy = enemyIterator.next();
+            if (enemy.isInvisible()) break;
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
                 // Start the battle.
                 Battle battle = enemy.battleCalculate(this);
