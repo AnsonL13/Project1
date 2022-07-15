@@ -21,7 +21,8 @@ public class Build {
      * @param latestUnusedId
      * @throws InvalidActionException
      */
-    public void build (String buildable, Player player, int latestUnusedId) throws InvalidActionException {
+    public void build (String buildable, Player player, int latestUnusedId) 
+                throws InvalidActionException {
         if (! (buildable.equals("shield") || buildable.equals("bow"))) {
             throw new IllegalArgumentException(buildable);
         }
@@ -42,12 +43,15 @@ public class Build {
         // Build the item
         // Add the item to the players inventory and remove items from players inventory
         if (buildable.equals("shield")) {
-            Shield shield = new Shield(Integer.toString(latestUnusedId), "shield", false, configMap.get("shield_defence"), configMap.get("shield_durability"));
+            Shield shield = new Shield(Integer.toString(latestUnusedId), 
+                    "shield", false, configMap.get("shield_defence"), 
+                    configMap.get("shield_durability"));
             player.addToInventory(shield);
             player.addToWeapons(shield);
             player.removeForShield(); 
         } else if (buildable.equals("bow")) {
-            Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", false, configMap.get("bow_durability"));
+            Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", 
+                    false, configMap.get("bow_durability"));
             player.addToInventory(bow);
             player.addToWeapons(bow);
             player.removeForBow();
