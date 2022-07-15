@@ -27,7 +27,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class IntegrationComplexTest {
+public class IntegrationComplexTest {/*
     
     @Test
     @DisplayName("Exit complete")
@@ -43,5 +43,5 @@ public class IntegrationComplexTest {
         dmc.tick(Direction.DOWN);
         initDungonRes = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(initDungonRes));
-    }
+    }*/
 }

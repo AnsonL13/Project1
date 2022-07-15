@@ -42,7 +42,7 @@ public class ExitGoal implements Goal {
         if (! goalComplete()) {
             return ":" + this.name;
         }
-        return ":" + this.name;
+        return "";
     }
 
     public boolean add(Goal child) {

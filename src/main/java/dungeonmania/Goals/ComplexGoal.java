@@ -66,11 +66,19 @@ public class ComplexGoal implements Goal {
 
             // Case where neither goal complete.
             else {
-                return "(" + children.get(0).listIncompleteGoals() + " " + this.getName() + " " + children.get(1).listIncompleteGoals() + ")";
+
+                return "(" + exitString(0) + " " + this.getName() + " " + exitString(1) + ")";
             }
         }
 
         return "";
+    }
+
+    private String exitString(int index) {
+        if (children.get(index).nameString().equals("exit")) {
+            return "exit";
+        }
+        return children.get(index).listIncompleteGoals();
     }
 
     public boolean add(Goal child) {
@@ -104,12 +112,14 @@ public class ComplexGoal implements Goal {
     // Check if exit is completed before others
     public boolean canComplete() {
         if (nameString().equals("OR")) return true;
-
         if (children.get(0).nameString().contains("exit") && children.get(1).goalComplete()) {
             return true;
         } else if (children.get(1).nameString().contains("exit") && children.get(0).goalComplete()) {
             return true;
         }
+
         return false;
     }
+
+
 }

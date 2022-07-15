@@ -15,7 +15,8 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.util.Position;
 
-public class MovingEntity implements Entity, Enemy {
+
+public class MovingEntity implements Entity {
     private int isInvicible;
     private int isInvisible;
     private double health;
@@ -25,7 +26,7 @@ public class MovingEntity implements Entity, Enemy {
     private boolean inBattle;
     private String type;
 
-    public MovingEntity (String id, int health, int attack, Position position) { 
+    public MovingEntity (String id, int attack, int health, Position position) { 
         this.health = (double) health;
         this.attack = attack;
         this.position = position;
@@ -203,7 +204,7 @@ public class MovingEntity implements Entity, Enemy {
                 playerSword = weapon.getAttackDamage();
             } else if (weapon.getType().equals("shield")) {
                 playerShield = weapon.getDefenceDamage();
-                if (playerShield > enemyAttack) playerShield = enemyAttack;
+                if (playerShield >= enemyAttack) playerShield = enemyAttack;
             }
         }
 
@@ -233,19 +234,21 @@ public class MovingEntity implements Entity, Enemy {
             playerAttack *= playerBow;
             while (getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
                 // Find change in health
-                double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
-                double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
-    
+               // deltaPlayerHealth = delBigDecimal.valueOf((enemyAttack - playerShield) / 10);
+               // deltaEnemyHealth -= enemyHealth - (playerAttack / 5);
+
                 // Update zombie health
-                BigDecimal c = BigDecimal.valueOf(getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
-                setHealth(c.doubleValue());
+                BigDecimal e = BigDecimal.valueOf(getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
+                setHealth(e.doubleValue());
 
                 // Update player health
-                c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
+                BigDecimal c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                 player.setPlayerHealth(c.doubleValue());
-                
+                System.out.println(c.doubleValue());
+                System.out.println(e.doubleValue());
+
                 // Add round info to list
-                rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
+                rounds.add(new Round(c.doubleValue(), e.doubleValue(), items));
             }
         }
 

@@ -30,7 +30,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class MovingEntitySystemTest {/*
+public class MovingEntitySystemTest {
     @Test
     @DisplayName("Test multiple mobs and movement")
     public void testMultipleMobsMovement() {
@@ -120,7 +120,7 @@ public class MovingEntitySystemTest {/*
         // Spawn spider and zombie
         actualDungonRes = dmc.tick(Direction.DOWN);
         actualDungonRes = dmc.tick(Direction.LEFT);
-        zombieCount = initDungonRes.getEntities()
+        zombieCount = actualDungonRes.getEntities()
             .stream()
             .filter(it -> it.getType().equals("zombie_toast"))
             .collect(Collectors.toList()).size();
@@ -128,7 +128,8 @@ public class MovingEntitySystemTest {/*
         assertEquals(1, countEntityOfType(actualDungonRes, "spider"));
 
         // End game
-        actualDungonRes = dmc.tick(Direction.LEFT);
+        actualDungonRes = dmc.tick(Direction.UP);
+
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
 
@@ -154,16 +155,17 @@ public class MovingEntitySystemTest {/*
         assertTrue(getGoals(actualDungonRes).contains(":enemies"));
 
         //Check assert throw potion not in inventory yet
-        assertThrows(InvalidActionException.class, () -> dmc.tick(Direction.RIGHT));
+        assertThrows(InvalidActionException.class, () -> dmc.tick(potion.getId()));
 
         // Pick up potion
         actualDungonRes = dmc.tick(Direction.RIGHT);
 
         //Check expected
+        ItemResponse itemPotion = new ItemResponse(potion.getId(), potion.getType());
         EntityResponse actualPlayer = getPlayer(actualDungonRes).get();
         EntityResponse expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(2, 0), false);
         assertEquals(expectedPlayer, actualPlayer);
-        assertEquals(potion, getInventory(actualDungonRes, "invisibility_potion").get(0));
+        assertEquals(itemPotion.getId(), getInventory(actualDungonRes, "invisibility_potion").get(0).getId());
 
         // Use potion
         assertDoesNotThrow(() -> dmc.tick(potion.getId()));
@@ -180,6 +182,9 @@ public class MovingEntitySystemTest {/*
         String spawnerID = getEntities(actualDungonRes, "zombie_toast_spawner").get(0).getId();
 
         //Destory Spawner
+        System.out.println(getPlayer(actualDungonRes).get().getPosition());
+        System.out.println(getEntities(actualDungonRes, "zombie_toast_spawner").get(0).getPosition());
+
         assertDoesNotThrow(() ->  dmc.interact(spawnerID));
 
         // Move to exit
@@ -190,5 +195,5 @@ public class MovingEntitySystemTest {/*
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":enemies"));
         assertEquals(0,  actualDungonRes.getBattles().size());
-    }*/
+    }
 }

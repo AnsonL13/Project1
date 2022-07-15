@@ -67,7 +67,6 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int allyDefence,  int bribeAmount, int bribeRadius, 
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
-
         this.type = "mercenary";
         this.isInteractable = false;
         this.bribeAmount = bribeAmount;

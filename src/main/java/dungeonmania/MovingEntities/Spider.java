@@ -66,7 +66,6 @@ public class Spider extends MovingEntity {
         return false;
     }
 
-
     private void circling(ArrayList<Position> coordinates, Position position, List<Entity> entities) {
         position = super.getPosition();
         //Direction direction;
@@ -85,7 +84,6 @@ public class Spider extends MovingEntity {
                 super.setPosition(coordinates.get(i));
             }
         }
-        
     }
 
     private boolean canMove(Position position, List<Entity> entities) {

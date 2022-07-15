@@ -26,7 +26,7 @@ public class Player implements Entity {
     List<Item> inventory = new ArrayList<Item>();
     Map<String, Key> keys = new HashMap<String, Key>();
     List<Weapon> weapons = new ArrayList<Weapon>();
-    List<Enemy> enemies = new ArrayList<Enemy>();
+    //List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
@@ -250,7 +250,10 @@ public class Player implements Entity {
 
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
-        for (Enemy enemy : enemies) {
+        List<MovingEntity> rEntities = new ArrayList<MovingEntity>();
+        for (MovingEntity enemy : movingEntities) {
+            // potion effect active
+            if (enemy.isInvisible()) break;
             // Check if player and enemy is on the the same square. 
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
                 // Start the battle.
@@ -259,7 +262,7 @@ public class Player implements Entity {
                 // Check if the player or enemy won
                 if (battle.isPlayerWon()) {
                     // The player won, remove enemy from the list. 
-                    enemies.remove(enemy);
+                    rEntities.add(enemy);
                 }
 
                 if (battle.isEnemyWon()) {
@@ -268,6 +271,7 @@ public class Player implements Entity {
                 }
             }
         }
+        movingEntities.removeAll(rEntities);
         return battles;
     }
 

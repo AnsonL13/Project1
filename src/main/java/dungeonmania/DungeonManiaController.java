@@ -122,6 +122,7 @@ public class DungeonManiaController {
 
                 List<ItemResponse> weaponryUsed = new ArrayList<ItemResponse>();
                 for (Item item : round.getWeaponryUsed()) {
+                    if (round.getWeaponryUsed() == null) break;
                     ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
                     weaponryUsed.add(itemResponse);
                 }

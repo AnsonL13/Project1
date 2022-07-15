@@ -1,6 +1,7 @@
 package dungeonmania.Goals;
 
 import dungeonmania.Dungeon;
+import dungeonmania.StaticEntities.ZombieToastSpawner;
 
 public class EnemiesGoal implements Goal {
     private String name;
@@ -18,12 +19,18 @@ public class EnemiesGoal implements Goal {
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if required number of enemies have been destroyed. 
-        if (dungeon.getBattles().size() >= enemyGoal) {
+        if (dungeon.getBattles().size() >= enemyGoal && ! ifSpawners()) {
             return true;
         }
         
 		return false;
 	}
+
+    private boolean ifSpawners() {
+        Boolean ifContain = dungeon.getEntities()
+            .stream().anyMatch(o -> o instanceof ZombieToastSpawner);
+        return ifContain;
+    }
 	
 	@Override
 	public String nameString() {
