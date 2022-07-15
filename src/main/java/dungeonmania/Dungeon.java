@@ -465,6 +465,7 @@ public class Dungeon {
                     Spider spider = new Spider(Integer.toString(latestUnusedId), "spider", new Position(xPosition, yPosition), false, configMap.get("spider_attack"), configMap.get("spider_health"));
                     entities.add(spider);
                     movingEntities.add(spider);
+                    player.add
                     this.latestUnusedId++;
                     break;
                 
@@ -577,6 +578,7 @@ public class Dungeon {
         List<Battle> newBattles = player.battle();
         // Add all new battles to the list of battles.
         this.battles.addAll(newBattles);
+        System.out.println(battles.size());
 
         // 
         for (Battle battle : newBattles) {
