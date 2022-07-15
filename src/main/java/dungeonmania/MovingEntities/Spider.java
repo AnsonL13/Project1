@@ -143,10 +143,6 @@ public class Spider extends MovingEntity {
         return true;
     }
 
-    public String getSimpleName() {
-        return "spider";
-    }
-
     public boolean isInteractable() {
         return isInteractable;
     }

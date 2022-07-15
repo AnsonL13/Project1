@@ -95,11 +95,4 @@ public class ZombieToast extends MovingEntity {
         if (super.isInvicible() != true) movement = randomMovement;
     }
     
-    /** 
-     * @return String
-     */
-    public String getSimpleName() {
-        return "zombie";
-    }
-
 }

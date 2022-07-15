@@ -63,13 +63,6 @@ public class MovingEntity implements Entity {
     public int getAttack() {
         return attack;
     }
-
-    /** 
-     * @param attack
-     */
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
     
     /** 
      * @param health
@@ -90,13 +83,6 @@ public class MovingEntity implements Entity {
      */
     public void setInBattle(boolean inBattle) {
         this.inBattle = inBattle;
-    }
-    
-    /** 
-     * @return String
-     */
-    public String getSimpleName() {
-        return null;
     }
 
     /** 

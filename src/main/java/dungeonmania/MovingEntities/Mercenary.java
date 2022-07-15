@@ -117,13 +117,6 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     }
     
     /** 
-     * @return String
-     */
-    public String getSimpleName() {
-        return "mercenary";
-    }
-    
-    /** 
      * @return int
      */
     public int getAllyAttack() {
