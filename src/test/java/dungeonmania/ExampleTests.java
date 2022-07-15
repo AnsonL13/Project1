@@ -63,7 +63,7 @@ public class ExampleTests {
         assertEquals(0, getInventory(res, "key").size());
         assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
-/* 
+    /*
     @Test
     @DisplayName("Test basic movement of spiders")
     public void basicMovement() {
@@ -167,7 +167,59 @@ public class ExampleTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(res));
     }
-*/
+    *//*
+    private static DungeonResponse genericMercenarySequence(DungeonManiaController controller, String configFile) {*/
+        /*
+         *  exit   wall  wall  wall
+         * player  [  ]  merc  wall
+         *  wall   wall  wall  wall
+         *//* 
+        DungeonResponse initialResponse = controller.newGame("d_battleTest_basicMercenary", configFile);
+        int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
+        
+        assertEquals(1, countEntityOfType(initialResponse, "player"));
+        assertEquals(1, mercenaryCount);
+        return controller.tick(Direction.RIGHT);
+    }
 
+    private void assertBattleCalculations(String enemyType, BattleResponse battle, boolean enemyDies, String configFilePath) {
+        List<RoundResponse> rounds = battle.getRounds();
+        double playerHealth = Double.parseDouble(getValueFromConfigFile("player_health", configFilePath));
+        double enemyHealth = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
+        double playerAttack = Double.parseDouble(getValueFromConfigFile("player_attack", configFilePath));
+        double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
+
+        for (RoundResponse round : rounds) {
+            assertEquals(round.getDeltaCharacterHealth(), enemyAttack / 10);
+            assertEquals(round.getDeltaEnemyHealth(), playerAttack / 5);
+            enemyHealth -= round.getDeltaEnemyHealth();
+            playerHealth -= round.getDeltaCharacterHealth();
+        }
+
+        if (enemyDies) {
+            assertTrue(enemyHealth <= 0);
+        } else {
+            assertTrue(playerHealth <= 0);
+        }
+    }
+
+    @Test
+    @DisplayName("Test basic battle calculations - mercenary - player loses")
+    public void testHealthBelowZeroMercenary() {
+       DungeonManiaController controller = new DungeonManiaController();
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
+       BattleResponse battle = postBattleResponse.getBattles().get(0);
+       assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
+    }
+
+
+    @Test
+    @DisplayName("Test basic battle calculations - mercenary - player wins")
+    public void testRoundCalculationsMercenary() {
+       DungeonManiaController controller = new DungeonManiaController();
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+       BattleResponse battle = postBattleResponse.getBattles().get(0);
+       assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+    }*/
 
 }
