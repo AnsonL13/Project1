@@ -2,11 +2,17 @@ package dungeonmania;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import dungeonmania.CollectableEntities.Arrow;
 import dungeonmania.CollectableEntities.Bomb;
+import dungeonmania.CollectableEntities.InvincibilityPotion;
+import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
+import dungeonmania.CollectableEntities.Treasure;
+import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
@@ -22,6 +28,8 @@ public class Player implements Entity {
     List<Weapon> weapons = new ArrayList<Weapon>();
     List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
+
+    List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
     public Player(String id, String type, Position position, boolean isInteractable, double playerAttack, double playerHealth) {
         this.id = id;
@@ -141,36 +149,26 @@ public class Player implements Entity {
         // Remove 2 wood and a treasure or key (Removes the first treasure/key in array)
         int woodCount = 0;
         int treasurekeyCount = 0;
-        
-        for (Item item : inventory) {
-            if (item.getType().equals("wood")) {
-                if (woodCount == 2) {
-                    continue;
-                }
-                else {
-                    inventory.remove(item);
-                    woodCount++;
-                }
+
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next();     
+
+            if (item instanceof Wood && (woodCount != 2)) {
+                inventoryIterator.remove();
+                woodCount++;
             }
 
-            else if (item.getType().equals("treasure")) {
-                if (treasurekeyCount == 1) {
-                    continue;
-                }
-                else {
-                    inventory.remove(item);
-                    treasurekeyCount++;
-                }
+            else if (item instanceof Key && (treasurekeyCount != 1)) {
+                keys.remove(item.getId());
+                inventoryIterator.remove();
+                treasurekeyCount++;
             }
 
-            else if (item.getType().equals("key")) {
-                if (treasurekeyCount == 1) {
-                    continue;
-                }
-                else {
-                    inventory.remove(item);
-                    treasurekeyCount++;
-                }
+            else if (item instanceof Treasure && (treasurekeyCount != 1)) {
+                inventoryIterator.remove();
+                treasurekeyCount++;
             }
         }
     }
@@ -179,26 +177,20 @@ public class Player implements Entity {
         // Remove 1 wood and 3 arrows
         int woodCount = 0;
         int arrowCount = 0;
-        
-        for (Item item : inventory) {
-            if (item.getType().equals("wood")) {
-                if (woodCount == 1) {
-                    continue;
-                }
-                else {
-                    inventory.remove(item);
-                    woodCount++;
-                }
+
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next();     
+
+            if (item instanceof Wood && (woodCount != 1)) {
+                inventoryIterator.remove();
+                woodCount++;
             }
 
-            else if (item.getType().equals("wood")) {
-                if (arrowCount == 3) {
-                    continue;
-                }
-                else {
-                    inventory.remove(item);
-                    arrowCount++;
-                }
+            else if (item instanceof Arrow && (arrowCount != 3)) {
+                inventoryIterator.remove();
+                arrowCount++;
             }
         }
     }
@@ -236,11 +228,18 @@ public class Player implements Entity {
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
+                    // Changing enemy status
+                    InvincibilityPotion potion = (InvincibilityPotion)item;
+                    setMovingEntitiesInvincible( potion.getInvincibilityPotionDuration());
                     // Remove from inventory
                     // Add to potions queue
                 }
 
                 else if (item.getType().equals("invisibility_potion")) {
+                    // Changing enemy status
+                    InvisibilityPotion potion = (InvisibilityPotion)item;
+                    setMovingEntitiesInvisible( potion.getInvisibilityPotionPuration() );
+
                     // Remove from inventory
                     // Add to potions queue
                 }
@@ -282,6 +281,7 @@ public class Player implements Entity {
                 removeFromInventory(key);
                 keys.remove(key);
                 foundKey = true;
+                break;
             }
         }
         return foundKey;
@@ -303,4 +303,31 @@ public class Player implements Entity {
             }
         }
     }
+
+    public void addAllEnemies (List<MovingEntity> newMovingEntities) {
+        if (newMovingEntities == null) return;
+        if (newMovingEntities.size() == 0) return;
+        movingEntities.addAll(newMovingEntities);
+    }
+
+    private void setMovingEntitiesInvincible(int duration) {
+        movingEntities.stream().forEach(o -> o.setInvincible(duration));
+    };
+
+    private void setMovingEntitiesInvisible(int duration) {
+        movingEntities.stream().forEach(o -> o.setInvisible(duration));
+    };
+
+    // return if entity if battle
+    public MovingEntity moveMovingEntities(Position player, 
+                List<Entity> entities) {
+        MovingEntity newBattle = null;
+        for (MovingEntity entity : movingEntities) {
+            Boolean ifBattle = entity.move(player, entities);
+            if (ifBattle) newBattle = entity;
+        }
+        return newBattle;
+    };
+
+
 }

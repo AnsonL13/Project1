@@ -1,233 +1,105 @@
 package dungeonmania.MovingEntities;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import dungeonmania.Battle;
-import dungeonmania.Enemy;
 import dungeonmania.Entity;
-import dungeonmania.Item;
-import dungeonmania.Player;
-import dungeonmania.Round;
-import dungeonmania.Weapon;
-import dungeonmania.BuildableEntities.Bow;
-import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
 import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
-import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Wall;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class ZombieToast extends MovingEntity implements Enemy {
+public class ZombieToast extends MovingEntity {
+
     private String type;
     private boolean isInteractable;
 
     private Movement movement;
-    private RunAwayMovement runAwayMovement = new RunAwayMovement();
-    private RandomMovement randomMovement = new RandomMovement();
+    private RunAwayMovement runAwayMovement = new RunAwayMovement(this);
+    private RandomMovement randomMovement = new RandomMovement(this);
 
-
+    /**
+     * Constructor 
+     * @param id
+     * @param type string name of clas
+     * @param position
+     * @param isInteractable if player can interact
+     * @param attack
+     * @param health
+     */
     public ZombieToast(String id, String type, Position position, boolean isInteractable, int attack, int health) {
         super(id, health, attack, position);
         this.type = type;
         this.isInteractable = isInteractable;
-
-        
-
+        this.movement = randomMovement;
     }
 
+    /**
+     * Constructor
+     * @param id
+     * @param attack
+     * @param health
+     * @param position
+     */
     public ZombieToast(String id, int attack, int health, Position position) {
         super(id, health, attack, position);
         this.isInteractable = false;
         this.type = "zombie_toast";
+        this.movement = randomMovement;
 
     }
-
+    
+    /** 
+     * @return boolean
+     */
+    @Override
     public boolean isInteractable() {
         return isInteractable;
     }
 
+    /** 
+     * @return String
+     */
+    @Override
     public final String getType() {
         return type;
     }
 
+    /** 
+     * @param player
+     * @param entities
+     * @return boolean
+     */
+    @Override
     public boolean move(Position player, List<Entity> entities) {  
-        Position newPos = null;
-        super.setPotions();
-
-        if (super.isInBattle()) {
-
-        } else if (super.isInvicible()) {
-            newPos = runAway(player);
-        } else {
-            newPos = randomMove();
-        }
-
-        if (canMove(newPos, entities)) {
-            super.setPos(newPos);
+        Position newPos = movement.moveEnemy(player, entities);
+        if (newPos != null) {
+            super.setPosition(newPos);
         }  
-
+        setPotions();
         return super.isBattle(player);
     }
+
     
-    private Position randomMove () {
-        Random rand = new Random(); //instance of random class
-        int upper = 4;
-        int randomdir = rand.nextInt(upper); 
-        Position pos = super.getPosition();
-        switch(randomdir) {
-            case 0:
-                pos = pos.translateBy(Direction.UP);
-                break;
-            case 1:
-                pos = pos.translateBy(Direction.LEFT);
-                break;
-            case 2:
-                pos = pos.translateBy(Direction.DOWN);
-                break;
-            case 3:
-                pos = pos.translateBy(Direction.RIGHT);
-                break;
-
-        }
-
-        return pos;  
-
+    /** 
+     * @param duration
+     */
+    @Override
+    public void setInvincible(int duration) {
+        super.setInvincible(duration);
+        movement = runAwayMovement;
     }
 
-    private boolean canMove(Position position, List<Entity> entities) {
-        if (position == null) return false;
-        for (Entity entity : entities) {
-            if (entity instanceof MovingEntity && entity.getPosition().equals(position)) {
-                return false;
-            } else if (entity instanceof Boulder && entity.getPosition().equals(position)) {
-                return false;
-            } else if (entity instanceof Wall && entity.getPosition().equals(position)) {
-                return false;
-            } else if (entity instanceof Door && entity.getPosition().equals(position)) {
-                return false;
-
-            }
-        }
-        return true;
+    @Override
+    public void setPotions() {
+        super.setPotions();
+        if (super.isInvicible() != true) movement = randomMovement;
     }
-
-    private Position runAway(Position player) {
-        Position pos = super.getPosition();
-        if (player.getX() > super.getPosition().getX()) {
-            pos = pos.translateBy(Direction.LEFT);
-        } else {
-            pos = pos.translateBy(Direction.RIGHT);
-        }
-        return pos;
-   /*     if (canMove(pos)) {
-            super.setPos(pos);
-            return;
-        } else if (player.getY() > super.getPosition().getY()) {
-            pos.translateBy(Direction.UP);
-        } else {
-            pos.translateBy(Direction.DOWN);
-        }
-
-        if (canMove(pos)) {
-            super.setPos(pos);
-        }*/
-    }
-
-
+    
+    /** 
+     * @return String
+     */
     public String getSimpleName() {
         return "zombie";
     }
 
-
-    public Battle battleCalculate(Player player) {
-        double playerHealth = player.getPlayerHealth();
-        double playerAttack = player.getPlayerAttack();
-        double playerBow = 1;
-        double playerSword = 0;
-        double playerShield = 0;
-        double enemyHealth = super.getHealth();
-        double enemyAttack = super.getAttack();
-
-        // Get weapons. 
-        List<Weapon> weaponryUsed = player.getPlayerWeapons();
-
-        for (Weapon weapon : weaponryUsed) {
-            if (weapon instanceof Bow) {
-                playerBow = 2;
-            }
-
-            if (weapon instanceof Sword) {
-                playerSword = weapon.getAttackDamage();
-            }
-
-            if (weapon.getType().equals("shield")) {
-                playerShield = weapon.getDefenceDamage();
-                if (playerShield > enemyAttack) playerShield = enemyAttack;
-            }
-        }
-
-        // List of items used for every round. 
-        List<Item> items = new ArrayList<Item>();
-
-        // Add all weapons being used. 
-        items.addAll(weaponryUsed);
-
-        // If a player is using a potion, add it to the list of items.
-        if (super.isInvicible() || super.isInvisible()) {
-            items.add(player.currentPotion());
-        }
-
-        List<Round> rounds = new ArrayList<Round>();
-        
-        // Check if player is invincible
-        if (super.isInvicible()) {
-            double deltaPlayerHealth = 0;
-            double deltaEnemyHealth = - super.getHealth();
-            super.setHealth(0);
-            rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
-        }
-
-
-        else {
-            playerAttack = playerAttack + playerSword;
-            playerAttack *= playerBow;
-            while (super.getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
-                // Find change in health
-                double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
-                double deltaEnemyHealth = - ((playerBow * (playerSword + playerAttack)) / 5);
-    
-                // Update zombie health
-                BigDecimal c = BigDecimal.valueOf(super.getHealth()).subtract(BigDecimal.valueOf(playerAttack / 5));
-                super.setHealth(c.doubleValue());
-
-                // Update player health
-                c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
-                player.setPlayerHealth(c.doubleValue());
-                
-                // Add round info to list
-                rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
-            }
-        }
-
-        Battle battle = new Battle(type, rounds, playerHealth, enemyHealth, super.getId());
-
-        // Find the winner.
-        // zombie won
-        if (super.getHealth() > 0) {
-            battle.setEnemyWon(true);
-        }
-
-        // Player won
-        else if (player.getPlayerHealth() > 0) {
-            battle.setPlayerWon(true);
-        }
-
-        return battle;
-    }
 }

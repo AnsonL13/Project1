@@ -67,15 +67,9 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
 
     public boolean interactActionCheck(Player player) {
         // Check if player cardinally adjacent to spawner
-        if (Position.isAdjacent(position, player.getPosition())) {
+        if (Position.isAdjacent(position, player.getPosition()) && ! player.getWeapons().isEmpty()) {
             return true;
         }
-
-        // Check if player has a weapon in their inventory
-        if (! player.getWeapons().isEmpty()) {
-            return true;
-        }
-
         return false;
     }
 }
