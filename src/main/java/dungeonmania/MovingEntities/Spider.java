@@ -35,12 +35,13 @@ public class Spider extends MovingEntity {
         return isClockwise;
     }
 
-    private void moveUpwards(Position position, List<Entity> entities) {
-        position = super.getPosition();
+    private Position moveUpwards() {
+        Position position = super.getPosition();
         position.translateBy(Direction.UP);
-        if (canMove(position, entities)) {
-            super.setPos(position);
-        }
+       // if (! canMove(position, entities)) {
+        //    return null;
+        //}
+        return position;
     }
 
     @Override
@@ -48,50 +49,95 @@ public class Spider extends MovingEntity {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
-        ArrayList<Position> coordinates = new ArrayList<Position>();
+        //ArrayList<Position> coordinates = new ArrayList<Position>();
         Position position = null;
-        Position newPos = super.getPosition();
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.RIGHT));
-        coordinates.add(newPos.translateBy(Direction.DOWN));
-        coordinates.add(newPos.translateBy(Direction.DOWN));
-        coordinates.add(newPos.translateBy(Direction.LEFT));
-        coordinates.add(newPos.translateBy(Direction.LEFT));
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.RIGHT));
         if (movedUp == false) {
-            moveUpwards(position, entities);
-        } else if (isClockwise = true) {
-            circling(coordinates, position, entities);
-        } else { 
-            reverseDirection(coordinates, position, entities);
+            movedUp = true;
+            position = moveUpwards();
         }
-    
+        ArrayList<Position> coordinates = getCoordinates();
+        //Position newPos = super.getPosition();
+        /* 
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        */
+
+        //if (movedUp == false) {
+        //   moveUpwards(position, entities);
+        //} 
+        if (isClockwise = true) {
+            position = circling(coordinates);
+        } else { 
+            position = reverseDirection(coordinates);
+        }
+        if(canMove(position, entities)) {
+            super.setPosition(position);
+        }
             
         return false;
     }
 
+    private ArrayList<Position> getCoordinates () {
+        ArrayList<Position> coordinates = new ArrayList<Position>();
+        Position position = super.getPosition();
+        /* 
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        */
+        /* 
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        */
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.RIGHT));
 
-    private void circling(ArrayList<Position> coordinates, Position position, List<Entity> entities) {
-        position = super.getPosition();
-        //Direction direction;
-        if (canMove(position, entities)) {
-            for (int i = 0; i < coordinates.size(); i++) {
-                super.setPos(coordinates.get(i));
-            }
-        }
-        
+        return coordinates;
+
     }
 
-    private void reverseDirection(ArrayList<Position> coordinates, Position position,  List<Entity> entities) {
-        position = super.getPosition();
-        if (canMove(position, entities)) {
-            for (int i = coordinates.size() - 1; i >= 0; i--) {
-                super.setPos(coordinates.get(i));
-            }
+    private Position circling(ArrayList<Position> coordinates) {
+        Position position = super.getPosition();
+        //Direction direction;
+        //if (canMove(position, entities)) {
+        for (int i = 0; i < coordinates.size(); i++) {
+            position = coordinates.get(i);
         }
-        
+        //}
+        return position;
+    }
+
+    private Position reverseDirection(ArrayList<Position> coordinates) {
+        Position position = super.getPosition();
+        //if (canMove(position, entities)) {
+        for (int i = coordinates.size() - 1; i >= 0; i--) {
+            position = coordinates.get(i);
+        }
+        //}
+        return position;
     }
 
     private boolean canMove(Position position, List<Entity> entities) {

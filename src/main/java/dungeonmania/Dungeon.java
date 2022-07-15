@@ -217,9 +217,11 @@ public class Dungeon {
         startBattles();
 
         // TODO: Spawn enemies
+        /* 
         List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
         entities.addAll(newEnemy);
         latestUnusedId+= newEnemy.size();
+        */
 
         // TODO: Update Spawned enemy potion status
     }
@@ -273,9 +275,11 @@ public class Dungeon {
         startBattles();
         
         // Spawn enemies
+        /* 
         List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
         entities.addAll(newEnemy);
         latestUnusedId+= newEnemy.size();
+        */
     }
 
     private List<ZombieToastSpawner> getSpawner() {

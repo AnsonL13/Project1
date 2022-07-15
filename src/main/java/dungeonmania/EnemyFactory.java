@@ -6,6 +6,7 @@ import java.util.Random;
 
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
+import dungeonmania.StaticEntities.SpiderSpawner;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -45,7 +46,7 @@ public class EnemyFactory {
         return null;
     } */
 
-    public List<Entity> spawn (String latestId, List<ZombieToastSpawner> zombieSpawners, List<Entity> entities) {    
+    public List<Entity> spawn (String latestId, List<ZombieToastSpawner> zombieSpawners, List<SpiderSpawner> spiderSpawners, List<Entity> entities) {    
         List<Entity> newEnemies = new ArrayList<Entity>();  
         --nextZombieRate;
         --nextSpiderRate;
@@ -63,24 +64,20 @@ public class EnemyFactory {
         
         if (spawnSpider()) {
             nextSpiderRate = spiderRate;
+            for (SpiderSpawner spawner : spiderSpawners) {
+                Position newSpawnPos = spawner.spawn(entities);
+                if (newSpawnPos != null) {
+                    newEnemies.add(new Spider(latestId, newSpawnPos, spiderHealth, spiderAttack));
+                }
+                latestId = getNewId(latestId);
+            }
+
             Position pos = null;
             pos = ifSpiderSpawn();
             newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
         return newEnemies;
     }
-
-    
-
-    // cannot moving upwards immediately because of the exist of boulder ???
-    /*
-    private boolean canSpawn(Position position, Boulder boulder) {
-        Position spawnerPosition = super.getPosition();
-        if (spawnerPosition.equals(boulder.getPosition())) {
-            return false;
-        }
-        return true;
-    }*/
 
 
     private Position ifSpiderSpawn() {
