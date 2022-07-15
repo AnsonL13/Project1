@@ -44,6 +44,7 @@ public class MovingEntitySystemTest {
         EntityResponse expectedMerc = new EntityResponse(initMerc.getId(), initMerc.getType(), new Position(-1, 0), true);
 
         //Check for goals and moving entity
+        System.out.println(getGoals(initDungonRes));
         assertTrue(getGoals(initDungonRes).contains(":exit"));
         assertTrue(getGoals(initDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, initPlayer);

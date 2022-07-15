@@ -76,7 +76,7 @@ public class ComplexGoal implements Goal {
 
     private String exitString(int index) {
         if (children.get(index).nameString().equals("exit")) {
-            return "exit";
+            return ":exit";
         }
         return children.get(index).listIncompleteGoals();
     }

@@ -97,7 +97,7 @@ public class Spider extends MovingEntity {
 
     int index = 0;
     private int getNextIndex(Boolean ifclockwise) {
-        index++;
+        //index++;
         return index;
     }
 
