@@ -10,9 +10,7 @@ import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.JsonObject;
@@ -101,7 +99,7 @@ public class DungeonManiaController {
 
         // Get all entities.
         List<EntityResponse> entities = new ArrayList<EntityResponse>();
-        for (Entity entity : dungeon.getEntities()) {
+        for (Entity entity : dungeon.getEntities()) {                    
             EntityResponse entityResponse = new EntityResponse(entity.getId(), entity.getType(), entity.getPosition(), entity.isInteractable());
             entities.add(entityResponse);
         }
@@ -122,6 +120,7 @@ public class DungeonManiaController {
 
                 List<ItemResponse> weaponryUsed = new ArrayList<ItemResponse>();
                 for (Item item : round.getWeaponryUsed()) {
+                    if (round.getWeaponryUsed() == null) break;
                     ItemResponse itemResponse = new ItemResponse(item.getId(), item.getType());
                     weaponryUsed.add(itemResponse);
                 }

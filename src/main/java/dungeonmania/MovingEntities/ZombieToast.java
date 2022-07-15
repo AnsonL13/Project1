@@ -27,7 +27,7 @@ public class ZombieToast extends MovingEntity {
      * @param health
      */
     public ZombieToast(String id, String type, Position position, boolean isInteractable, int attack, int health) {
-        super(id, health, attack, position);
+        super(id, attack, health, position);
         this.type = type;
         this.isInteractable = isInteractable;
         this.movement = randomMovement;
@@ -41,7 +41,7 @@ public class ZombieToast extends MovingEntity {
      * @param position
      */
     public ZombieToast(String id, int attack, int health, Position position) {
-        super(id, health, attack, position);
+        super(id, attack, health, position);
         this.isInteractable = false;
         this.type = "zombie_toast";
         this.movement = randomMovement;
@@ -95,11 +95,4 @@ public class ZombieToast extends MovingEntity {
         if (super.isInvicible() != true) movement = randomMovement;
     }
     
-    /** 
-     * @return String
-     */
-    public String getSimpleName() {
-        return "zombie";
-    }
-
 }

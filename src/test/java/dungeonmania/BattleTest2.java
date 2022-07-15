@@ -107,4 +107,22 @@ public class BattleTest2 {
         assertEquals(0, getEntities(postBattleResponse, "zombie_toast").size());
         assertEquals(0, getEntities(postBattleResponse, "sword").size());
     }
+
+    @Test
+    @DisplayName("Test simple zombie battle")
+    public void testNoWinners() {
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse initialResponse = controller.newGame("d_battleTest_basicMercenary", "c_battleTest_noWinners");
+        int zombieCount = countEntityOfType(initialResponse, "mercenary"); 
+        assertEquals(1, countEntityOfType(initialResponse, "player"));
+        assertEquals(1, zombieCount);
+        
+        // Push the player into the merc
+        DungeonResponse postBattleResponse = controller.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        assertBattleCalculations("mercenary", battle, true, "c_battleTest_noWinners", 8);
+        assertEquals(0, getEntities(postBattleResponse, "player").size());
+        assertEquals(0, getEntities(postBattleResponse, "mercenary").size());
+    }
 }

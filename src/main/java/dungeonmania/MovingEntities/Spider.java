@@ -17,12 +17,14 @@ public class Spider extends MovingEntity {
         super(id, health, attack, position);
         this.type = type;
         this.isInteractable = isInteractable;
+        isClockwise = true;
     }
 
     public Spider(String id, Position position, int attack, int health) {
         super(id, health, attack, position);
         this.type = "spider";
         this.isInteractable = false;
+        isClockwise = true;
     }
 
     public boolean isClockwise() {
@@ -31,7 +33,7 @@ public class Spider extends MovingEntity {
 
     private void moveUpwards(Position position, List<Entity> entities) {
         position = super.getPosition();
-        position.translateBy(Direction.UP);
+        position = position.translateBy(Direction.UP);
         if (canMove(position, entities)) {
             super.setPosition(position);
         }
@@ -42,39 +44,77 @@ public class Spider extends MovingEntity {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
-        ArrayList<Position> coordinates = new ArrayList<Position>();
         Position position = null;
-        Position newPos = super.getPosition();
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.RIGHT));
-        coordinates.add(newPos.translateBy(Direction.DOWN));
-        coordinates.add(newPos.translateBy(Direction.DOWN));
-        coordinates.add(newPos.translateBy(Direction.LEFT));
-        coordinates.add(newPos.translateBy(Direction.LEFT));
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.UP));
-        coordinates.add(newPos.translateBy(Direction.RIGHT));
+        ArrayList<Position> coordinates = getCoordinates();
+
         if (movedUp == false) {
+            movedUp = true;
             moveUpwards(position, entities);
         } else if (isClockwise = true) {
             circling(coordinates, position, entities);
         } else { 
             reverseDirection(coordinates, position, entities);
         }
-    
-            
+        
         return false;
     }
 
+    private ArrayList<Position> getCoordinates () {
+        ArrayList<Position> coordinates = new ArrayList<Position>();
+        Position position = super.getPosition();
+        /* 
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        */
+        /* 
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        */
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+
+        return coordinates;
+
+    }
+
+    int index = 0;
+    private int getNextIndex(Boolean ifclockwise) {
+        //index++;
+        return index;
+    }
 
     private void circling(ArrayList<Position> coordinates, Position position, List<Entity> entities) {
         position = super.getPosition();
+        super.setPosition(coordinates.get(getNextIndex(true)));
+        
         //Direction direction;
+        /*
         if (canMove(position, entities)) {
             for (int i = 0; i < coordinates.size(); i++) {
+                System.out.println(super.getPosition());
+                System.out.println(coordinates.get(i));
+
                 super.setPosition(coordinates.get(i));
             }
-        }
+        }*/
         
     }
 
@@ -82,10 +122,10 @@ public class Spider extends MovingEntity {
         position = super.getPosition();
         if (canMove(position, entities)) {
             for (int i = coordinates.size() - 1; i >= 0; i--) {
+                System.out.println(i);
                 super.setPosition(coordinates.get(i));
             }
         }
-        
     }
 
     private boolean canMove(Position position, List<Entity> entities) {
@@ -101,10 +141,6 @@ public class Spider extends MovingEntity {
             }
         }
         return true;
-    }
-
-    public String getSimpleName() {
-        return "spider";
     }
 
     public boolean isInteractable() {

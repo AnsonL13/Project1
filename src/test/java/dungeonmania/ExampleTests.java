@@ -128,7 +128,7 @@ public class ExampleTests {
         assertEquals(0, getEntities(res, "wall").size());
         assertEquals(0, getEntities(res, "treasure").size());
         assertEquals(1, getEntities(res, "player").size());
-    }
+    }*/
     
     @Test
     @DisplayName("Testing a map with 4 conjunction goal")
@@ -167,13 +167,13 @@ public class ExampleTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(res));
     }
-    *//*
-    private static DungeonResponse genericMercenarySequence(DungeonManiaController controller, String configFile) {*/
+    
+    private static DungeonResponse genericMercenarySequence(DungeonManiaController controller, String configFile) {
         /*
          *  exit   wall  wall  wall
          * player  [  ]  merc  wall
          *  wall   wall  wall  wall
-         *//* 
+         */
         DungeonResponse initialResponse = controller.newGame("d_battleTest_basicMercenary", configFile);
         int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
         
@@ -220,6 +220,6 @@ public class ExampleTests {
        DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
        BattleResponse battle = postBattleResponse.getBattles().get(0);
        assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
-    }*/
+    }
 
 }
