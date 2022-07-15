@@ -26,7 +26,6 @@ public class Player implements Entity {
     List<Item> inventory = new ArrayList<Item>();
     Map<String, Key> keys = new HashMap<String, Key>();
     List<Weapon> weapons = new ArrayList<Weapon>();
-    //List<Enemy> enemies = new ArrayList<Enemy>();
     List<Item> potionQueue = new ArrayList<Item>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
@@ -92,6 +91,10 @@ public class Player implements Entity {
         // Gets the current potion being used by the player. 
         if (potionQueue.size() < 1) return null;
         return potionQueue.get(0);
+    }
+
+    public void addToMovingEntites(MovingEntity entity) {
+        this.movingEntities.add(entity);
     }
 
     // Get the players weapons
@@ -250,11 +253,10 @@ public class Player implements Entity {
 
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
-        List<MovingEntity> rEntities = new ArrayList<MovingEntity>();
-        for (MovingEntity enemy : movingEntities) {
-            // potion effect active
-            if (enemy.isInvisible()) break;
-            // Check if player and enemy is on the the same square. 
+        Iterator<MovingEntity> enemyIterator = movingEntities.iterator();
+        MovingEntity enemy;
+        while(enemyIterator.hasNext()) {     
+            enemy = enemyIterator.next();
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
                 // Start the battle.
                 Battle battle = enemy.battleCalculate(this);
@@ -262,7 +264,8 @@ public class Player implements Entity {
                 // Check if the player or enemy won
                 if (battle.isPlayerWon()) {
                     // The player won, remove enemy from the list. 
-                    rEntities.add(enemy);
+                    enemyIterator.remove();
+                    // Remove from movingentities
                 }
 
                 if (battle.isEnemyWon()) {
@@ -271,7 +274,6 @@ public class Player implements Entity {
                 }
             }
         }
-        movingEntities.removeAll(rEntities);
         return battles;
     }
 
