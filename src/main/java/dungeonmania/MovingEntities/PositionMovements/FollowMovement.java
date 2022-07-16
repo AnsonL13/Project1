@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import dungeonmania.Entity;
-import dungeonmania.MovingEntities.MovingEntity;
+import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class FollowMovement extends Movement {
-    private MovingEntity enemy;
+    private Mercenary enemy;
 
-    public FollowMovement (MovingEntity enemy) {
+    public FollowMovement (Mercenary enemy) {
         this.enemy = enemy;
     }
 
@@ -23,6 +23,9 @@ public class FollowMovement extends Movement {
         Position rightMove = enemy.getPosition().translateBy(Direction.RIGHT);
         Position upMove = enemy.getPosition().translateBy(Direction.UP);
         Position downMove = enemy.getPosition().translateBy(Direction.DOWN);
+
+        if ((player.equals(leftMove) || player.equals(rightMove) || player.equals(upMove) || player.equals(downMove)) 
+                && ! enemy.isAllied()) return player;
 
         Position leftVector = Position.calculatePositionBetween(leftMove, player);
         Position rightVector = Position.calculatePositionBetween(rightMove, player);

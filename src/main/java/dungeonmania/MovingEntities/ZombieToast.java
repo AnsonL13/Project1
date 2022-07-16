@@ -3,7 +3,6 @@ package dungeonmania.MovingEntities;
 import java.util.List;
 
 import dungeonmania.Entity;
-import dungeonmania.Player;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
 import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;

@@ -284,7 +284,7 @@ public class Player implements Entity {
                 }
 
                 // Start the battle.
-                Battle battle = enemy.battleCalculate(this);
+                Battle battle = Battle.battleCalculate(this, enemy);
                 battles.add(battle);
                 // Check if the player or enemy won
                 if (battle.isPlayerWon()) {
@@ -339,17 +339,6 @@ public class Player implements Entity {
         if (newMovingEntities.size() == 0) return;
         movingEntities.addAll(newMovingEntities);
     }
-/* 
-    // return if entity if battle
-    public MovingEntity moveMovingEntities(Position player, 
-                List<Entity> entities) {
-        MovingEntity newBattle = null;
-        for (MovingEntity entity : movingEntities) {
-            Boolean ifBattle = entity.move(player, entities);
-            if (ifBattle) newBattle = entity;
-        }
-        return newBattle;
-    };*/
 
     public void moveMovingEntities(List<Entity> entities) {
         movingEntities.stream().forEach(o -> o.move(new Position(this.position.getX(), this.position.getY()), entities));
