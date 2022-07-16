@@ -64,7 +64,7 @@ public class EnemyGoalTest {
     public void testEnemySpawnerGoal() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpawner", "c_movementTest_testMovementDown");
+        DungeonResponse res = dmc.newGame("d_enemyGoal_simpleSpawner", "c_battleTest_noWinners");
 
         assertTrue(getGoals(res).contains(":enemies"));
         assertFalse(getGoals(res).contains(":treasure"));
@@ -72,13 +72,13 @@ public class EnemyGoalTest {
         assertFalse(getGoals(res).contains(":exit"));
 
         // pick up sword
-        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
         assertEquals(1, getInventory(res, "sword").size());
-        String swordId = getInventory(res, "sword").get(0).getId();
+        String spawnerID = getEntities(res, "zombie_toast_spawner").get(0).getId();
 
         // destory spawner
-        //res = dmc.interact(swordId);
-        assertEquals("", getGoals(res));
+        assertDoesNotThrow(() -> dmc.interact(spawnerID));
+        assertEquals("", getGoals(dmc.getDungeonResponseModel()));
     }
 
     @Test
