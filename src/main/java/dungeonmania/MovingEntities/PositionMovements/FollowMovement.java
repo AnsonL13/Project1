@@ -24,7 +24,8 @@ public class FollowMovement extends Movement {
         Position upMove = enemy.getPosition().translateBy(Direction.UP);
         Position downMove = enemy.getPosition().translateBy(Direction.DOWN);
 
-        if ((player.equals(leftMove) || player.equals(rightMove) || player.equals(upMove) || player.equals(downMove)) && enemy.isInteractable()) return player;
+        if ((player.equals(leftMove) || player.equals(rightMove) || player.equals(upMove) || player.equals(downMove)) 
+                && enemy.isAllied()) return player;
 
         Position leftVector = Position.calculatePositionBetween(leftMove, player);
         Position rightVector = Position.calculatePositionBetween(rightMove, player);
