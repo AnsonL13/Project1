@@ -1,5 +1,6 @@
 package dungeonmania.CollectableEntities.BombStates;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +34,38 @@ public class ActiveBombState implements BombState {
     }
 
     public void explode() {
+        // Check if bomb is next to an acitve switch
+        boolean canExplode = false;
+        List<Position> correctSquares = getCardinallyAdjacentPositions(bomb.getPosition().getX(), bomb.getPosition().getY());
+        outerloop:
+        for (Entity i : dungeon.getEntities()) {
+            if (i.getType().equals("switch")) {
+                boolean foundSwitch = false;
+                // Check if the switch is cardinally adjacent to the bomb
+                for (Position pos : correctSquares) {
+                    if (pos.equals(i.getPosition())) {
+                        foundSwitch = true;
+                    }
+                }
+
+                if (!foundSwitch) {
+                    continue;
+                }
+
+                // Look for a boulder on top of the switch. 
+                for (Entity j : dungeon.getEntities()) {
+                    if (j.getType().equals("boulder") && j.getPosition().equals(i.getPosition())) {
+                        canExplode = true;
+                        break outerloop;
+                    }
+                }
+            }
+        }
+
+        if (! canExplode) {
+            return;
+        }
+
         // Explode the bomb, remove everything with its radius (Including itself)
         List<Position> targetSquares = bomb.getTargetSquares();
         for (Position targetsquare : targetSquares) {
@@ -63,5 +96,14 @@ public class ActiveBombState implements BombState {
                 }
             }
         }
+    }
+
+    public List<Position> getCardinallyAdjacentPositions(int x, int y) {
+        List<Position> adjacentPositions = new ArrayList<>();
+        adjacentPositions.add(new Position(x  , y-1));
+        adjacentPositions.add(new Position(x+1, y));
+        adjacentPositions.add(new Position(x  , y+1));
+        adjacentPositions.add(new Position(x-1, y));
+        return adjacentPositions;
     }
 }
