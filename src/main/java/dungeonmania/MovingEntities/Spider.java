@@ -53,6 +53,7 @@ public class Spider extends MovingEntity {
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.RIGHT));
     
         return coordinates;
 
@@ -76,51 +77,13 @@ public class Spider extends MovingEntity {
         
         return false;
     }
-    /* 
-    private ArrayList<Position> getCoordinates() {
-        ArrayList<Position> coordinates = new ArrayList<Position>();
-        Position position = super.getPosition();
-        /* 
-        coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        coordinates.add(position.translateBy(Direction.UP));
-        coordinates.add(position.translateBy(Direction.UP));
-        */
-        /* 
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.UP));
-        coordinates.add(position.translateBy(Direction.UP));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        
-    
-        coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.DOWN));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        coordinates.add(position.translateBy(Direction.LEFT));
-        coordinates.add(position.translateBy(Direction.UP));
-        coordinates.add(position.translateBy(Direction.UP));
-        coordinates.add(position.translateBy(Direction.RIGHT));
-    
-        return coordinates;
-
-    }
-    */
     
     private int getNextIndexClockwise(Boolean isClockwise) {
         int i = index;
         System.out.println(i);
         if (isClockwise) {
             if (index >= 7) {
-                index = index - 7;
+                index = index - 8;
             }
             index++;   
         }
@@ -140,12 +103,12 @@ public class Spider extends MovingEntity {
 
     private void circling(ArrayList<Position> coordinates, Position position, List<Entity> entities) {
         position = super.getPosition();
-        System.out.println("here");
+        //System.out.println("here");
         Position nextPos = getCoordinates().get(getNextIndexClockwise(true));
         if (canMove(nextPos, entities)) {
             //super.setPosition(coordinates.get(getNextIndexClockwise(true)));
-            System.out.println("here2");
-            System.out.println(nextPos);
+            //System.out.println("here2");
+            //System.out.println(nextPos);
             super.setPosition(nextPos);
         }
         //Direction direction;
