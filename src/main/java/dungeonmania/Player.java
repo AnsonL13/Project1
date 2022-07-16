@@ -14,6 +14,7 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Potion;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
@@ -273,6 +274,15 @@ public class Player implements Entity {
         while(enemyIterator.hasNext()) {
             enemy = enemyIterator.next();
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
+
+                // Check for allied mercenary
+                if (enemy instanceof Mercenary) {
+                    Mercenary mercenary = (Mercenary) enemy;
+                    if (mercenary.isAllied()) {
+                        continue;
+                    }
+                }
+
                 // Start the battle.
                 Battle battle = enemy.battleCalculate(this);
                 battles.add(battle);
@@ -388,6 +398,20 @@ public class Player implements Entity {
             if (entity.getId().equals(Id)) {
                 movingEntities.remove(entity);
                 break;
+            }
+        }
+    }
+
+    public void removeTreasure(int count) {
+        int counter = 0;
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext() && counter < count) {     
+            item = inventoryIterator.next();     
+
+            if (item instanceof Treasure) {
+                inventoryIterator.remove();
+                counter++;
             }
         }
     }

@@ -1,6 +1,7 @@
 package dungeonmania.MovingEntities;
 
 import dungeonmania.util.Position;
+import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
@@ -174,15 +175,24 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         // Check if player is within the specified bribing radius
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
             (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
-                return true;
+                // Check if player has enough gold
+                if (player.treasureAmount() >= bribeAmount) {
+                    return true;
+                }
         }
 
-        // Check if player has enough gold
-        if (player.treasureAmount() < bribeAmount) {
-            return false;
-        }
+        return false;
+    }
 
-        return true;
+    public void interact(Dungeon dungeon) {
+        this.isAllied = true;
+
+        // Remove player treasure
+        dungeon.getPlayer().removeTreasure(bribeAmount);
+    }
+
+    public boolean isAllied() {
+        return isAllied;
     }
 }
 
