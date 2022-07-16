@@ -11,6 +11,7 @@ import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.InvincibilityPotion;
 import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
+import dungeonmania.CollectableEntities.Potion;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.MovingEntity;
@@ -26,7 +27,7 @@ public class Player implements Entity {
     List<Item> inventory = new ArrayList<Item>();
     Map<String, Key> keys = new HashMap<String, Key>();
     List<Weapon> weapons = new ArrayList<Weapon>();
-    List<Item> potionQueue = new ArrayList<Item>();
+    List<Potion> potionQueue = new ArrayList<Potion>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -89,7 +90,7 @@ public class Player implements Entity {
 
     public Item currentPotion() {
         // Gets the current potion being used by the player. 
-        if (potionQueue.size() < 1) return null;
+        if (potionQueue.size() == 0) return null;
         return potionQueue.get(0);
     }
 
@@ -231,20 +232,29 @@ public class Player implements Entity {
                 }
 
                 else if (item.getType().equals("invincibility_potion")) {
-                    // Changing enemy status
-                    InvincibilityPotion potion = (InvincibilityPotion)item;
-                    setMovingEntitiesInvincible( potion.getInvincibilityPotionDuration());
                     // Remove from inventory
+                    inventory.remove(item);
+
                     // Add to potions queue
+                    potionQueue.add((Potion) item);
+
+                    // Changing enemy status
+                    updateSpawnedEnemies();
+                    
+                    break;
                 }
 
                 else if (item.getType().equals("invisibility_potion")) {
-                    // Changing enemy status
-                    InvisibilityPotion potion = (InvisibilityPotion)item;
-                    setMovingEntitiesInvisible( potion.getInvisibilityPotionPuration() );
-
                     // Remove from inventory
+                    inventory.remove(item);
+
                     // Add to potions queue
+                    potionQueue.add((Potion) item);
+
+                    // Changing enemy status
+                    updateSpawnedEnemies();
+
+                    break;
                 }
                 break;
             }
@@ -253,20 +263,19 @@ public class Player implements Entity {
 
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
+        if (isInvisible()) return battles;
         Iterator<MovingEntity> enemyIterator = movingEntities.iterator();
         MovingEntity enemy;
-        while(enemyIterator.hasNext()) {     
+        while(enemyIterator.hasNext()) {
             enemy = enemyIterator.next();
-            if (enemy.isInvisible()) break;
             if (enemy.getPosition().getX() == position.getX() && enemy.getPosition().getY() == position.getY()) {
                 // Start the battle.
                 Battle battle = enemy.battleCalculate(this);
                 battles.add(battle);
                 // Check if the player or enemy won
                 if (battle.isPlayerWon()) {
-                    // The player won, remove enemy from the list. 
-                    enemyIterator.remove();
                     // Remove from movingentities
+                    enemyIterator.remove();
                 }
 
                 if (battle.isEnemyWon()) {
@@ -316,15 +325,7 @@ public class Player implements Entity {
         if (newMovingEntities.size() == 0) return;
         movingEntities.addAll(newMovingEntities);
     }
-
-    private void setMovingEntitiesInvincible(int duration) {
-        movingEntities.stream().forEach(o -> o.setInvincible(duration));
-    };
-
-    private void setMovingEntitiesInvisible(int duration) {
-        movingEntities.stream().forEach(o -> o.setInvisible(duration));
-    };
-
+/* 
     // return if entity if battle
     public MovingEntity moveMovingEntities(Position player, 
                 List<Entity> entities) {
@@ -334,7 +335,47 @@ public class Player implements Entity {
             if (ifBattle) newBattle = entity;
         }
         return newBattle;
-    };
+    };*/
 
+    public void moveMovingEntities(List<Entity> entities) {
+        movingEntities.stream().forEach(o -> o.move(new Position(this.position.getX(), this.position.getY()), entities));
+    }
 
+    public void updatePotions() {
+        boolean goToNextPotion = false;
+        if (potionQueue.size() > 0) {
+            Potion currentPotion = potionQueue.get(0);
+            currentPotion.decrementDuration();
+            if (currentPotion.getDuration() == 0) {
+                potionQueue.remove(currentPotion);
+                goToNextPotion = true;
+            }
+        }
+
+        // Go to the next potion. 
+        if (goToNextPotion) {
+            updateSpawnedEnemies();
+        }
+    }
+
+    public void updateSpawnedEnemies() {
+        if (potionQueue.size() > 0) {
+            if (potionQueue.get(0) instanceof InvincibilityPotion) {
+                movingEntities.stream().forEach(o -> o.setPotionStatus(false, true));
+            }
+
+            else if (potionQueue.get(0) instanceof InvisibilityPotion) {
+                movingEntities.stream().forEach(o -> o.setPotionStatus(true, false));
+            }
+        }
+    }
+
+    public boolean isInvisible() {
+        if (potionQueue.size() > 0) {
+            if (potionQueue.get(0) instanceof InvisibilityPotion) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
