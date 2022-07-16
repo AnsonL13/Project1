@@ -95,7 +95,7 @@ public class ExampleTests {
                 nextPositionElement = 0;
             }
         }
-    }
+    }*/
         
     @Test
     @DisplayName("Test surrounding entities are removed when placing a bomb next to an active switch with config file bomb radius set to 2")
@@ -128,7 +128,7 @@ public class ExampleTests {
         assertEquals(0, getEntities(res, "wall").size());
         assertEquals(0, getEntities(res, "treasure").size());
         assertEquals(1, getEntities(res, "player").size());
-    }*/
+    }
     
     @Test
     @DisplayName("Testing a map with 4 conjunction goal")
