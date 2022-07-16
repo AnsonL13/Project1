@@ -23,7 +23,8 @@ public class FollowMovement extends Movement {
         Position rightMove = enemy.getPosition().translateBy(Direction.RIGHT);
         Position upMove = enemy.getPosition().translateBy(Direction.UP);
         Position downMove = enemy.getPosition().translateBy(Direction.DOWN);
-
+        if (player.equals(leftMove) || player.equals(rightMove) 
+            || player.equals(upMove) || player.equals(downMove)) return player;
         Position leftVector = Position.calculatePositionBetween(leftMove, player);
         Position rightVector = Position.calculatePositionBetween(rightMove, player);
         Position upVector = Position.calculatePositionBetween(upMove, player);
@@ -43,6 +44,7 @@ public class FollowMovement extends Movement {
             .sorted(Map.Entry.comparingByValue())
             .forEachOrdered(o -> sortedMap.put(o.getKey(), o.getValue()));
         Position smallest = sortedMap.keySet().stream().findFirst().get();
+        System.out.println(sortedMap);
 
         // sort map by double value and return one with smallest 
         // distance and not blocked
