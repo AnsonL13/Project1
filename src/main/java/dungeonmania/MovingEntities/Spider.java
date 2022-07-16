@@ -53,7 +53,7 @@ public class Spider extends MovingEntity {
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.RIGHT));
-        coordinates.add(position.translateBy(Direction.RIGHT));
+        //coordinates.add(position.translateBy(Direction.RIGHT));
     
         return coordinates;
 

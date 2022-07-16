@@ -54,26 +54,13 @@ public class EnemyFactory {
             nextSpiderRate = spiderRate;
             Position pos = null;
             pos = ifSpiderSpawn();
-            Spider spider = new Spider(latestId, pos, spiderAttack, spiderHealth);
-            spider.move(pos, entities);
-            newEnemies.add(spider);
-            //newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
+            //Spider spider = new Spider(latestId, pos, spiderAttack, spiderHealth);
+            //spider.move(pos, entities);
+            //newEnemies.add(spider);
+            newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
         return newEnemies;
     }
-
-    
-
-    // cannot moving upwards immediately because of the exist of boulder ???
-    /*
-    private boolean canSpawn(Position position, Boulder boulder) {
-        Position spawnerPosition = super.getPosition();
-        if (spawnerPosition.equals(boulder.getPosition())) {
-            return false;
-        }
-        return true;
-    }*/
-
 
     private Position ifSpiderSpawn() {
         Random random = new Random();
