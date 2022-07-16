@@ -22,9 +22,6 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int bribeRadius;
 
     private Movement movement;
-    private RunAwayMovement runAwayMovement = new RunAwayMovement(this);
-    private RandomMovement randomMovement = new RandomMovement(this);
-    private FollowMovement followMovement = new FollowMovement(this);
 
     /**
      * Constructor
@@ -47,8 +44,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.isInteractable = isInteractable;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        this.movement = followMovement;
-        
+        this.movement = new FollowMovement(this);
+        this.isAllied = false;
     }
 
     /**
@@ -70,8 +67,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.isInteractable = false;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        this.movement = followMovement;
-                
+        this.movement = new FollowMovement(this);
+        this.isAllied = false;
     }
     
     /** 
@@ -80,40 +77,44 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      * @return boolean
      */
     @Override
-    public boolean move(Position player, List<Entity> entities) {
-        Position newPos = movement.moveEnemy(player, entities);
+    public void move(Position playerPos, List<Entity> entities) {
+        Position newPos = null;
+
+        // Check if mercenary is allied
+        if (isAllied) {
+            this.movement = new FollowMovement(this);
+        }
+
+        else {
+            // Check if player is Invincible
+            if (isInvincible) {
+                changeMovement(new RunAwayMovement(this));
+            }
+
+            // Check if player is Invisible
+            else if (isInvisible) {
+                changeMovement(new RandomMovement(this));
+            }
+
+            else {
+                changeMovement(new FollowMovement(this));
+            }
+        }
+
+        newPos = movement.moveEnemy(playerPos, entities);
+
         if (newPos != null) {
             super.setPosition(newPos);
-        }  
-        
-        setPotions();
-        return super.isBattle(player);
-    }
-    
-    /** 
-     * @param duration
-     */
-    @Override
-    public void setInvincible(int duration) {
-        super.setInvincible(duration);
-        movement = runAwayMovement;
-    }
-    
-    /** 
-     * @param duration
-     */
-    @Override
-    public void setInvisible(int duration) {
-        super.setInvisible(duration);
-        movement = randomMovement;
+        }
     }
 
-    @Override
-    public void setPotions() {
-        super.setPotions();
-        if (super.isInvisible() != true && super.isInvicible() != true) {
-            movement = followMovement;
-        }
+    /** 
+     * @param newMovement
+     * @return void
+     * Changes the movement strategy of the zombie.
+     */
+    public void changeMovement(Movement newMovement) {
+        this.movement = newMovement;
     }
     
     /** 

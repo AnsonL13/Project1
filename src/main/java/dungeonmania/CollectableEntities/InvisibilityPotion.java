@@ -2,7 +2,7 @@ package dungeonmania.CollectableEntities;
 
 import dungeonmania.util.Position;
 
-public class InvisibilityPotion implements CollectableEntity {
+public class InvisibilityPotion implements Potion {
     private String id;
     private String type;
     private Position position;
@@ -40,5 +40,13 @@ public class InvisibilityPotion implements CollectableEntity {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public int getDuration() {
+        return invisibilityPotionPuration;
+    }
+
+    public void decrementDuration() {
+        this.invisibilityPotionPuration--;
     }
 }

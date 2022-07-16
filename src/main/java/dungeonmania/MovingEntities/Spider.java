@@ -40,7 +40,7 @@ public class Spider extends MovingEntity {
     }
 
     @Override
-    public boolean move(Position player, List<Entity> entities) {
+    public void move(Position playerPos, List<Entity> entities) {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
@@ -55,8 +55,6 @@ public class Spider extends MovingEntity {
         } else { 
             reverseDirection(coordinates, position, entities);
         }
-        
-        return false;
     }
 
     private ArrayList<Position> getCoordinates () {

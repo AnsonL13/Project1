@@ -5,6 +5,8 @@ import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +26,7 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
     }
 
     public Position spawn(List<Entity> entities) { 
-        List<Position> adj = position.getAdjacentPositions();
+        List<Position> adj = getCardinallyAdjacentPositions(position.getX(), position.getY());
         for (Position pos : adj) {
             if (canSpawn(pos, entities)) {
                 return pos;
@@ -35,9 +37,7 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
 
     public boolean canSpawn(Position pos, List<Entity> entities) {
         for (Entity entity : entities) {
-            if (entity instanceof MovingEntity && entity.getPosition().equals(pos)) {
-                return false;
-            } else if (entity instanceof StaticEntity && entity.getPosition().equals(pos)) { //wall or door, boulder
+            if (entity instanceof StaticEntity && entity.getPosition().equals(pos)) { //wall or door, boulder
                 return false;
             }
         }
@@ -65,9 +65,17 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
         this.position = position;
     }
 
+    public List<Position> getCardinallyAdjacentPositions(int x, int y) {
+        List<Position> adjacentPositions = new ArrayList<>();
+        adjacentPositions.add(new Position(x  , y-1));
+        adjacentPositions.add(new Position(x+1, y));
+        adjacentPositions.add(new Position(x  , y+1));
+        adjacentPositions.add(new Position(x-1, y));
+        return adjacentPositions;
+    }
+
     public boolean interactActionCheck(Player player) {
         // Check if player cardinally adjacent to spawner
-        System.out.println(player.getWeapons().size());
         if (Position.isAdjacent(position, player.getPosition()) && ! player.getWeapons().isEmpty()) {
             return true;
         }

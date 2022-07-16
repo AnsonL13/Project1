@@ -23,7 +23,7 @@ public class BattleTest {
         // Create zombie and set player is invincible
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 10, 10, intial);
-        zombie.setInvincible(5);
+        zombie.setPotionStatus(false, true);
 
         //Create player
         Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 5, 5);
