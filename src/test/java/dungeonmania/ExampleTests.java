@@ -84,10 +84,11 @@ public class ExampleTests {
         movementTrajectory.add(new Position(x-1, y+1));
         movementTrajectory.add(new Position(x-1, y));
         movementTrajectory.add(new Position(x-1, y-1));
-
+        assertEquals(new Position(x, y), getEntities(res, "spider").get(0).getPosition());
         // Assert Circular Movement of Spider
+        System.out.println(x);
+        System.out.println(y);
         for (int i = 0; i <= 20; ++i) {
-            System.out.println("Hi");
             res = dmc.tick(Direction.UP);
             assertEquals(movementTrajectory.get(nextPositionElement), getEntities(res, "spider").get(0).getPosition());
             

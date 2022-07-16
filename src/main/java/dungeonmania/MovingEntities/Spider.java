@@ -12,6 +12,8 @@ public class Spider extends MovingEntity {
     private String type;
     private boolean isInteractable;
     private boolean movedUp;
+    private ArrayList<Position> coordinates = new ArrayList<Position>();
+    private int index = 0;
 
     public Spider(String id, String type, Position position, boolean isInteractable, int attack, int health) {
         super(id, health, attack, position);
@@ -39,13 +41,29 @@ public class Spider extends MovingEntity {
         }
     }
 
+    private ArrayList<Position> getCoordinates() {
+        ArrayList<Position> coordinates = new ArrayList<Position>();
+        Position position = super.getPosition();
+
+        coordinates.add(position.translateBy(Direction.RIGHT));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.DOWN));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.LEFT));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.UP));
+        coordinates.add(position.translateBy(Direction.RIGHT));
+    
+        return coordinates;
+
+    }
+
     @Override
     public boolean move(Position player, List<Entity> entities) {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
         Position position = null;
-        ArrayList<Position> coordinates = getCoordinates();
 
         if (movedUp == false) {
             movedUp = true;
@@ -58,8 +76,8 @@ public class Spider extends MovingEntity {
         
         return false;
     }
-
-    private ArrayList<Position> getCoordinates () {
+    /* 
+    private ArrayList<Position> getCoordinates() {
         ArrayList<Position> coordinates = new ArrayList<Position>();
         Position position = super.getPosition();
         /* 
@@ -81,7 +99,8 @@ public class Spider extends MovingEntity {
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.LEFT));
         coordinates.add(position.translateBy(Direction.LEFT));
-        */
+        
+    
         coordinates.add(position.translateBy(Direction.RIGHT));
         coordinates.add(position.translateBy(Direction.DOWN));
         coordinates.add(position.translateBy(Direction.DOWN));
@@ -90,21 +109,45 @@ public class Spider extends MovingEntity {
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.UP));
         coordinates.add(position.translateBy(Direction.RIGHT));
-
+    
         return coordinates;
 
     }
+    */
+    
+    private int getNextIndexClockwise(Boolean isClockwise) {
+        int i = index;
+        System.out.println(i);
+        if (isClockwise) {
+            if (index >= 7) {
+                index = index - 7;
+            }
+            index++;   
+        }
+        return i;
+    }
 
-    int index = 0;
-    private int getNextIndex(Boolean ifclockwise) {
-        index++;
-        return index;
+    private int getNextIndexAntiClockwise(Boolean isClockwise) {
+        int i = index;
+        if (! isClockwise) {
+            if (index <= 0) {
+                index = index + 7;
+            }
+            index--;
+        }
+        return i;
     }
 
     private void circling(ArrayList<Position> coordinates, Position position, List<Entity> entities) {
         position = super.getPosition();
-        super.setPosition(coordinates.get(getNextIndex(true)));
-        
+        System.out.println("here");
+        Position nextPos = getCoordinates().get(getNextIndexClockwise(true));
+        if (canMove(nextPos, entities)) {
+            //super.setPosition(coordinates.get(getNextIndexClockwise(true)));
+            System.out.println("here2");
+            System.out.println(nextPos);
+            super.setPosition(nextPos);
+        }
         //Direction direction;
         /*
         if (canMove(position, entities)) {
@@ -120,12 +163,19 @@ public class Spider extends MovingEntity {
 
     private void reverseDirection(ArrayList<Position> coordinates, Position position,  List<Entity> entities) {
         position = super.getPosition();
+        Position nextPos = getCoordinates().get(getNextIndexAntiClockwise(false));
+        if (canMove(nextPos, entities)) {
+            //super.setPosition(coordinates.get(getNextIndexAntiClockwise(false)));
+            super.setPosition(nextPos);
+        }
+        /* 
         if (canMove(position, entities)) {
             for (int i = coordinates.size() - 1; i >= 0; i--) {
                 System.out.println(i);
                 super.setPosition(coordinates.get(i));
             }
         }
+        */
     }
 
     private boolean canMove(Position position, List<Entity> entities) {

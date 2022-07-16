@@ -54,7 +54,10 @@ public class EnemyFactory {
             nextSpiderRate = spiderRate;
             Position pos = null;
             pos = ifSpiderSpawn();
-            newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
+            Spider spider = new Spider(latestId, pos, spiderAttack, spiderHealth);
+            spider.move(pos, entities);
+            newEnemies.add(spider);
+            //newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
         return newEnemies;
     }
