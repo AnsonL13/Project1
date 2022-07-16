@@ -26,10 +26,14 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.google.gson.Gson;
 import java.util.stream.Collectors;
+
+import javax.naming.directory.InitialDirContext;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -58,7 +62,7 @@ public class Dungeon {
     List<Battle> battles = new ArrayList<Battle>();
     Map<String, Door> doors = new HashMap<String, Door>();
     Map<String, Portal> portals = new HashMap<String, Portal>();
-    Map<String, Bomb> bombs = new HashMap<String, Bomb>();
+    List<Bomb> bombs = new ArrayList<Bomb>();
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
@@ -98,6 +102,9 @@ public class Dungeon {
             // Player uses the item
             player.useItem(itemUsedId);
         }
+
+        // Explode any bombs
+        bombs.stream().forEach(o -> o.explode());
 
         // Move all moving entities. 
         player.moveMovingEntities(entities);
@@ -143,18 +150,22 @@ public class Dungeon {
         if (normalMove) {
             player.setPosition(targetSquare);
         }
-        
+
         // Check if moved into a collectable entity
-        for (String collectableEntity : collectableEntities.keySet()) {
-            Position collectablePosition = collectableEntities.get(collectableEntity).getPosition();
+        Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
+        Entry<String, CollectableEntity> collectable;
+        while(collectableIterator.hasNext()) {     
+            collectable = collectableIterator.next();     
+            Position collectablePosition = collectable.getValue().getPosition();
             // Check if collectable entity is in the same square as the player. 
             if (collectablePosition.getX() == targetSquare.getX() && collectablePosition.getY() == targetSquare.getY()) {
                 // Check if the item is a bomb
-                if (collectableEntities.get(collectableEntity).getType().equals("bomb")) {
-                    for (String bomb : bombs.keySet()) {
-                        if (bombs.get(bomb).getId().equals(collectableEntities.get(collectableEntity).getId())) {
+                if (collectable.getValue().getType().equals("bomb")) {
+                    for (Bomb bomb : bombs) {
+                        if (bomb.getId().equals(collectable.getValue().getId())) {
                             // Change the state of the bomb
-                            bombs.get(bomb).pickUp();
+                            bomb.pickUp();
+                            collectableIterator.remove();
                             break;
                         }
                     }
@@ -162,14 +173,17 @@ public class Dungeon {
                 
                 else {
                     // Collect the item
-                    player.addToInventory(collectableEntities.get(collectableEntity));
+                    player.addToInventory(collectable.getValue());
                     // Remove from list of entities
-                    entities.remove(collectableEntities.get(collectableEntity));
-                    collectableEntities.remove(collectableEntity);
+                    entities.remove(collectable.getValue());
+                    collectableIterator.remove();
                     break;
                 }
             }
         }
+
+        // Explode any bombs
+        bombs.stream().forEach(o -> o.explode());
 
         // Check if moved into an enemy (Battle)
         startBattles();
@@ -571,16 +585,59 @@ public class Dungeon {
         this.collectableEntities.put(latestUnusedId, entity);
     }
 
-    public void addToBombs(String latestUnusedId, Bomb entity) {
-        this.bombs.put(latestUnusedId, entity);
+    public void addToBombs(Bomb entity) {
+        this.bombs.add(entity);
     }
 
+    public void removeFromBombs(Bomb entity) {
+        this.bombs.remove(entity);
+    }
+
+    /*
+     * Remove from dungeon list of entities. 
+     */
     public void removeEntity(String Id) {
         for (Entity entity : entities) {
             if (entity.getId().equals(Id)) {
                 entities.remove(entity);
                 break;
             }
+        }
+    }
+
+    /*
+     * Removes entity from all data structres except collectable entities,
+     * for bomb explosion.
+     */
+    public void removeEntityFully(String Id) {
+        for (Entity entity : entities) {
+            if (entity.getId().equals(Id)) {
+                if (entity instanceof InteractableEntity) {
+                    interactableEntities.remove(entity);
+                }
+
+                if (entity instanceof Door) {
+                    doors.remove(Id);
+                }
+
+                if (entity instanceof Portal) {
+                    portals.remove(Id);
+                }
+
+                if (entity instanceof Bomb) {
+                    bombs.remove(entity);
+                }
+                break;
+            }
+        }
+    }
+
+    public void removeCollectable(String Id) {
+        for (String collectableEntity : collectableEntities.keySet()) {
+            if (collectableEntity.equals(Id)) {
+                collectableEntities.remove(collectableEntity);
+            }
+            break;
         }
     }
 

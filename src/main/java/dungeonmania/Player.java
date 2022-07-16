@@ -68,6 +68,10 @@ public class Player implements Entity {
         return inventory;
     }
 
+    public List<MovingEntity> getMovingEntities() {
+        return movingEntities;
+    }
+
     public void addToInventory(Item item) {
         this.inventory.add(item);
 
@@ -377,5 +381,14 @@ public class Player implements Entity {
             }
         }
         return false;
+    }
+
+    public void removeFromMovingEntities(String Id) {
+        for (MovingEntity entity : movingEntities) {
+            if (entity.getId().equals(Id)) {
+                movingEntities.remove(entity);
+                break;
+            }
+        }
     }
 }

@@ -189,7 +189,7 @@ public class EntityFactory {
                 yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                 Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"), dungeon, dungeon.getPlayer());
                 dungeon.addToEntities(bomb);
-                dungeon.addToBombs(Integer.toString(latestUnusedId), bomb);
+                dungeon.addToBombs(bomb);
                 dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), bomb);
                 break;
 
