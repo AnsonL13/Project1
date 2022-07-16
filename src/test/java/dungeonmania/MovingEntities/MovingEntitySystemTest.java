@@ -189,6 +189,6 @@ public class MovingEntitySystemTest {
         // Check no battles and goals all done
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":enemies"));
-        assertEquals(0,  actualDungonRes.getBattles().size());
+        assertEquals(1,  actualDungonRes.getBattles().size());
     }
 }

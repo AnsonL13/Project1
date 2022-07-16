@@ -81,37 +81,52 @@ public class Dungeon {
      */
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
         // Check if item is not in the inventory
+        boolean illegalItem = false;
         boolean foundItem = false;
         for (Item item : player.getInventory()) {
             if (item.getId().equals(itemUsedId)) {
                 if (! (item.getType().equals("bomb") || 
                     item.getType().equals("invincibility_potion") || 
                     item.getType().equals("invisibility_potion"))) {
-                    throw new IllegalArgumentException(itemUsedId);
+                    illegalItem = true;
                 }
                 foundItem = true;
             }
         }
 
-        if (! foundItem) {
-            throw new InvalidActionException(itemUsedId);
+        if (! illegalItem && foundItem) {
+            // Player uses the item
+            player.useItem(itemUsedId);
         }
 
-        // Player uses the item
-        player.useItem(itemUsedId);
-
-        //Move movingentities
-        player.moveMovingEntities(player.getPosition(), entities);
+        // Move all moving entities. 
+        player.moveMovingEntities(entities);
         
-        // Battles
+        // Check for Battles
         startBattles();
 
         // Spawn enemies
         String nextID = Integer.toString(latestUnusedId);
-        List<MovingEntity> newEnemy = spawner.spawn(nextID, getSpawner(), entities);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
         entities.addAll(newEnemy);
         player.addAllEnemies(newEnemy);
         latestUnusedId+= newEnemy.size();
+
+        // Update spawned enemy potion status. 
+        player.updateSpawnedEnemies();
+
+        // Update player potions
+        player.updatePotions();
+        
+        // Check if illegal argument
+        if (illegalItem) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
+        
+        // Check if item not inside players inventory
+        if (! foundItem) {
+            throw new InvalidActionException(itemUsedId);
+        }
     }
 
     /**
@@ -128,7 +143,7 @@ public class Dungeon {
         if (normalMove) {
             player.setPosition(targetSquare);
         }
-
+        
         // Check if moved into a collectable entity
         for (String collectableEntity : collectableEntities.keySet()) {
             Position collectablePosition = collectableEntities.get(collectableEntity).getPosition();
@@ -160,25 +175,23 @@ public class Dungeon {
         startBattles();
 
         //Move movingentities
-        player.moveMovingEntities(player.getPosition(), entities);
-
+        player.moveMovingEntities(entities);
+        
         // Check if Enemy has moved into a player (Battle)
         startBattles();
         
         // Spawn enemies
         String nextID = Integer.toString(latestUnusedId);
-        List<MovingEntity> newEnemy = spawner.spawn(nextID, getSpawner(), entities);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
         entities.addAll(newEnemy);
         player.addAllEnemies(newEnemy);
         latestUnusedId+= newEnemy.size();
-    }
-
-    private List<ZombieToastSpawner> getSpawner() {
-        List<ZombieToastSpawner> allSpawners = entities.stream()
-            .filter( o -> o instanceof ZombieToastSpawner)
-            .map(ZombieToastSpawner.class::cast)
-            .collect(Collectors.toList());
-        return allSpawners;
+        
+        // Update spawned enemy potion status. 
+        player.updateSpawnedEnemies();
+        
+        // Update player potions
+        player.updatePotions();
     }
 
     /**
@@ -301,8 +314,7 @@ public class Dungeon {
         List<Battle> newBattles = player.battle();
         // Add all new battles to the list of battles.
         this.battles.addAll(newBattles);
-
-        // 
+        
         for (Battle battle : newBattles) {
             if (battle.isEnemyWon()) {
                 entities.remove(player);

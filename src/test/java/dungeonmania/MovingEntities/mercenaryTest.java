@@ -108,11 +108,11 @@ public class mercenaryTest {
         assertEquals(new Position(0, 0), mercenary.getPosition());
 
         // Expect no movement after potion
-        mercenary.setInvincible(1);
+        mercenary.setPotionStatus(false, true);
         mercenary.move(new Position(1, -1), stuck);
         assertEquals(new Position(0, 0), mercenary.getPosition());
 
-        mercenary.setInvisible(1);
+        mercenary.setPotionStatus(true, false);
         mercenary.move(new Position(1, -1), stuck);
         assertEquals(new Position(0, 0), mercenary.getPosition());
     }
@@ -122,10 +122,10 @@ public class mercenaryTest {
     public void testMercRunAway() {
         Position intial = new Position(0, 0);
         Mercenary mercenary = new Mercenary("1", intial, 1, 1, 1, 1, 1, 1);
-        mercenary.setInvincible(2);
+        mercenary.setPotionStatus(false, true);
 
         // Simulate merc move
-        assertEquals(true, mercenary.isInvicible());
+        assertEquals(true, mercenary.isInvincible());
         mercenary.move(new Position(5,5), new ArrayList<Entity>());
         assertEquals(new Position(-1, 0), mercenary.getPosition());
         assertEquals(mercenary.getId(), "1");
@@ -135,14 +135,12 @@ public class mercenaryTest {
         assertEquals(new Position(0, 0), mercenary.getPosition());
         assertEquals(mercenary.getId(), "1");
 
-        //Check after duration moves closer to player
-        assertEquals(mercenary.getId(), "1");
+        mercenary.setPotionStatus(false, false);
 
         intial = mercenary.getPosition();
         mercenary.move(new Position(5,5), new ArrayList<Entity>());
         assertEquals(new Position(1, 0), mercenary.getPosition());
-        assertEquals(false, mercenary.isInvicible());
-
+        assertEquals(false, mercenary.isInvincible());
     }
 
     @Test
@@ -150,18 +148,12 @@ public class mercenaryTest {
     public void testMercRandomMobe() {
         Position intial = new Position(0, 0);
         Mercenary mercenary = new Mercenary("1", intial, 1, 1, 1, 1, 1, 1);
-        mercenary.setInvisible(2);
+        mercenary.setPotionStatus(true, false);
 
         // Simulate merc move
         mercenary.move(new Position(5,5), new ArrayList<Entity>());
         assertEquals(mercenary.getId(), "1");
         assertEquals(true, mercenary.isInvisible());
         mercenary.move(new Position(5,5), new ArrayList<Entity>());
-
-        //Check after duration moves closer to player
-        assertEquals(false, mercenary.isInvisible());
-
-
     }
-    
 }

@@ -15,39 +15,20 @@ import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.util.Position;
 
 public class MovingEntity implements Entity {
-    private int isInvicible;
-    private int isInvisible;
-    private double health;
-    private int attack;
-    private String id;
-    private Position position;
-    private boolean inBattle;
-    private String type;
+    protected boolean isInvincible;
+    protected boolean isInvisible;
+    protected double health;
+    protected double attack;
+    protected String id;
+    protected Position position;
+    protected boolean inBattle;
+    protected String type;
 
-    public MovingEntity (String id, int attack, int health, Position position) { 
-        this.health = (double) health;
+    public MovingEntity (String id, double attack, double health, Position position) { 
+        this.health = health;
         this.attack = attack;
         this.position = position;
         this.id = id;
-    }
-
-    /** 
-     * @param player
-     * @param entities
-     * @return boolean
-     */
-    public boolean move (Position player, List<Entity> entities) {
-        return isBattle(player);
-    }
-
-    /** 
-     * @param player
-     * @return boolean
-     */
-    public boolean isBattle(Position player) {
-        if (isInvisible != 0) return false;
-        if (player.equals(position)) return true;
-        return false;
     }
     
     /** 
@@ -58,9 +39,9 @@ public class MovingEntity implements Entity {
     }
     
     /** 
-     * @return int
+     * @return double
      */
-    public int getAttack() {
+    public double getAttack() {
         return attack;
     }
     
@@ -88,7 +69,6 @@ public class MovingEntity implements Entity {
     /** 
      * @return boolean
      */
-    @Override
     public boolean isInteractable() {
         return false;
     }
@@ -96,7 +76,6 @@ public class MovingEntity implements Entity {
     /** 
      * @return String
      */
-    @Override
     public String getId() {
         return id;
     }
@@ -104,7 +83,6 @@ public class MovingEntity implements Entity {
     /** 
      * @return String
      */
-    @Override
     public String getType() {
         return type;
     }
@@ -112,58 +90,36 @@ public class MovingEntity implements Entity {
     /** 
      * @return Position
      */
-    @Override
     public Position getPosition() {
         return position;
     }
 
     /** 
-     * @param duration
-     */
-    public void setInvisible(int duration) {
-        this.isInvisible = duration;
-    }
-
-    /** 
-     * @param duration
-     */
-    public void setInvincible(int duration) {
-        this.isInvicible = duration;
-    }
-    
-    /** 
-     * @return boolean
-     */
-    public boolean isInvicible() {
-        if (isInvicible > 0) return true;
-        return false;    
-    }
-
-    
-    /** 
-     * @return boolean
+     * @return isInvisible
      */
     public boolean isInvisible() {
-        if (isInvisible > 0) return true;
-        return false;    
+        return this.isInvisible;
     }
 
-    public void setPotions() {
-        if (isInvicible > 0) {
-            isInvicible--;
-        } else if (isInvisible > 0) {
-            isInvisible--;
-        }
-    }
-    
     /** 
-     * @param position
+     * @return isInvincible
      */
-    @Override
+    public boolean isInvincible() {
+        return this.isInvincible;
+    }
+
+    public void setPotionStatus(boolean setInvisible, boolean setInvincible) {
+        this.isInvisible = setInvisible;
+        this.isInvincible = setInvincible;
+    }
+
     public void setPosition(Position position) {
         this.position = position;        
     }
 
+    public void move(Position playerPos, List<Entity> entities) {
+        return;
+    }
 
     /** 
      * @param player
@@ -199,14 +155,14 @@ public class MovingEntity implements Entity {
         items.addAll(weaponryUsed);
 
         // If a player is using a potion, add it to the list of items.
-        if (isInvicible() || isInvisible()) {
+        if (isInvincible || isInvisible) {
             items.add(player.currentPotion());
         }
 
         List<Round> rounds = new ArrayList<Round>();
         
         // Check if player is invincible
-        if (isInvicible()) {
+        if (isInvincible) {
             double deltaPlayerHealth = 0;
             double deltaEnemyHealth = - getHealth();
             setHealth(0);
@@ -228,6 +184,7 @@ public class MovingEntity implements Entity {
                 // Update player health
                 c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                 player.setPlayerHealth(c.doubleValue());
+                
                 // Add round info to list
                 rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
             }

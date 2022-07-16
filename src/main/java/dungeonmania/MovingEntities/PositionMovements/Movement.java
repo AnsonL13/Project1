@@ -18,18 +18,14 @@ public abstract class Movement {
     public boolean canMove(Position position, List<Entity> entities) {
         if (position == null) return false;
         for (Entity entity : entities) {
-            if (entity instanceof MovingEntity && entity.getPosition().equals(position)) {
-                return false;
-            } else if (entity instanceof Boulder && entity.getPosition().equals(position)) {
+            if (entity instanceof Boulder && entity.getPosition().equals(position)) {
                 return false;
             } else if (entity instanceof Wall && entity.getPosition().equals(position)) {
                 return false;
             } else if (entity instanceof Door && entity.getPosition().equals(position)) {
                 return false;
-
             }
         }
         return true;
     }
-    
 }
