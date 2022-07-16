@@ -101,27 +101,7 @@ public class Dungeon {
             player.useItem(itemUsedId);
         }
 
-        // Explode any bombs
-        bombs.stream().forEach(o -> o.explode());
-
-        // Move all moving entities. 
-        player.moveMovingEntities(entities);
-        
-        // Check for Battles
-        startBattles();
-
-        // Spawn enemies
-        String nextID = Integer.toString(latestUnusedId);
-        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
-        entities.addAll(newEnemy);
-        player.addAllEnemies(newEnemy);
-        latestUnusedId+= newEnemy.size();
-
-        // Update spawned enemy potion status. 
-        player.updateSpawnedEnemies();
-
-        // Update player potions
-        player.updatePotions();
+        tickUpdates();
         
         // Check if illegal argument
         if (illegalItem) {
@@ -180,30 +160,35 @@ public class Dungeon {
             }
         }
 
-        // Explode any bombs
-        bombs.stream().forEach(o -> o.explode());
-
         // Check if moved into an enemy (Battle)
         startBattles();
 
-        //Move movingentities
-        player.moveMovingEntities(entities);
-        
-        // Check if Enemy has moved into a player (Battle)
-        startBattles();
-        
-        // Spawn enemies
-        String nextID = Integer.toString(latestUnusedId);
-        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
-        entities.addAll(newEnemy);
-        player.addAllEnemies(newEnemy);
-        latestUnusedId+= newEnemy.size();
-        
-        // Update spawned enemy potion status. 
-        player.updateSpawnedEnemies();
-        
-        // Update player potions
-        player.updatePotions();
+        tickUpdates();
+
+    }
+
+    private void tickUpdates() {
+       // Explode any bombs
+       bombs.stream().forEach(o -> o.explode());
+
+       //Move movingentities
+       player.moveMovingEntities(entities);
+       
+       // Check if Enemy has moved into a player (Battle)
+       startBattles();
+       
+       // Spawn enemies
+       String nextID = Integer.toString(latestUnusedId);
+       List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
+       entities.addAll(newEnemy);
+       player.addAllEnemies(newEnemy);
+       latestUnusedId+= newEnemy.size();
+       
+       // Update spawned enemy potion status. 
+       player.updateSpawnedEnemies();
+       
+       // Update player potions
+       player.updatePotions();
     }
 
     /**
