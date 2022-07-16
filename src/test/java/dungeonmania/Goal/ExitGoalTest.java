@@ -27,7 +27,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class ExitGoalTest {/*
+public class ExitGoalTest {
 
     @Test
     @DisplayName("Exit complete")
@@ -38,12 +38,10 @@ public class ExitGoalTest {/*
         assertFalse(getGoals(initDungonRes).contains(":treasure"));
         assertFalse(getGoals(initDungonRes).contains(":boulders"));
         assertFalse(getGoals(initDungonRes).contains(":enemies"));
-        dmc.tick(Direction.RIGHT);
-        dmc.tick(Direction.RIGHT);
         dmc.tick(Direction.DOWN);
         initDungonRes = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(initDungonRes));
-    }*/
+    }
     
 }
 
