@@ -3,7 +3,6 @@ package dungeonmania.MovingEntities.PositionMovements;
 import java.util.List;
 
 import dungeonmania.Entity;
-import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;

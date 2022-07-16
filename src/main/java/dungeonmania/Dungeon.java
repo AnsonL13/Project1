@@ -31,9 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import com.google.gson.Gson;
-import java.util.stream.Collectors;
 
-import javax.naming.directory.InitialDirContext;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
