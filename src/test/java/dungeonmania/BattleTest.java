@@ -103,8 +103,8 @@ public class BattleTest {
     } 
 
     @Test
-    @DisplayName("Test player battle shield")
-    public void testPlayerHasShield() {
+    @DisplayName("Test player battle shield bigger than attack")
+    public void testPlayerHasShieldAttack() {
         // Create zombie and player with sheild added to inventory
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 10, 1, intial);
@@ -117,6 +117,23 @@ public class BattleTest {
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
         assertEquals(5, result.getRounds().size());
+    } 
+
+    @Test
+    @DisplayName("Test player battle shield")
+    public void testPlayerHasShield() {
+        // Create zombie and player with sheild added to inventory
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 10, 1, intial);
+        Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 2);
+        player.addToWeapons(new Shield("1", "shield", false, 5, 1));
+
+        // check player wins battle dure to shield
+        Battle result = zombie.battleCalculate(player);
+
+        assertFalse(result.isPlayerWon());
+        assertTrue(result.isEnemyWon());
+        assertEquals(4, result.getRounds().size());
     } 
 
     @Test
