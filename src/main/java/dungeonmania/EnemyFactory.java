@@ -57,15 +57,14 @@ public class EnemyFactory {
 
         // Check if it is time to spawn zombies.
         if (spawnZombie()) {
-            String latest = latestId;
             nextZombieRate = zombieRate;
             // Spawn a zombie 
             for (ZombieToastSpawner spawner : zombieSpawners) {
                 Position newSpawnPos = spawner.spawn(entities);
                 if (newSpawnPos != null) {
-                    newEnemies.add(new ZombieToast(latest, zombieAttack, zombieHealth, newSpawnPos));
+                    newEnemies.add(new ZombieToast(latestId, zombieAttack, zombieHealth, newSpawnPos));
+                    latestId = getNewId(latestId);
                 }
-                latest = getNewId(latest);
             }
         }
         
