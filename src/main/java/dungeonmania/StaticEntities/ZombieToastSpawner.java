@@ -1,5 +1,6 @@
 package dungeonmania.StaticEntities;
 
+import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
@@ -80,6 +81,15 @@ public class ZombieToastSpawner implements StaticEntity, InteractableEntity {
             return true;
         }
         return false;
+    }
+
+    public void interact(Dungeon dungeon) {
+        // Destroy the zombie spawner
+        dungeon.removeEntity(this.id);
+        dungeon.removeInteractableEntity(this.id);
+
+        // Decrease sword durability
+        dungeon.getPlayer().decreaseSwordDurability();
     }
 }
 

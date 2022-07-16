@@ -268,21 +268,9 @@ public class Dungeon {
                 if (! entity.interactActionCheck(player)) {
                     throw new InvalidActionException(entityId);
                 }
-
-                else if (entity.getType().equals("mercenary")) {
-                    // Bribe the mercenary                    
-                    // Not done yet ...
-                }
-                
-                else if (entity.getType().equals("zombie_toast_spawner")) {
-                    // Destroy the zombie spawner
-                    this.entities.remove(entity);
-                    this.interactableEntities.remove(entity);
-
-                    // Decrease sword durability
-                    player.decreaseSwordDurability();
-                    break;
-                }
+                // Interact with the interactable entity.
+                entity.interact(this);
+                break;
             }
         }
     }
@@ -321,6 +309,12 @@ public class Dungeon {
             else if (battle.isPlayerWon()) {
                 String id = battle.getEnemyId();
                 removeEntity(id);
+                for (InteractableEntity entity : interactableEntities) {
+                    if (entity.getId().equals(id)) {
+                        interactableEntities.remove(entity);
+                        break;
+                    }
+                }
             }
     
             else {
@@ -583,6 +577,18 @@ public class Dungeon {
         for (Entity entity : entities) {
             if (entity.getId().equals(Id)) {
                 entities.remove(entity);
+                break;
+            }
+        }
+    }
+
+    /*
+     * Remove from dungeon list interactable entities
+     */
+    public void removeInteractableEntity(String Id) {
+        for (InteractableEntity entity : interactableEntities) {
+            if (entity.getId().equals(Id)) {
+                interactableEntities.remove(entity);
                 break;
             }
         }
