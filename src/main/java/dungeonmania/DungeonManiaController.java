@@ -10,9 +10,7 @@ import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.JsonObject;
@@ -74,7 +72,7 @@ public class DungeonManiaController {
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         String dungeonsString = null;
         String configsString = null;
-        
+
         // Get the file
         try {
             dungeonsString = FileLoader.loadResourceFile("dungeons/" + dungeonName + ".json");
