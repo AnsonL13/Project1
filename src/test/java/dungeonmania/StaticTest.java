@@ -34,7 +34,7 @@ public class StaticTest {
     @DisplayName("Wall can stop the player")
     public void test() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_wallStopper", "c_movementTest_testMovementDown");
+        DungeonResponse initDungonRes = dmc.newGame("d_staticEntity", "c_movementTest_testMovementDown");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
          // create the expected result
          EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(2, 2), false);
@@ -48,7 +48,7 @@ public class StaticTest {
     @DisplayName("player can go through the exit")
     public void ExitTest() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_wallStopper", "c_movementTest_testMovementDown");
+        DungeonResponse initDungonRes = dmc.newGame("d_staticEntity", "c_movementTest_testMovementDown");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
          // create the expected result
          EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(1, 2), false);
@@ -62,7 +62,7 @@ public class StaticTest {
     @DisplayName("player can push the boulder")
     public void BoulderTest() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_wallStopper", "c_movementTest_testMovementDown");
+        DungeonResponse initDungonRes = dmc.newGame("d_staticEntity", "c_movementTest_testMovementDown");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
          // create the expected result
          EntityResponse expectedPlayer = new EntityResponse(initPlayer.getId(), initPlayer.getType(), new Position(3, 2), false);

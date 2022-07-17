@@ -63,8 +63,8 @@ public class ExampleTests {
         assertEquals(0, getInventory(res, "key").size());
         assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
-    /*
-    @Test
+    
+    /*@Test
     @DisplayName("Test basic movement of spiders")
     public void basicMovement() {
         DungeonManiaController dmc;
