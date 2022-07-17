@@ -7,14 +7,14 @@
         }, {
             "type" : "spider",
             "x" : 2,
-            "y" : 2
+            "y" : 1
         }, {
             "type" : "spider",
             "x" : 2,
             "y" : 3
         }, {
             "type" : "spider",
-            "x" : 1,
+            "x" : 2,
             "y" : 4
         }
     ],

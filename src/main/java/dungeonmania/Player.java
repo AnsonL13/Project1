@@ -382,6 +382,15 @@ public class Player implements Entity {
         return false;
     }
 
+    public boolean isInvincible() {
+        if (potionQueue.size() > 0) {
+            if (potionQueue.get(0) instanceof InvincibilityPotion) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removeFromMovingEntities(String Id) {
         for (MovingEntity entity : movingEntities) {
             if (entity.getId().equals(Id)) {
