@@ -16,7 +16,7 @@
     "shield_durability": 1,
     "spider_attack": 1,
     "spider_health": 5,
-    "spider_spawn_rate": 0,
+    "spider_spawn_rate": 1,
     "sword_attack": 2,
     "sword_durability": 1,
     "treasure_goal": 1,

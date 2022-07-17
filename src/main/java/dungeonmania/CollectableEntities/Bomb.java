@@ -1,14 +1,7 @@
 package dungeonmania.CollectableEntities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dungeonmania.Dungeon;
 import dungeonmania.Player;
-import dungeonmania.CollectableEntities.BombStates.ActiveBombState;
-import dungeonmania.CollectableEntities.BombStates.BombState;
-import dungeonmania.CollectableEntities.BombStates.InactiveBombState;
-import dungeonmania.CollectableEntities.BombStates.InventoryBombState;
 import dungeonmania.util.Position;
 
 public class Bomb implements CollectableEntity {
@@ -24,7 +17,7 @@ public class Bomb implements CollectableEntity {
     BombState inventoryBombState;
     BombState activeBombState;
 
-    BombState state;
+    BombState state = inactiveBombState;
 
     public Bomb(String id, String type, Position position, boolean isInteractable, int bombRadius, Dungeon dungeon, Player player) {
         this.id = id;
@@ -38,7 +31,6 @@ public class Bomb implements CollectableEntity {
         inactiveBombState = new InactiveBombState(this, dungeon, player);
         inventoryBombState = new InventoryBombState(this, dungeon, player);
         activeBombState = new ActiveBombState(this, dungeon, player);
-        state = inactiveBombState;
     }
 
     // State pattern functionality
@@ -54,7 +46,7 @@ public class Bomb implements CollectableEntity {
         state.explode();
     }
 
-    public void setState(BombState state) {
+    void setState(BombState state) {
 		this.state = state;
 	}
 
@@ -68,30 +60,6 @@ public class Bomb implements CollectableEntity {
 
     public BombState getActiveBombState() {
         return activeBombState;
-    }
-
-    public boolean isObstacle() {
-        if (this.state instanceof ActiveBombState) {
-            return true;
-        }
-        return false;
-    }
-
-    /*
-     * Get the list of squares in the bombs range
-     */
-    public List<Position> getTargetSquares() {
-        List<Position> squares = new ArrayList<>();
-        int startingX = this.position.getX() - this.bombRadius;
-        int startingY = this.position.getY() - this.bombRadius;
-        int endingX = this.position.getX() + this.bombRadius;
-        int endingY = this.position.getY() + this.bombRadius;
-        for (int i = startingX; i <= endingX; i++) {
-            for (int j = startingY; j <= endingY; j++) {
-                squares.add(new Position(i, j));
-            }
-        }
-        return squares;
     }
 
     // Getters

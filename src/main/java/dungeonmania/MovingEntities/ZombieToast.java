@@ -14,6 +14,8 @@ public class ZombieToast extends MovingEntity {
     private boolean isInteractable;
 
     private Movement movement;
+    private RunAwayMovement runAwayMovement = new RunAwayMovement(this);
+    private RandomMovement randomMovement = new RandomMovement(this);
 
     /**
      * Constructor 
@@ -25,10 +27,10 @@ public class ZombieToast extends MovingEntity {
      * @param health
      */
     public ZombieToast(String id, String type, Position position, boolean isInteractable, int attack, int health) {
-        super(id, attack, health, position);
+        super(id, health, attack, position);
         this.type = type;
         this.isInteractable = isInteractable;
-        this.movement = new RandomMovement(this);
+        this.movement = randomMovement;
     }
 
     /**
@@ -39,10 +41,11 @@ public class ZombieToast extends MovingEntity {
      * @param position
      */
     public ZombieToast(String id, int attack, int health, Position position) {
-        super(id, attack, health, position);
+        super(id, health, attack, position);
         this.isInteractable = false;
         this.type = "zombie_toast";
-        this.movement = new RandomMovement(this);
+        this.movement = randomMovement;
+
     }
     
     /** 
@@ -64,39 +67,39 @@ public class ZombieToast extends MovingEntity {
     /** 
      * @param player
      * @param entities
-     * @return void
+     * @return boolean
      */
     @Override
-    public void move(Position playerPos, List<Entity> entities) {
-        Position newPos = null;
-
-        // Check if player is is Invincible
-        if (isInvincible) {
-            changeMovement(new RunAwayMovement(this));
-        }
-
-        // Check if player is is is Invisible
-        else if (isInvisible) {
-            changeMovement(new RandomMovement(this));
-        }
-
-        else {
-            changeMovement(new RandomMovement(this));
-        }
-
-        newPos = movement.moveEnemy(playerPos, entities);
-
+    public boolean move(Position player, List<Entity> entities) {  
+        Position newPos = movement.moveEnemy(player, entities);
         if (newPos != null) {
             super.setPosition(newPos);
-        }
+        }  
+        setPotions();
+        return super.isBattle(player);
     }
 
+    
     /** 
-     * @param newMovement
-     * @return void
-     * Changes the movement strategy of the zombie.
+     * @param duration
      */
-    public void changeMovement(Movement newMovement) {
-        this.movement = newMovement;
+    @Override
+    public void setInvincible(int duration) {
+        super.setInvincible(duration);
+        movement = runAwayMovement;
     }
+
+    @Override
+    public void setPotions() {
+        super.setPotions();
+        if (super.isInvicible() != true) movement = randomMovement;
+    }
+    
+    /** 
+     * @return String
+     */
+    public String getSimpleName() {
+        return "zombie";
+    }
+
 }

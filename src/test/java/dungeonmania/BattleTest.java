@@ -2,20 +2,51 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static dungeonmania.TestUtils.getPlayer;
+import static dungeonmania.TestUtils.getEntities;
+
+import static dungeonmania.TestUtils.countEntityOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dungeonmania.DungeonManiaController;
+import dungeonmania.EnemyFactory;
+import dungeonmania.Entity;
 import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.CollectableEntities.Sword;
+import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.ZombieToast;
-
+import dungeonmania.StaticEntities.Boulder;
+import dungeonmania.StaticEntities.Door;
+import dungeonmania.StaticEntities.Wall;
+import dungeonmania.StaticEntities.ZombieToastSpawner;
+import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 public class BattleTest {
     // White box testing
+/*
+    // TODO
+    @Test
+    @DisplayName("Test zombie no battle invisible")
+    public void testZombieInvisible() {
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
+        zombie.setInvisible(5);
+        zombie.move(new Position(1,5), new ArrayList<Entity>());
+
+        assertEquals(new Position(-1, 0), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
+    } */
 
     @Test
     @DisplayName("Test zombie battle invicible")
@@ -23,13 +54,13 @@ public class BattleTest {
         // Create zombie and set player is invincible
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 10, 10, intial);
-        zombie.setPotionStatus(false, true);
+        zombie.setInvincible(5);
 
         //Create player
         Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 5, 5);
 
         // Create battle
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         //Check expected results
         assertTrue(result.isPlayerWon());
@@ -45,7 +76,7 @@ public class BattleTest {
         ZombieToast zombie = new ZombieToast("0", 1, 1, intial);
         Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 5, 5);
 
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         // check results
         assertTrue(result.isPlayerWon());
@@ -61,7 +92,7 @@ public class BattleTest {
         ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
         Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 1);
 
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         // check results
         assertFalse(result.isPlayerWon());
@@ -79,7 +110,7 @@ public class BattleTest {
         
         //Add sword and cal battle after sword
         player.addToWeapons(new Sword("0", "sword", intial, false, 1, 1));
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
@@ -95,28 +126,11 @@ public class BattleTest {
         Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 5, 5);
         player.addToWeapons(new Bow("1", "bow", false, 1));
 
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
         assertEquals(1, result.getRounds().size());
-    } 
-
-    @Test
-    @DisplayName("Test player battle shield bigger than attack")
-    public void testPlayerHasShieldAttack() {
-        // Create zombie and player with sheild added to inventory
-        Position intial = new Position(0, 0);
-        ZombieToast zombie = new ZombieToast("0", 10, 1, intial);
-        Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 1);
-        player.addToWeapons(new Shield("1", "shield", false, 10, 1));
-
-        // check player wins battle dure to shield
-        Battle result = Battle.battleCalculate(player, zombie);
-
-        assertTrue(result.isPlayerWon());
-        assertFalse(result.isEnemyWon());
-        assertEquals(5, result.getRounds().size());
     } 
 
     @Test
@@ -125,15 +139,15 @@ public class BattleTest {
         // Create zombie and player with sheild added to inventory
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 10, 1, intial);
-        Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 2);
-        player.addToWeapons(new Shield("1", "shield", false, 5, 1));
+        Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 1);
+        player.addToWeapons(new Shield("1", "shield", false, 10, 1));
 
         // check player wins battle dure to shield
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
-        assertFalse(result.isPlayerWon());
-        assertTrue(result.isEnemyWon());
-        assertEquals(4, result.getRounds().size());
+        assertTrue(result.isPlayerWon());
+        assertFalse(result.isEnemyWon());
+        assertEquals(5, result.getRounds().size());
     } 
 
     @Test
@@ -147,7 +161,7 @@ public class BattleTest {
         player.addToWeapons(new Bow("1", "bow", false, 1));
 
         // check that calculations are correct
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
@@ -165,7 +179,7 @@ public class BattleTest {
         player.addToWeapons(new Bow("1", "bow", false, 1));
 
         // check that calculations are correct
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
 
         assertFalse(result.isPlayerWon());
         assertTrue(result.isEnemyWon());
@@ -182,7 +196,7 @@ public class BattleTest {
         player.addToWeapons(new Sword("0", "sword", intial, false, 8, 1));
 
         // check that calculations are correct
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
         assertEquals(5, result.getRounds().size());
@@ -192,7 +206,7 @@ public class BattleTest {
 
         //create another battle where player loses
         ZombieToast zombieTwo = new ZombieToast("0", 2, 10, intial);
-        result = Battle.battleCalculate(player, zombieTwo);
+        result = zombieTwo.battleCalculate(player);
         assertFalse(result.isPlayerWon());
         assertTrue(result.isEnemyWon());
         assertEquals(3, result.getRounds().size());
@@ -209,7 +223,7 @@ public class BattleTest {
 
         // check that calculations are correct
 
-        Battle result = Battle.battleCalculate(player, zombie);
+        Battle result = zombie.battleCalculate(player);
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
         assertEquals(2, result.getRounds().size());
@@ -217,7 +231,7 @@ public class BattleTest {
         //create another battle where player loses
         assertEquals(0, player.getPlayerWeapons().size());        
         ZombieToast zombieTwo = new ZombieToast("0", 10, 1, intial);
-        result = Battle.battleCalculate(player, zombieTwo);
+        result = zombieTwo.battleCalculate(player);
         assertFalse(result.isPlayerWon());
         assertTrue(result.isEnemyWon());
         assertEquals(1, result.getRounds().size());

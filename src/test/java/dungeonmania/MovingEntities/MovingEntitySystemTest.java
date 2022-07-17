@@ -3,6 +3,7 @@ package dungeonmania.MovingEntities;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,6 +18,7 @@ import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import static dungeonmania.TestUtils.getGoals;
+import static dungeonmania.TestUtils.countEntityOfType;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.exceptions.InvalidActionException;
@@ -100,7 +102,7 @@ public class MovingEntitySystemTest {
         assertFalse(getGoals(actualDungonRes).contains(":treasure"));
         assertEquals(expectedPlayer, actualPlayer);
         assertEquals(treasure.getId(), getInventory(actualDungonRes, "treasure").get(0).getId());
-        assertEquals(0, countEntityOfType(actualDungonRes, "mercenary"));
+        assertEquals(1, countEntityOfType(actualDungonRes, "mercenary"));
 
         // Get battle response
         BattleResponse battle = actualDungonRes.getBattles().get(0);
@@ -108,12 +110,12 @@ public class MovingEntitySystemTest {
         assertEquals(2, rounds.size());
 
         //Check round one
-        assertEquals(-0.1, rounds.get(0).getDeltaCharacterHealth());
-        assertEquals(-1, rounds.get(0).getDeltaEnemyHealth());
+        assertEquals(9.9, rounds.get(0).getDeltaCharacterHealth());
+        assertEquals(1, rounds.get(0).getDeltaEnemyHealth());
 
         //Check round two
-        assertEquals(-0.1, rounds.get(1).getDeltaCharacterHealth());
-        assertEquals(-1, rounds.get(1).getDeltaEnemyHealth());
+        assertEquals(9.8, rounds.get(1).getDeltaCharacterHealth());
+        assertEquals(0, rounds.get(1).getDeltaEnemyHealth());
 
         // Spawn spider and zombie
         actualDungonRes = dmc.tick(Direction.DOWN);
@@ -192,6 +194,6 @@ public class MovingEntitySystemTest {
         // Check no battles and goals all done
         assertFalse(getGoals(actualDungonRes).contains(":exit"));
         assertFalse(getGoals(actualDungonRes).contains(":enemies"));
-        assertEquals(1,  actualDungonRes.getBattles().size());
+        assertEquals(0,  actualDungonRes.getBattles().size());
     }
 }

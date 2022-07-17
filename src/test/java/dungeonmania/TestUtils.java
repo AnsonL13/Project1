@@ -15,11 +15,6 @@ import dungeonmania.util.FileLoader;
 
 public class TestUtils {
     public static Stream<EntityResponse> getEntitiesStream(DungeonResponse res, String type) {
-        if (type.equals("zombie_toast")){
-            return res.getEntities().stream()
-                    .filter(it -> it.getType().startsWith(type))
-                    .filter(it -> !it.getType().startsWith("zombie_toast_spawner"));
-        }
         return res.getEntities().stream().filter(it -> it.getType().startsWith(type));
     }
 
