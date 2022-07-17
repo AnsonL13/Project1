@@ -1,7 +1,6 @@
 package dungeonmania.MovingEntities;
 
 import dungeonmania.util.Position;
-import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
@@ -23,6 +22,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int bribeRadius;
 
     private Movement movement;
+    private RunAwayMovement runAwayMovement = new RunAwayMovement(this);
+    private RandomMovement randomMovement = new RandomMovement(this);
+    private FollowMovement followMovement = new FollowMovement(this);
 
     /**
      * Constructor
@@ -41,12 +43,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, 
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
+
         this.type = type;
         this.isInteractable = isInteractable;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        this.movement = new FollowMovement(this);
-        this.isAllied = false;
+        this.movement = followMovement;
+        
     }
 
     /**
@@ -68,8 +71,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.isInteractable = false;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        this.movement = new FollowMovement(this);
-        this.isAllied = false;
+        this.movement = followMovement;
+                
     }
     
     /** 
@@ -78,44 +81,47 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      * @return boolean
      */
     @Override
-    public void move(Position playerPos, List<Entity> entities) {
-        Position newPos = null;
-
-        // Check if mercenary is allied
-        if (isAllied) {
-            this.movement = new FollowMovement(this);
-        }
-
-        else {
-            // Check if player is Invincible
-            if (isInvincible) {
-                changeMovement(new RunAwayMovement(this));
-            }
-
-            // Check if player is Invisible
-            else if (isInvisible) {
-                changeMovement(new RandomMovement(this));
-            }
-
-            else {
-                changeMovement(new FollowMovement(this));
-            }
-        }
-
-        newPos = movement.moveEnemy(playerPos, entities);
-
+    public boolean move(Position player, List<Entity> entities) {
+        Position newPos = movement.moveEnemy(player, entities);
         if (newPos != null) {
             super.setPosition(newPos);
-        }
+        }  
+        
+        setPotions();
+        return super.isBattle(player);
+    }
+    
+    /** 
+     * @param duration
+     */
+    @Override
+    public void setInvincible(int duration) {
+        super.setInvincible(duration);
+        movement = runAwayMovement;
+    }
+    
+    /** 
+     * @param duration
+     */
+    @Override
+    public void setInvisible(int duration) {
+        super.setInvisible(duration);
+        movement = randomMovement;
     }
 
+    @Override
+    public void setPotions() {
+        super.setPotions();
+        if (super.isInvisible() != true && super.isInvicible() != true) {
+            movement = followMovement;
+        }
+    }
+    
     /** 
-     * @param newMovement
-     * @return void
-     * Changes the movement strategy of the zombie.
+     * @return String
      */
-    public void changeMovement(Movement newMovement) {
-        this.movement = newMovement;
+    public String getSimpleName() {
+        return "mercenary";
     }
     
     /** 
@@ -175,24 +181,15 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         // Check if player is within the specified bribing radius
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
             (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
-                // Check if player has enough gold
-                if (player.treasureAmount() >= bribeAmount) {
-                    return true;
-                }
+                return true;
         }
 
-        return false;
-    }
+        // Check if player has enough gold
+        if (player.treasureAmount() < bribeAmount) {
+            return false;
+        }
 
-    public void interact(Dungeon dungeon) {
-        this.isAllied = true;
-
-        // Remove player treasure
-        dungeon.getPlayer().removeTreasure(bribeAmount);
-    }
-
-    public boolean isAllied() {
-        return isAllied;
+        return true;
     }
 }
 

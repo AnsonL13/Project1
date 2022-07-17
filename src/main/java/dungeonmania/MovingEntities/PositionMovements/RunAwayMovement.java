@@ -21,7 +21,18 @@ public class RunAwayMovement extends Movement {
         } else {
             pos = pos.translateBy(Direction.RIGHT);
         }
+        /*     if (canMove(pos)) {
+            super.setPos(pos);
+            return;
+        } else if (player.getY() > super.getPosition().getY()) {
+            pos.translateBy(Direction.UP);
+        } else {
+            pos.translateBy(Direction.DOWN);
+        }
 
+        if (canMove(pos)) {
+            super.setPos(pos);
+        }*/
         if (canMove(pos, entities)) {
             return pos;
         }

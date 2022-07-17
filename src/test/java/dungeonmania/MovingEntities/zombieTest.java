@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static dungeonmania.TestUtils.getPlayer;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.Enemy;
 import dungeonmania.EnemyFactory;
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
@@ -129,17 +131,16 @@ public class zombieTest {
     @Test
     @DisplayName("Test zombie is spawned")
     public void testZombieSpawnedUnit() {
-        // List of zombie toast spawners
-        List<Entity> spawners = new ArrayList<Entity>();
+        List<ZombieToastSpawner> spawners = new ArrayList<ZombieToastSpawner>();
         spawners.add(new ZombieToastSpawner("1", "", new Position(0, 0), true));
 
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(1, 1);
-        List<MovingEntity> newZombie = factory.spawn("1", spawners);
+        List<MovingEntity> newZombie = factory.spawn("1", spawners, new ArrayList<Entity>());
         
         // Check correct return
-        ZombieToast expected = new ZombieToast("1", 5, 5, new Position(0, -1));
+        ZombieToast expected = new ZombieToast("1", 5, 5, new Position(-1, -1));
         assertEquals(expected.getId(), newZombie.get(0).getId());
         assertEquals(expected.getPosition(), newZombie.get(0).getPosition());
 
@@ -148,7 +149,7 @@ public class zombieTest {
     @Test
     @DisplayName("Test zombie is spawned multiple")
     public void testZombieSpawnedMultipleUnit() {
-        List<Entity> spawners = new ArrayList<Entity>();
+        List<ZombieToastSpawner> spawners = new ArrayList<ZombieToastSpawner>();
         spawners.add(new ZombieToastSpawner("1", "", new Position(0, 0), true));
         spawners.add(new ZombieToastSpawner("1", "", new Position(5, 5), true));
         spawners.add(new ZombieToastSpawner("1", "", new Position(-5, -5), true));
@@ -158,13 +159,13 @@ public class zombieTest {
         // Call factory function
         EnemyFactory factory = new EnemyFactory(5, 5, 5, 5);
         factory.setSpawnRate(5, 1);
-        List<MovingEntity> newZombies = factory.spawn("1", spawners);
+        List<MovingEntity> newZombies = factory.spawn("1", spawners, new ArrayList<Entity>());
         assertEquals(3, newZombies.size());
         
         // Check correct return
-        ZombieToast expected1 = new ZombieToast("1", 5, 5, new Position(0, -1));
-        ZombieToast expected2 = new ZombieToast("2", 5, 5, new Position(5, 4));
-        ZombieToast expected3 = new ZombieToast("3", 5, 5, new Position(-5, -6));
+        ZombieToast expected1 = new ZombieToast("1", 5, 5, new Position(-1, -1));
+        ZombieToast expected2 = new ZombieToast("2", 5, 5, new Position(4, 4));
+        ZombieToast expected3 = new ZombieToast("3", 5, 5, new Position(-6, -6));
 
         assertEquals(expected1.getId(), newZombies.get(0).getId());
         assertEquals(expected1.getPosition(), newZombies.get(0).getPosition());
@@ -192,8 +193,8 @@ public class zombieTest {
         List<Entity> stuck = new ArrayList<Entity>();
         stuck.add(new Door("0", "door", new Position(5, 4), false, 0));
         stuck.add(new Boulder("0", "boulder", new Position(6, 5), false));
-        stuck.add(new Wall("0", "wall", new Position(5, 6), false));
-        stuck.add(new Wall("0", "wall", new Position(4, 5), false));
+        stuck.add(new Wall("0", "Wall", new Position(5, 6), false));
+        stuck.add(new Mercenary("0", "mercenary", new Position(4, 5), false, 1, 1, 1, 1, 1, 1));
 
 
         Position intial = new Position(5, 5);
@@ -209,7 +210,7 @@ public class zombieTest {
     public void testZombieRunAway() {
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
-        zombie.setPotionStatus(false, true);
+        zombie.setInvincible(5);
         zombie.move(new Position(5,5), new ArrayList<Entity>());
 
         assertEquals(new Position(-1, 0), zombie.getPosition());
@@ -221,13 +222,16 @@ public class zombieTest {
     public void testZombieRandomAfterPotion() {
         Position intial = new Position(0, 0);
         ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
-        zombie.setPotionStatus(false, true);
+        zombie.setInvincible(1);
         zombie.move(new Position(5,5), new ArrayList<Entity>());
 
         assertEquals(new Position(-1, 0), zombie.getPosition());
         assertEquals(zombie.getId(), "0");
-        zombie.setPotionStatus(false, false);
+
         zombie.move(new Position(5,5), new ArrayList<Entity>());
-        assertEquals(false, zombie.isInvincible());
-    }
+        assertEquals(false, zombie.isInvicible());
+
+
+    } 
+
 }

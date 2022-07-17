@@ -2,7 +2,7 @@ package dungeonmania.CollectableEntities;
 
 import dungeonmania.util.Position;
 
-public class InvincibilityPotion implements Potion {
+public class InvincibilityPotion implements CollectableEntity {
     private String id;
     private String type;
     private Position position;
@@ -39,13 +39,5 @@ public class InvincibilityPotion implements Potion {
 
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    public int getDuration() {
-        return invincibilityPotionDuration;
-    }
-
-    public void decrementDuration() {
-        this.invincibilityPotionDuration--;
     }
 }
