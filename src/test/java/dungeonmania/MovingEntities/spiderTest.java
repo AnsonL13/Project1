@@ -151,4 +151,25 @@ public class spiderTest {
 
         assertEquals(new Position(1, 0), getEntities(res, "spider").get(0).getPosition());
     }
+
+    @Test
+    @DisplayName("Test spider stuck by two boulder")
+    public void testSpiderTwoBoulder() {
+        List<Entity> stuck = new ArrayList<Entity>();
+        stuck.add(new Boulder("0", "boulder", new Position(4, 4), false));
+        stuck.add(new Boulder("0", "boulder", new Position(6, 4), false));
+        
+       
+        Position initial = new Position(5, 5);
+        Spider spider = new Spider("0", initial, 5, 5);
+
+        spider.move(new Position(0,0), stuck);
+        assertEquals(new Position(5, 4), spider.getPosition());
+
+        spider.move(new Position(0,0), stuck);
+        assertEquals(new Position(5, 4), spider.getPosition());
+
+        spider.move(new Position(0,0), stuck);
+        assertEquals(new Position(5, 4), spider.getPosition());
+    }  
 }
