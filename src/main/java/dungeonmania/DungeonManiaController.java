@@ -6,7 +6,6 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
-import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 
@@ -41,31 +40,7 @@ public class DungeonManiaController {
     public static List<String> configs() {
         return FileLoader.listFileNamesInResourceDirectory("configs");
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void main(String[] args) {
-        String dungeonName = "exit_goal_order";
-        String configName = "simple";
 
-        String dungeonsString = null;
-        String configsString = null;
-        // Get the file
-        try {
-            dungeonsString = FileLoader.loadResourceFile("dungeons/" + dungeonName + ".json");
-            configsString = FileLoader.loadResourceFile("configs/" + configName + ".json");
-        }
-        catch(Exception IOException) {
-            throw new IllegalArgumentException();
-        }
-
-        // Turn the String into a JsonObject
-        JsonObject dungeonJson = JsonParser.parseString(dungeonsString).getAsJsonObject();
-        JsonObject configJson = JsonParser.parseString(configsString).getAsJsonObject();
-
-        
-        Dungeon dungeon = new Dungeon("dungeonName", dungeonJson, configJson);
-        System.out.println(dungeon.getGoals().listIncompleteGoals());
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * /game/new
      */

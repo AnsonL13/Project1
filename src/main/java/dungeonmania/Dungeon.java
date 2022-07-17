@@ -8,18 +8,12 @@ import dungeonmania.Goals.EnemiesGoal;
 import dungeonmania.Goals.ExitGoal;
 import dungeonmania.Goals.Goal;
 import dungeonmania.Goals.TreasureGoal;
-import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
-import dungeonmania.MovingEntities.Spider;
-import dungeonmania.MovingEntities.ZombieToast;
-import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Exit;
-import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
-import dungeonmania.StaticEntities.Wall;
-import dungeonmania.StaticEntities.ZombieToastSpawner;
+
 import dungeonmania.exceptions.InvalidActionException;
+
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -39,14 +33,10 @@ import com.google.gson.reflect.TypeToken;
 
 public class Dungeon {
 
-    // All dungeon info and configs are in these two variables. Stored as JsonObject.
-    private JsonObject dungeonJson;
-    private JsonObject configJson;
-    // Example Use: dungeonJson.get("entities").getAsJsonArray().get(0).getAsJsonObject().get("type").getAsString()
-    // Configs stored as a hashmap
+    // All Configs stored as a hashmap
     private HashMap<String, Integer> configMap;
 
-    // Add any variables here when you need them.
+    // Variables for the dungeon
     private String dungeonId;
     private String dungeonName;
     private Player player;
@@ -54,18 +44,16 @@ public class Dungeon {
     private Goal goals;
     int latestUnusedId = 0;
 
-    // Add data structures here when you need them.
-    List<Entity> entities = new ArrayList<Entity>();
-    List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
-    List<Battle> battles = new ArrayList<Battle>();
-    Map<String, Door> doors = new HashMap<String, Door>();
-    Map<String, Portal> portals = new HashMap<String, Portal>();
-    List<Bomb> bombs = new ArrayList<Bomb>();
-    Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
+    // Data structures for the dungeon
+    private List<Entity> entities = new ArrayList<Entity>();
+    private List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
+    private List<Battle> battles = new ArrayList<Battle>();
+    private Map<String, Door> doors = new HashMap<String, Door>();
+    private Map<String, Portal> portals = new HashMap<String, Portal>();
+    private List<Bomb> bombs = new ArrayList<Bomb>();
+    private Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
-        this.dungeonJson = dungeonJson;
-        this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
         // Convert JsonObject configJson into HashMap<String, Integer> configMap
@@ -101,6 +89,7 @@ public class Dungeon {
             player.useItem(itemUsedId);
         }
 
+        // Complete necesarry updates. 
         tickUpdates();
         
         // Check if illegal argument
@@ -129,7 +118,7 @@ public class Dungeon {
             player.setPosition(targetSquare);
         }
 
-        // Check if moved into a collectable entity
+        // Check if the player moved into a collectable entity. 
         Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
         Entry<String, CollectableEntity> collectable;
         while(collectableIterator.hasNext()) {     
@@ -137,6 +126,7 @@ public class Dungeon {
             Position collectablePosition = collectable.getValue().getPosition();
             // Check if collectable entity is in the same square as the player. 
             if (collectablePosition.getX() == targetSquare.getX() && collectablePosition.getY() == targetSquare.getY()) {
+
                 // Check if the item is a bomb
                 if (collectable.getValue().getType().equals("bomb")) {
                     for (Bomb bomb : bombs) {
@@ -163,8 +153,8 @@ public class Dungeon {
         // Check if moved into an enemy (Battle)
         startBattles();
 
+        // Complete necesarry updates. 
         tickUpdates();
-
     }
 
     private void tickUpdates() {
@@ -201,6 +191,9 @@ public class Dungeon {
         latestUnusedId++;
     }
 
+    /*
+     * Get possible items that player can build in a list of strings. 
+     */
     public List<String> getBuildables() {
         int woodCount = 0;
         int arrowCount = 0;
@@ -295,17 +288,25 @@ public class Dungeon {
         player.addAllEnemies(movingEntities);
     }
 
+    /*
+     * Begin battles. 
+     */
     public void startBattles() {
         List<Battle> newBattles = player.battle();
         // Add all new battles to the list of battles.
         this.battles.addAll(newBattles);
         
+        /*
+         * Remove entities that lost the battle from the dungeon. 
+         */
         for (Battle battle : newBattles) {
+            // Enemy won
             if (battle.isEnemyWon()) {
                 entities.remove(player);
                 break;
             }
-    
+            
+            // Player won
             else if (battle.isPlayerWon()) {
                 String id = battle.getEnemyId();
                 removeEntity(id);
@@ -326,7 +327,7 @@ public class Dungeon {
         }
     }
 
-    // Checks if players movement will be a static entity and handles it. 
+    // Checks if players movement will be into a static entity and handles it. 
     public boolean moveIntoStaticEntity(Direction movementDirection, Position targetSquare) {
         boolean normalMove = true;
         for (Entity entity : entities) {
@@ -360,6 +361,9 @@ public class Dungeon {
         return normalMove;
     }
 
+    /*
+     * Check if player can move a boulder. 
+     */
     public boolean moveIntoBoulder(Direction movementDirection, Position targetSquare, Entity entity) {
         // Check if the boulder can move
         Position nextTargetSquare = targetSquare.translateBy(movementDirection);
@@ -385,6 +389,9 @@ public class Dungeon {
         return true;
     }
 
+    /*
+     * Check if player can unlock a door
+     */
     public boolean moveIntoDoor(Entity entity) {
         // Check if the door is already open
         if (doors.get(entity.getId()).isOpen()) {
@@ -404,6 +411,9 @@ public class Dungeon {
         }
     }
 
+    /*
+     * Check the square which a portal will teleport the player to. 
+     */
     public Position moveIntoPortal(Entity entity, Direction movementDirection) {
         boolean foundFinalSquare = false;
             Position portalExitSquare = player.getPosition();
@@ -493,23 +503,23 @@ public class Dungeon {
         Goal newgoal = null;
         if (subGoal.get("goal").getAsString().equals("AND") || 
             subGoal.get("goal").getAsString().equals("OR")) {
-            newgoal = new ComplexGoal(subGoal.get("goal").getAsString(), false);
+            newgoal = new ComplexGoal(subGoal.get("goal").getAsString());
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(0).getAsJsonObject()));
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(1).getAsJsonObject()));
         }
         else {
             switch (subGoal.get("goal").getAsString()) {
                 case "enemies":
-                    newgoal = new EnemiesGoal("enemies", false, configMap.get("enemy_goal"), this);
+                    newgoal = new EnemiesGoal("enemies", configMap.get("enemy_goal"), this);
                 break;
                 case "boulders":
-                    newgoal = new BouldersGoal("boulders", false, this);
+                    newgoal = new BouldersGoal("boulders", this);
                 break;
                 case "treasure":
-                    newgoal = new TreasureGoal("treasure", false, configMap.get("treasure_goal"), this);
+                    newgoal = new TreasureGoal("treasure", configMap.get("treasure_goal"), this);
                 break;
                 case "exit":
-                    newgoal = new ExitGoal("exit", false, this);
+                    newgoal = new ExitGoal("exit", this);
                 break;
             }
         }
@@ -517,7 +527,7 @@ public class Dungeon {
     }
 
 
-    // Getters (Add more here)
+    // Getters
     public String getDungeonId() {
         return dungeonId;
     }
@@ -621,6 +631,9 @@ public class Dungeon {
         }
     }
 
+    /*
+     * Remove a collectable entity
+     */
     public void removeCollectable(String Id) {
         for (String collectableEntity : collectableEntities.keySet()) {
             if (collectableEntity.equals(Id)) {

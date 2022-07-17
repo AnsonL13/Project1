@@ -17,8 +17,6 @@ public class Bomb implements CollectableEntity {
     private Position position;
     private boolean isInteractable;
     private int bombRadius;
-    private Dungeon dungeon;
-    private Player player;
 
     BombState inactiveBombState;
     BombState inventoryBombState;
@@ -33,8 +31,6 @@ public class Bomb implements CollectableEntity {
         this.isInteractable = isInteractable;
         this.bombRadius = bombRadius;
         
-        this.dungeon = dungeon;
-        this.player = player;
         inactiveBombState = new InactiveBombState(this, dungeon, player);
         inventoryBombState = new InventoryBombState(this, dungeon, player);
         activeBombState = new ActiveBombState(this, dungeon, player);
@@ -68,13 +64,6 @@ public class Bomb implements CollectableEntity {
 
     public BombState getActiveBombState() {
         return activeBombState;
-    }
-
-    public boolean isObstacle() {
-        if (this.state instanceof ActiveBombState) {
-            return true;
-        }
-        return false;
     }
 
     /*

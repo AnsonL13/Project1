@@ -8,12 +8,10 @@ import dungeonmania.Entity;
 
 public class BouldersGoal implements Goal {
     private String name;
-    private boolean isCompleted;
     private Dungeon dungeon;
 
-    public BouldersGoal(String name, boolean isCompleted, Dungeon dungeon) {
+    public BouldersGoal(String name, Dungeon dungeon) {
         this.name = name;
-        this.isCompleted = isCompleted;
         this.dungeon = dungeon;
     }
 
@@ -71,27 +69,8 @@ public class BouldersGoal implements Goal {
 		return false;
 	}
 
-    // Getters and Setters below .... 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }
-
     @Override
     public boolean canComplete() {
-        // TODO Auto-generated method stub
         return true;
     }
 }

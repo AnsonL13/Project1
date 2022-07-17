@@ -1,22 +1,17 @@
 package dungeonmania.MovingEntities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.lang.invoke.SwitchPoint;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
-import dungeonmania.EnemyFactory;
+
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
@@ -24,9 +19,7 @@ import dungeonmania.StaticEntities.Exit;
 import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
-import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -90,11 +83,8 @@ public class spiderTest {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_spiderBoulderMovement", "c_spiderTest_basicMovement");
-        Position pos = getEntities(res, "spider").get(0).getPosition();
 
         List<Position> movementTrajectory = new ArrayList<Position>();
-        int x = pos.getX();
-        int y = pos.getY();
         int nextPositionElement = 0;
         movementTrajectory.add(new Position(5, 4));
         movementTrajectory.add(new Position(6, 4));

@@ -13,6 +13,9 @@ public class RunAwayMovement extends Movement {
         this.enemy = enemy;
     }
 
+    /*
+     * Move the enemy away from the player
+     */
     @Override
     public Position moveEnemy(Position player, List<Entity> entities) {
         Position pos = enemy.getPosition();

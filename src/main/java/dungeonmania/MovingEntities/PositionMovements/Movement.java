@@ -13,7 +13,8 @@ public abstract class Movement {
     public Position moveEnemy(Position player, List<Entity> entities) {
         return null;
     };
-
+    
+    // Checks if the enemy can move, or is blocked. 
     public boolean canMove(Position position, List<Entity> entities) {
         if (position == null) return false;
         for (Entity entity : entities) {

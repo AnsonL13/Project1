@@ -93,30 +93,15 @@ public class EnemyFactory {
         return true;
     }
 
-
+    /*
+     * Generate a random position
+     */
     private Position ifSpiderSpawn() {
         Random random = new Random();
         int i = 10;
         int randomY = random.nextInt(i);
         int randomX = random.nextInt(i);
-       /*  
-        List<Position> spawnPositions = new ArrayList<Position>();
-        Position spawner = super.getPosition();
-        switch(randomPos) {
-            case 0:
-                spawnPositions.add(spawner.translateBy(Direction.UP));
-                break;
-            case 1:
-                spawnPositions.add(spawner.translateBy(Direction.DOWN));
-                break;
-            case 2:
-                spawnPositions.add(spawner.translateBy(Direction.LEFT));
-                break;
-            case 3:
-                spawnPositions.add(spawner.translateBy(Direction.RIGHT));
-                break;
-        }
-         */
+
         return new Position(randomX, randomY);
     }
 
@@ -130,6 +115,9 @@ public class EnemyFactory {
         return false;
     }
 
+    /*
+     * Generate the next Id
+     */
     private String getNewId(String latestId) {
         int increment = Integer.parseInt(latestId);
         increment++;

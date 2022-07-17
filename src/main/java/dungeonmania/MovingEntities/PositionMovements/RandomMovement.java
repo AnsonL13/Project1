@@ -16,6 +16,9 @@ public class RandomMovement extends Movement{
         this.enemy = enemy;
     }
 
+    /*
+     * Randomly move the enemy
+     */
     @Override
     public Position moveEnemy(Position player, List<Entity> entities) {
         Random rand = new Random(); //instance of random class

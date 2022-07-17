@@ -13,12 +13,9 @@ import static dungeonmania.TestUtils.getValueFromConfigFile;
 
 import java.util.List;
 
-import javax.xml.stream.events.EntityReference;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;

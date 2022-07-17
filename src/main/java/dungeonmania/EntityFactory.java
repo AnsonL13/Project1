@@ -34,7 +34,7 @@ public class EntityFactory {
     }
     
     /** 
-     * Generate all entities for dungeon class
+     * Generate all entities for dungeon class from json. 
      * @param entityinfo
      * @param latestUnusedId
      * @return MovingEntity for player

@@ -23,16 +23,25 @@ public class ActiveBombState implements BombState {
         this.player = player;
     }
 
+    /*
+     * Pickup the bomb from the dungeon
+     */
     public void pickUp() {
         // Cannot pickup the bomb
         return;
     }
 
+    /*
+     * Put down the bomb on the dungeon map
+     */
 	public void putDown() {
         // Cannot putdown the bomb
         return;
     }
 
+    /*
+     * Destroy all entities with range of the bomb
+     */
     public void explode() {
         // Check if bomb is next to an acitve switch
         boolean canExplode = false;

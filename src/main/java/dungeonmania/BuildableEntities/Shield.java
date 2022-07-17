@@ -2,7 +2,7 @@ package dungeonmania.BuildableEntities;
 
 import dungeonmania.Weapon;
 
-public class Shield implements BuildableEntity, Weapon {
+public class Shield implements Weapon {
     private String id;
     private String type;
     private boolean isInteractable;
