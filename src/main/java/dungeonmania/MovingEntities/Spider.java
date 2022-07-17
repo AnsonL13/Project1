@@ -18,7 +18,7 @@ public class Spider extends MovingEntity {
     private int index;
 
     public Spider(String id, String type, Position position, boolean isInteractable, int attack, int health) {
-        super(id, health, attack, position);
+        super(id, attack, health, position);
         this.type = type;
         this.isInteractable = isInteractable;
         this.isClockwise = true;
@@ -28,7 +28,7 @@ public class Spider extends MovingEntity {
     }
 
     public Spider(String id, Position position, int attack, int health) {
-        super(id, health, attack, position);
+        super(id, attack, health, position);
         this.type = "spider";
         this.isInteractable = false;
         this.isClockwise = true;
