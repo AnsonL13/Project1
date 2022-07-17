@@ -83,5 +83,82 @@ public class spiderTest {
         assertEquals(new Position(5, 4), spider.getPosition());
         assertEquals(spider.getId(), "0");
     }    
-    
+
+    @Test
+    @DisplayName("Test basic movement of spiders with boulders")
+    public void basicMovementSpiderBoulders() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_spiderBoulderMovement", "c_spiderTest_basicMovement");
+        Position pos = getEntities(res, "spider").get(0).getPosition();
+
+        List<Position> movementTrajectory = new ArrayList<Position>();
+        int x = pos.getX();
+        int y = pos.getY();
+        int nextPositionElement = 0;
+        movementTrajectory.add(new Position(5, 4));
+        movementTrajectory.add(new Position(6, 4));
+        movementTrajectory.add(new Position(5, 4));
+        movementTrajectory.add(new Position(4, 4));
+        movementTrajectory.add(new Position(4, 5));
+        movementTrajectory.add(new Position(4, 6));
+        movementTrajectory.add(new Position(5, 6));
+        movementTrajectory.add(new Position(6, 6));
+        movementTrajectory.add(new Position(5, 6));
+        movementTrajectory.add(new Position(4, 6));
+        movementTrajectory.add(new Position(4, 5));
+        movementTrajectory.add(new Position(4, 4));
+        movementTrajectory.add(new Position(5, 4));
+        movementTrajectory.add(new Position(6, 4));
+        movementTrajectory.add(new Position(5, 4));
+
+        // Assert Circular Movement of Spider
+        for (int i = 0; i <= 14; ++i) {
+            res = dmc.tick(Direction.UP);
+            assertEquals(movementTrajectory.get(nextPositionElement), getEntities(res, "spider").get(0).getPosition());
+            nextPositionElement++;
+        }
+    }
+
+    @Test
+    @DisplayName("Test basic movement of spiders boulder trapping spawned spider")
+    public void basicBoulderTrappedSpider() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_trappedSpider", "c_spiderTest_basicMovement");
+        assertEquals(new Position(0, 0), getEntities(res, "spider").get(0).getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(0, 0), getEntities(res, "spider").get(0).getPosition());
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(0, 0), getEntities(res, "spider").get(0).getPosition());
+    }
+
+    @Test
+    @DisplayName("Test basic movement of spiders being trapped between two boulders by player")
+    public void basicSpidertrapper() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_spiderTrapper", "c_spiderTest_basicMovement");
+        assertEquals(new Position(0, 0), getEntities(res, "spider").get(0).getPosition());
+
+        res = dmc.tick(Direction.UP);
+        
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.LEFT);
+
+        assertEquals(new Position(1, 0), getEntities(res, "spider").get(0).getPosition());
+    }
 }

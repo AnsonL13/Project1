@@ -102,7 +102,7 @@ public class Battle {
         items.addAll(weaponryUsed);
 
         // If a player is using a potion, add it to the list of items.
-        if (enemy.isInvincible() || enemy.isInvisible()) {
+        if (player.isInvincible() || player.isInvisible()) {
             items.add(player.currentPotion());
         }
 

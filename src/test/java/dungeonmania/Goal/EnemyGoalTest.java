@@ -83,7 +83,7 @@ public class EnemyGoalTest {
     @Test
     @DisplayName("Testing killing multiple spider goal")
     public void testMultipleEnemySpiderGoal() {
-        /*
+        
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_enemyGoal_multipleSpider", "c_complexGoalsTest_andAll");
@@ -98,13 +98,7 @@ public class EnemyGoalTest {
         res = dmc.tick(Direction.RIGHT);
 
         assertEquals(2, getEntities(res, "spider").size());
-        res = dmc.tick(Direction.RIGHT);
-
-        assertEquals(1, getEntities(res, "spider").size());
-        res = dmc.tick(Direction.RIGHT);
-
-        assertEquals(0, getEntities(res, "spider").size());
-        assertEquals("", getGoals(res));*/
+        assertEquals("", getGoals(res));
     } 
 }
 
