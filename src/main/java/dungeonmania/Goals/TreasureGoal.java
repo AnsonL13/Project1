@@ -5,17 +5,18 @@ import dungeonmania.Item;
 
 public class TreasureGoal implements Goal {
     private String name;
-    private boolean isCompleted;
     private int treasureGoal;
     private Dungeon dungeon;
 
-    public TreasureGoal(String name, boolean isCompleted, int treasureGoal, Dungeon dungeon) {
+    public TreasureGoal(String name, int treasureGoal, Dungeon dungeon) {
         this.name = name;
-        this.isCompleted = isCompleted;
         this.treasureGoal = treasureGoal;
         this.dungeon = dungeon;
     }
 
+    /*
+     * Check if required number of treasure has been found
+     */
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if required number of treasure is found
@@ -53,31 +54,8 @@ public class TreasureGoal implements Goal {
 		return false;
 	}
 
-    // Getters and Setters below .... 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }
-
-    public int getTreasureGoal() {
-        return treasureGoal;
-    }
-
     @Override
     public boolean canComplete() {
-        // TODO Auto-generated method stub
         return true;
     }
 }

@@ -1,6 +1,5 @@
 package dungeonmania.StaticEntities;
 
-import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
 
 public class Boulder implements StaticEntity {

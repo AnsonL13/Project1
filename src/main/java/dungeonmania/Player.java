@@ -25,10 +25,10 @@ public class Player implements Entity {
     private boolean isInteractable;
     private double playerAttack;
     private double playerHealth;
-    List<Item> inventory = new ArrayList<Item>();
-    Map<String, Key> keys = new HashMap<String, Key>();
-    List<Weapon> weapons = new ArrayList<Weapon>();
-    List<Potion> potionQueue = new ArrayList<Potion>();
+    private List<Item> inventory = new ArrayList<Item>();
+    private Map<String, Key> keys = new HashMap<String, Key>();
+    private List<Weapon> weapons = new ArrayList<Weapon>();
+    private List<Potion> potionQueue = new ArrayList<Potion>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -73,6 +73,9 @@ public class Player implements Entity {
         return movingEntities;
     }
 
+    /*
+     * Add an item to the players inventory. 
+     */
     public void addToInventory(Item item) {
         this.inventory.add(item);
 
@@ -85,6 +88,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Add a weapon to the list of weapons
+     */
     public void addToWeapons(Weapon weapon) {
         this.weapons.add(weapon);
     }
@@ -93,17 +99,26 @@ public class Player implements Entity {
         return weapons;
     }
 
+    /*
+     * Get the current potion being used by the player
+     */
     public Item currentPotion() {
-        // Gets the current potion being used by the player. 
         if (potionQueue.size() == 0) return null;
         return potionQueue.get(0);
     }
 
+    /*
+     * Add an enemy (observer) to the list of movingEntities
+     */
     public void addToMovingEntites(MovingEntity entity) {
         this.movingEntities.add(entity);
     }
 
-    // Get the players weapons
+    /*
+     * Get the player weapons for battle
+     * - Decreases the durability of the weapon
+     * - Removes the weapon if run out of durability
+     */
     public List<Weapon> getPlayerWeapons() {
         boolean foundSword = false;
         boolean foundBow = false;
@@ -113,35 +128,38 @@ public class Player implements Entity {
         List<Weapon> removeWeapons = new ArrayList<Weapon>();
         for (Weapon weapon : weapons) {
             if (weapon.getType().equals("sword") && !foundSword) {
+                // Decrease the durability of the weapon
                 weapon.decreaseDurability();
                 weaponsForBattle.add(weapon);
                 foundSword = true;
-
+                
+                // Check if the weapon has run out of durability
                 if (weapon.getDurability() == 0) {
                     removeWeapons.add(weapon);
-                    //weapons.remove(weapon);
                     inventory.remove(weapon);
                 }
             }
 
             if (weapon.getType().equals("bow") && !foundBow) {
+                // Decrease the durability of the weapon
                 weapon.decreaseDurability();
                 weaponsForBattle.add(weapon);
                 foundBow = true;
 
+                // Check if the weapon has run out of durability
                 if (weapon.getDurability() == 0) {
                     removeWeapons.add(weapon);
-
-                    //weapons.remove(weapon);
                     inventory.remove(weapon);
                 }
             }
 
             if (weapon.getType().equals("shield") && !foundShield) {
+                // Decrease the durability of the weapon
                 weapon.decreaseDurability();
                 weaponsForBattle.add(weapon);
                 foundShield = false;
 
+                // Check if the weapon has run out of durability
                 if (weapon.getDurability() == 0) {
                     removeWeapons.add(weapon);
 
@@ -150,10 +168,15 @@ public class Player implements Entity {
                 }
             }
         }
+
+        // Remove all weapons that have run out of durability
         weapons.removeAll(removeWeapons);
         return weaponsForBattle;
     }
 
+    /*
+     * Remove inventory items that make the shield
+     */
     public void removeForShield() {
         // Remove 2 wood and a treasure or key (Removes the first treasure/key in array)
         int woodCount = 0;
@@ -182,6 +205,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Remove inventory items that make the bow
+     */
     public void removeForBow() {
         // Remove 1 wood and 3 arrows
         int woodCount = 0;
@@ -204,6 +230,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Get the amount of treasure in the players inventory
+     */
     public int treasureAmount() {
         int treasureCount = 0;
         for (Item item : inventory) {
@@ -215,10 +244,18 @@ public class Player implements Entity {
         return treasureCount;
     }
 
+    /*
+     * Decrease the durability of the sword
+     * Remove sword from inventory if durability is zero
+     */
     public void decreaseSwordDurability() {
         for (Weapon weapon : weapons) {
             if (weapon.getType().equals("sword")) {
                 weapon.decreaseDurability();
+                if (weapon.getDurability() == 0) {
+                    inventory.remove(weapon);
+                    weapons.remove(weapon);
+                }
                 break;
             }
         }
@@ -266,6 +303,10 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Start battles. Player look for enemies and notifies them of the battle. 
+     * (Observer pattern)
+     */
     public List<Battle> battle() {
         List<Battle> battles = new ArrayList<Battle>();
         if (isInvisible()) return battles;
@@ -301,7 +342,9 @@ public class Player implements Entity {
         return battles;
     }
 
-    // Unlock a door
+    /*
+     * Check if key exists to unlock a door
+     */
     public boolean unlockDoor(int KeyId) {
         boolean foundKey = false;
         for (String key : keys.keySet()) {
@@ -344,6 +387,9 @@ public class Player implements Entity {
         movingEntities.stream().forEach(o -> o.move(new Position(this.position.getX(), this.position.getY()), entities));
     }
 
+    /*
+     * Update the potions that the player is using
+     */
     public void updatePotions() {
         boolean goToNextPotion = false;
         if (potionQueue.size() > 0) {
@@ -361,6 +407,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Notify the enemies of the players potion use. 
+     */
     public void updateSpawnedEnemies() {
         if (potionQueue.size() > 0) {
             if (potionQueue.get(0) instanceof InvincibilityPotion) {
@@ -373,6 +422,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Check if the player is invisible or not
+     */
     public boolean isInvisible() {
         if (potionQueue.size() > 0) {
             if (potionQueue.get(0) instanceof InvisibilityPotion) {
@@ -382,6 +434,9 @@ public class Player implements Entity {
         return false;
     }
 
+    /*
+     * Check if the player in invincible or not
+     */
     public boolean isInvincible() {
         if (potionQueue.size() > 0) {
             if (potionQueue.get(0) instanceof InvincibilityPotion) {
@@ -391,6 +446,9 @@ public class Player implements Entity {
         return false;
     }
 
+    /*
+     * Remove enemy from moving entities list
+     */
     public void removeFromMovingEntities(String Id) {
         for (MovingEntity entity : movingEntities) {
             if (entity.getId().equals(Id)) {
@@ -400,6 +458,9 @@ public class Player implements Entity {
         }
     }
 
+    /*
+     * Remove treasure from inventory. 
+     */
     public void removeTreasure(int count) {
         int counter = 0;
         Iterator<Item> inventoryIterator = inventory.iterator();

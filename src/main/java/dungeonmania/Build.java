@@ -46,18 +46,21 @@ public class Build {
             Shield shield = new Shield(Integer.toString(latestUnusedId), 
                     "shield", false, configMap.get("shield_defence"), 
                     configMap.get("shield_durability"));
+            // Add item to players inventory
             player.addToInventory(shield);
+            // Add item to players weapons
             player.addToWeapons(shield);
+            // Remove the materials that made the shield
             player.removeForShield(); 
         } else if (buildable.equals("bow")) {
             Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", 
                     false, configMap.get("bow_durability"));
+            // Add item to players inventory
             player.addToInventory(bow);
+            // Add item to players weapons
             player.addToWeapons(bow);
+            // Remove the materials that made the shield
             player.removeForBow();
         }
     }
-
-    
-    
 }

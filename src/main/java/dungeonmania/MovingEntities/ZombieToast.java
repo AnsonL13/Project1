@@ -42,6 +42,7 @@ public class ZombieToast extends MovingEntity {
         super(id, attack, health, position);
         this.isInteractable = false;
         this.type = "zombie_toast";
+        // The zombie starts of by moving randomly
         this.movement = new RandomMovement(this);
     }
     
@@ -65,6 +66,7 @@ public class ZombieToast extends MovingEntity {
      * @param player
      * @param entities
      * @return void
+     * Move the zombietoast
      */
     @Override
     public void move(Position playerPos, List<Entity> entities) {
@@ -72,11 +74,13 @@ public class ZombieToast extends MovingEntity {
 
         // Check if player is is Invincible
         if (isInvincible) {
+            // Use running away strategy
             changeMovement(new RunAwayMovement(this));
         }
 
         // Check if player is is is Invisible
         else if (isInvisible) {
+            // Use random movement strategy
             changeMovement(new RandomMovement(this));
         }
 

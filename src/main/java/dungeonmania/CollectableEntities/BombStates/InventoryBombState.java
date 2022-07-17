@@ -16,11 +16,17 @@ public class InventoryBombState implements BombState {
         this.player = player;
     }
 
+    /*
+     * Pickup the bomb from the dungeon
+     */
     public void pickUp() {
         // Cannot pick up the bomb.
         return;
     }
 
+    /*
+     * Put down the bomb on the dungeon map
+     */
     public void putDown() {
         // Set the new bomb position
         bomb.setPosition(new Position(player.getPosition().getX(), player.getPosition().getY()));
@@ -32,6 +38,9 @@ public class InventoryBombState implements BombState {
         bomb.setState(bomb.getActiveBombState());
     }
 
+    /*
+     * Destroy all entities with range of the bomb
+     */
     public void explode() {
         // Cannot explode the bomb.
         return;

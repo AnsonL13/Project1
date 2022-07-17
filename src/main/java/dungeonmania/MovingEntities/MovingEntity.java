@@ -99,6 +99,9 @@ public class MovingEntity implements Entity {
         return this.isInvincible;
     }
 
+    /*
+     * Notifies this entity if a player is using a potion or not
+     */
     public void setPotionStatus(boolean setInvisible, boolean setInvincible) {
         this.isInvisible = setInvisible;
         this.isInvincible = setInvincible;

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 public class ComplexGoal implements Goal {
     private String name;
-    private boolean isCompleted;
 
     ArrayList<Goal> children = new ArrayList<Goal>();
 
-    public ComplexGoal(String name, boolean isCompleted) {
+    public ComplexGoal(String name) {
         this.name = name;
-        this.isCompleted = isCompleted;
     }
 
     // Find out if subgoals have been completed
@@ -37,7 +35,7 @@ public class ComplexGoal implements Goal {
 	
 	@Override
 	public String nameString() {
-		String answer = "[" + this.getName()  + " ("; 
+		String answer = "[" + this.name  + " ("; 
 		for(Goal c : children) {
 			answer = answer + " " + c.nameString();
 		}	
@@ -45,11 +43,14 @@ public class ComplexGoal implements Goal {
 		return answer;
 	}
 
+    /*
+     * Generates the list of incomplete goals in the required format
+     */
     @Override
     public String listIncompleteGoals() {
 
         if (name.equals("OR") && ! goalComplete()) {
-            String answer = "(" + children.get(0).listIncompleteGoals() + " " + this.getName() + " " + children.get(1).listIncompleteGoals() + ")";
+            String answer = "(" + children.get(0).listIncompleteGoals() + " " + this.name + " " + children.get(1).listIncompleteGoals() + ")";
             return answer;
         }
 
@@ -67,7 +68,7 @@ public class ComplexGoal implements Goal {
             // Case where neither goal complete.
             else {
 
-                return "(" + exitString(0) + " " + this.getName() + " " + exitString(1) + ")";
+                return "(" + exitString(0) + " " + this.name + " " + exitString(1) + ")";
             }
         }
 
@@ -91,25 +92,9 @@ public class ComplexGoal implements Goal {
 		return true;
 	}
 
-    // Getters and Setters below .... 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }
-
-    // Check if exit is completed before others
+    /*
+     * Exit goal must be completed last. Check if goal can be completed. 
+     */
     public boolean canComplete() {
         if (nameString().equals("OR")) return true;
         if (children.get(0).nameString().contains("exit") && children.get(1).goalComplete()) {

@@ -15,6 +15,9 @@ public class InactiveBombState implements BombState {
         this.player = player;
     }
 
+    /*
+     * Pickup the bomb from the dungeon
+     */
     public void pickUp() {
         // Remove bomb from dungeon
         dungeon.removeEntity(bomb.getId());
@@ -24,11 +27,17 @@ public class InactiveBombState implements BombState {
         bomb.setState(bomb.getInventoryBombState());
     }
 
+    /*
+     * Put down the bomb on the dungeon map
+     */
 	public void putDown() {
         // Cannot put the bomb down.
         return;
     }
 
+    /*
+     * Destroy all entities with range of the bomb
+     */
     public void explode() {
         // Cannot explode the bomb.
         return;

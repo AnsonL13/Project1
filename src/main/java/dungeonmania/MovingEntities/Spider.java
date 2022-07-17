@@ -2,11 +2,8 @@ package dungeonmania.MovingEntities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class Spider extends MovingEntity {
@@ -37,6 +34,9 @@ public class Spider extends MovingEntity {
         setSpiderAdjacentPositions();
     }
 
+    /*
+     * Get the positions that the spider can go to in order of first to last in a list. 
+     */
     public void setSpiderAdjacentPositions() {
         int x = this.position.getX();
         int y = this.position.getY();
@@ -53,11 +53,11 @@ public class Spider extends MovingEntity {
         this.coordinates = adjacentPositions;
     }
 
-    public boolean isClockwise() {
-        return isClockwise;
-    }
-
+    /*
+     * Move the spider upwards if possible
+     */
     private void moveUpwards(List<Entity> entities) {
+        // Check for boulder
         if (canMove(coordinates.get(0), entities)) {
             this.position = coordinates.get(0);
             this.movedUp = true;
@@ -65,6 +65,9 @@ public class Spider extends MovingEntity {
         }
     }
 
+    /*
+     * Move the spider. 
+     */
     @Override
     public void move(Position player, List<Entity> entities) {
         // When the spider spawns, they immediately move the 1 square upwards
@@ -84,6 +87,9 @@ public class Spider extends MovingEntity {
         }        
     }
 
+    /*
+     * Get the next index if the array that corresponds to a clockwise movement
+     */
     public int getNextClockwise(int current) {
         int next = 0;
         if (current == 7) {
@@ -96,6 +102,9 @@ public class Spider extends MovingEntity {
         return next;
     }
 
+    /*
+     * Get the next index if the array that corresponds to an anticlockwise movement
+     */
     public int getNextAntiClockwise(int current) {
         int next = 0;
         if (current == 0) {
@@ -158,6 +167,11 @@ public class Spider extends MovingEntity {
         }
     }
 
+    /*
+     * Checks if there is a boulder in the spiders path.
+     * Return true if there is no boulder
+     * Return false if there is a boulder
+     */
     private boolean canMove(Position position, List<Entity> entities) {
         if (position == null) {
             return false;
@@ -170,10 +184,6 @@ public class Spider extends MovingEntity {
         return true;
     }
 
-    public String getSimpleName() {
-        return "spider";
-    }
-
     public boolean isInteractable() {
         return isInteractable;
     }
@@ -181,5 +191,4 @@ public class Spider extends MovingEntity {
     public final String getType() {
         return type;
     }
-    
 }

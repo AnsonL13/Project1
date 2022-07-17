@@ -1,29 +1,18 @@
 package dungeonmania.Goal;
 
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.getEntities;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 
 
 public class complexGoalTest {
-    private DungeonResponse assertDoesNotThrow2;
-
     @Test
     @DisplayName("Boulber and treasure not exit")
     public void testComplexGoal1() {
@@ -48,7 +37,4 @@ public class complexGoalTest {
 
         assertEquals("", getGoals(initDungonRes));
     }
-
-    
-    
 }

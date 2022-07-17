@@ -17,6 +17,9 @@ public class FollowMovement extends Movement {
         this.enemy = enemy;
     }
 
+    /*
+     * Find the next closest square to the player. 
+     */
     @Override
     public Position moveEnemy(Position player, List<Entity> entities) {
         Position leftMove = enemy.getPosition().translateBy(Direction.LEFT);

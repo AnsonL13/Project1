@@ -177,6 +177,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
                 // Check if player has enough gold
                 if (player.treasureAmount() >= bribeAmount) {
+                    // Player can interact with the mercenary. 
                     return true;
                 }
         }
@@ -184,13 +185,19 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         return false;
     }
 
+    /*
+     * Let the player interact with the mercenary. 
+     */
     public void interact(Dungeon dungeon) {
         this.isAllied = true;
 
-        // Remove player treasure
+        // Remove player treasure cost
         dungeon.getPlayer().removeTreasure(bribeAmount);
     }
 
+    /*
+     * Check if the mercenary is allied or not
+     */
     public boolean isAllied() {
         return isAllied;
     }
