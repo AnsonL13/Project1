@@ -36,7 +36,7 @@ public class complexGoalTest {
     @DisplayName("Boulber and treasure and exit")
     public void testComplexGoal2() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_complexgoal1", "c_complexGoalsTest_andAll");
+        DungeonResponse initDungonRes = dmc.newGame("d_complexgoal2", "c_complexGoalsTest_andAll");
         initDungonRes = dmc.tick(Direction.RIGHT);
         initDungonRes = dmc.tick(Direction.RIGHT);
         initDungonRes = dmc.tick(Direction.DOWN);
