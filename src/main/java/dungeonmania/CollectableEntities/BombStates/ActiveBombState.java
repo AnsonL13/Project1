@@ -106,7 +106,7 @@ public class ActiveBombState implements BombState {
             }
         }
     }
-
+    //get the adiacent position of the input position
     public List<Position> getCardinallyAdjacentPositions(int x, int y) {
         List<Position> adjacentPositions = new ArrayList<>();
         adjacentPositions.add(new Position(x  , y-1));

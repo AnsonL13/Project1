@@ -46,6 +46,7 @@ public class InvisibilityPotion implements Potion {
         return invisibilityPotionPuration;
     }
 
+    //decrease duration after a tick
     public void decrementDuration() {
         this.invisibilityPotionPuration--;
     }
