@@ -2,7 +2,7 @@ package dungeonmania.BuildableEntities;
 
 import dungeonmania.Weapon;
 
-public class Bow implements BuildableEntity, Weapon {
+public class Bow implements Weapon {
     private String id;
     private String type;
     private boolean isInteractable;

@@ -23,4 +23,8 @@
     "zombie_attack": 1,
     "zombie_health": 5,
     "zombie_spawn_rate": 0
+<<<<<<< HEAD
   }
+=======
+}
+>>>>>>> master

@@ -3,11 +3,12 @@ package dungeonmania;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class EnemyFactory {
@@ -33,79 +34,74 @@ public class EnemyFactory {
         this.nextSpiderRate = spiderRate;
         this.nextZombieRate = zombieRate;
     }
-/*
-    public Enemy spawn (String enemy, Position pos) {
-        if (enemy == null || pos == null) return null;
-        
-        if (enemy.equalsIgnoreCase("Zombie")) {
-            return new ZombieToast(0, zombieHealth, zombieAttack, pos);
-        } else if (enemy.equalsIgnoreCase("Spider")) {
-            return new Spider(spiderAttack, spiderHealth, pos);
-        }
-        return null;
-    } */
 
-    public List<Entity> spawn (String latestId, List<ZombieToastSpawner> zombieSpawners, List<Entity> entities) {    
-        List<Entity> newEnemies = new ArrayList<Entity>();  
+    /*
+     * Gets all the instances of ZombieToastSpawners
+     */
+    private List<ZombieToastSpawner> getSpawner(List<Entity> entities) {
+        List<ZombieToastSpawner> allSpawners = entities.stream()
+            .filter( o -> o instanceof ZombieToastSpawner)
+            .map(ZombieToastSpawner.class::cast)
+            .collect(Collectors.toList());
+        return allSpawners;
+    }
+
+    /*
+     * Spawn enemies
+     */
+    public List<MovingEntity> spawn(String latestId, List<Entity> entities) {
+        List<ZombieToastSpawner> zombieSpawners = getSpawner(entities);
+        List<MovingEntity> newEnemies = new ArrayList<MovingEntity>();  
         --nextZombieRate;
         --nextSpiderRate;
 
+        // Check if it is time to spawn zombies.
         if (spawnZombie()) {
             nextZombieRate = zombieRate;
+            // Spawn a zombie 
             for (ZombieToastSpawner spawner : zombieSpawners) {
                 Position newSpawnPos = spawner.spawn(entities);
                 if (newSpawnPos != null) {
                     newEnemies.add(new ZombieToast(latestId, zombieAttack, zombieHealth, newSpawnPos));
+                    latestId = getNewId(latestId);
                 }
-                latestId = getNewId(latestId);
             }
-        } 
+        }
         
+        // Check if it is time to spawn the spider. 
         if (spawnSpider()) {
             nextSpiderRate = spiderRate;
-            Position pos = null;
-            pos = ifSpiderSpawn();
+            Position pos = ifSpiderSpawn();
+            while(! canSpiderSpawn(pos, entities)) {
+                pos = ifSpiderSpawn();
+            }
             newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
         return newEnemies;
     }
 
-    
-
-    // cannot moving upwards immediately because of the exist of boulder ???
     /*
-    private boolean canSpawn(Position position, Boulder boulder) {
-        Position spawnerPosition = super.getPosition();
-        if (spawnerPosition.equals(boulder.getPosition())) {
-            return false;
+     * Check if position on boulder. Cannot spawn on boulder.
+     * 
+     */
+    private boolean canSpiderSpawn(Position position, List<Entity> entities) {
+        for (Entity entity : entities) {
+            if (entity.getType().equals("boulder") && entity.getPosition().equals(position)) {
+                return false;
+            }
         }
         return true;
-    }*/
+    }
 
-
+    /*
+     * Generate a random position
+     */
     private Position ifSpiderSpawn() {
         Random random = new Random();
-        int i = 15;
+        int i = 10;
         int randomY = random.nextInt(i);
         int randomX = random.nextInt(i);
-       /*  
-        List<Position> spawnPositions = new ArrayList<Position>();
-        Position spawner = super.getPosition();
-        switch(randomPos) {
-            case 0:
-                spawnPositions.add(spawner.translateBy(Direction.UP));
-                break;
-            case 1:
-                spawnPositions.add(spawner.translateBy(Direction.DOWN));
-                break;
-            case 2:
-                spawnPositions.add(spawner.translateBy(Direction.LEFT));
-                break;
-            case 3:
-                spawnPositions.add(spawner.translateBy(Direction.RIGHT));
-                break;
-        }
-         */
+
         return new Position(randomX, randomY);
     }
 
@@ -119,12 +115,12 @@ public class EnemyFactory {
         return false;
     }
 
+    /*
+     * Generate the next Id
+     */
     private String getNewId(String latestId) {
         int increment = Integer.parseInt(latestId);
         increment++;
         return String.valueOf(increment);
     }
-
-    
-
 }

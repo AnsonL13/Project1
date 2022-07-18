@@ -1,5 +1,6 @@
 package dungeonmania;
 
+<<<<<<< HEAD
 import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.CollectableEntities.Arrow;
@@ -11,60 +12,55 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+=======
+import dungeonmania.CollectableEntities.Bomb;
+import dungeonmania.CollectableEntities.CollectableEntity;
+>>>>>>> master
 import dungeonmania.Goals.BouldersGoal;
 import dungeonmania.Goals.ComplexGoal;
 import dungeonmania.Goals.EnemiesGoal;
 import dungeonmania.Goals.ExitGoal;
 import dungeonmania.Goals.Goal;
 import dungeonmania.Goals.TreasureGoal;
-import dungeonmania.MovingEntities.Mercenary;
-import dungeonmania.MovingEntities.Spider;
-import dungeonmania.MovingEntities.ZombieToast;
-import dungeonmania.StaticEntities.Boulder;
+import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Exit;
-import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
+<<<<<<< HEAD
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 //import dungeonmania.enemy.Mercenary;
+=======
+
+>>>>>>> master
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.EntityResponse;
+
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.Map.Entry;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.google.gson.Gson;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+<<<<<<< HEAD
 import com.google.gson.JsonArray;
+=======
+>>>>>>> master
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class Dungeon {
 
-    // All dungeon info and configs are in these two variables. Stored as JsonObject.
-    private JsonObject dungeonJson;
-    private JsonObject configJson;
-    // Example Use: dungeonJson.get("entities").getAsJsonArray().get(0).getAsJsonObject().get("type").getAsString()
-    // Configs stored as a hashmap
+    // All Configs stored as a hashmap
     private HashMap<String, Integer> configMap;
 
-    // Add any variables here when you need them.
+    // Variables for the dungeon
     private String dungeonId;
     private String dungeonName;
     private Player player;
@@ -72,6 +68,7 @@ public class Dungeon {
     private Goal goals;
     int latestUnusedId = 0;
 
+<<<<<<< HEAD
     // Add data structures here when you need them.
     List<Entity> entities = new ArrayList<Entity>();
     List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
@@ -82,10 +79,18 @@ public class Dungeon {
     Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
 
     private List<Enemy> enemies = new ArrayList<Enemy>();
+=======
+    // Data structures for the dungeon
+    private List<Entity> entities = new ArrayList<Entity>();
+    private List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
+    private List<Battle> battles = new ArrayList<Battle>();
+    private Map<String, Door> doors = new HashMap<String, Door>();
+    private Map<String, Portal> portals = new HashMap<String, Portal>();
+    private List<Bomb> bombs = new ArrayList<Bomb>();
+    private Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
+>>>>>>> master
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
-        this.dungeonJson = dungeonJson;
-        this.configJson = configJson;
         this.dungeonId = "dungeon-0";
         this.dungeonName = dungeonName;
         // Convert JsonObject configJson into HashMap<String, Integer> configMap
@@ -98,6 +103,7 @@ public class Dungeon {
         setGoals(dungeonJson);
     }
 
+<<<<<<< HEAD
     // Getters (Add more here)
     public String getDungeonId() {
         return dungeonId;
@@ -188,41 +194,43 @@ public class Dungeon {
         return buildables;
     }
 
+=======
+>>>>>>> master
     /**
      * /game/tick/item
      */
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
         // Check if item is not in the inventory
+        boolean illegalItem = false;
         boolean foundItem = false;
         for (Item item : player.getInventory()) {
             if (item.getId().equals(itemUsedId)) {
                 if (! (item.getType().equals("bomb") || 
                     item.getType().equals("invincibility_potion") || 
                     item.getType().equals("invisibility_potion"))) {
-                    throw new IllegalArgumentException(itemUsedId);
+                    illegalItem = true;
                 }
                 foundItem = true;
             }
         }
 
+        if (! illegalItem && foundItem) {
+            // Player uses the item
+            player.useItem(itemUsedId);
+        }
+
+        // Complete necesarry updates. 
+        tickUpdates();
+        
+        // Check if illegal argument
+        if (illegalItem) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
+        
+        // Check if item not inside players inventory
         if (! foundItem) {
             throw new InvalidActionException(itemUsedId);
         }
-
-        // Player uses the item
-        player.useItem(itemUsedId);
-
-        // TODO: Enemy movement
-        
-        // Battles
-        startBattles();
-
-        // TODO: Spawn enemies
-        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
-        entities.addAll(newEnemy);
-        latestUnusedId+= newEnemy.size();
-
-        // TODO: Update Spawned enemy potion status
     }
 
     /**
@@ -240,17 +248,22 @@ public class Dungeon {
             player.setPosition(targetSquare);
         }
 
-        // Check if moved into a collectable entity
-        for (String collectableEntity : collectableEntities.keySet()) {
-            Position collectablePosition = collectableEntities.get(collectableEntity).getPosition();
+        // Check if the player moved into a collectable entity. 
+        Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
+        Entry<String, CollectableEntity> collectable;
+        while(collectableIterator.hasNext()) {     
+            collectable = collectableIterator.next();     
+            Position collectablePosition = collectable.getValue().getPosition();
             // Check if collectable entity is in the same square as the player. 
             if (collectablePosition.getX() == targetSquare.getX() && collectablePosition.getY() == targetSquare.getY()) {
+
                 // Check if the item is a bomb
-                if (collectableEntities.get(collectableEntity).getType().equals("bomb")) {
-                    for (String bomb : bombs.keySet()) {
-                        if (bombs.get(bomb).getId().equals(collectableEntities.get(collectableEntity).getId())) {
+                if (collectable.getValue().getType().equals("bomb")) {
+                    for (Bomb bomb : bombs) {
+                        if (bomb.getId().equals(collectable.getValue().getId())) {
                             // Change the state of the bomb
-                            bombs.get(bomb).pickUp();
+                            bomb.pickUp();
+                            collectableIterator.remove();
                             break;
                         }
                     }
@@ -258,10 +271,10 @@ public class Dungeon {
                 
                 else {
                     // Collect the item
-                    player.addToInventory(collectableEntities.get(collectableEntity));
+                    player.addToInventory(collectable.getValue());
                     // Remove from list of entities
-                    entities.remove(collectableEntities.get(collectableEntity));
-                    collectableEntities.remove(collectableEntity);
+                    entities.remove(collectable.getValue());
+                    collectableIterator.remove();
                     break;
                 }
             }
@@ -269,66 +282,90 @@ public class Dungeon {
 
         // Check if moved into an enemy (Battle)
         startBattles();
-        // Move enemies
-        
-        // Check if Enemy has moved into a player (Battle)
-        startBattles();
-        
-        // Spawn enemies
-        List<Entity> newEnemy = spawner.spawn(Integer.toString(latestUnusedId), getSpawner(), entities);
-        entities.addAll(newEnemy);
-        latestUnusedId+= newEnemy.size();
+
+        // Complete necesarry updates. 
+        tickUpdates();
     }
 
-    private List<ZombieToastSpawner> getSpawner() {
-        List<ZombieToastSpawner> allSpawners = entities.stream().filter( o -> o instanceof ZombieToastSpawner).map(ZombieToastSpawner.class::cast).collect(Collectors.toList());
+    private void tickUpdates() {
+       // Explode any bombs
+       bombs.stream().forEach(o -> o.explode());
 
-       // List<ZombieToastSpawner> allSpawners = new ArrayList<ZombieToastSpawner>();
-
-        //for (InteractableEntity entity : interactablEntities) {
-          //  if (entity.getType().equalsIgnoreCase("ZombieToastSpawner")) {
-              //  allSpawners.add((ZombieToastSpawner)entity);
-           // }
-        //}
-        return allSpawners;
+       //Move movingentities
+       player.moveMovingEntities(entities);
+       
+       // Check if Enemy has moved into a player (Battle)
+       startBattles();
+       
+       // Spawn enemies
+       String nextID = Integer.toString(latestUnusedId);
+       List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
+       entities.addAll(newEnemy);
+       player.addAllEnemies(newEnemy);
+       latestUnusedId+= newEnemy.size();
+       
+       // Update spawned enemy potion status. 
+       player.updateSpawnedEnemies();
+       
+       // Update player potions
+       player.updatePotions();
     }
-
 
     /**
      * /game/build
      */
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
         // Check if buildable is not a bow or shield
-        if (! (buildable.equals("shield") || buildable.equals("bow"))) {
-            throw new IllegalArgumentException(buildable);
-        }
+        Build buildItem = new Build(this, configMap);
+        buildItem.build(buildable, player, latestUnusedId);
+        latestUnusedId++;
+    }
 
-        // Check if possible to build, throw any excpetions
-        List<String> buildables = getBuildables();
-        boolean canBuild = false;
-        for (String item : buildables) {
-            if (item.equals(buildable)) {
-                canBuild = true;
+    /*
+     * Get possible items that player can build in a list of strings. 
+     */
+    public List<String> getBuildables() {
+        int woodCount = 0;
+        int arrowCount = 0;
+        int treasureCount = 0;
+        int keyCount = 0;
+
+        // Get all resource items in the players inventory
+        for (Item item : player.getInventory()) {
+            switch (item.getType()) {
+                case "wood":
+                    woodCount++;
+                    break;
+
+                case "arrow":
+                    arrowCount++;
+                    break;
+
+                case "treasure":
+                    treasureCount++;
+                    break;
+
+                case "key":
+                    keyCount++;
+                    break;
+
+                default:
+                    break;
             }
         }
 
-        if (! canBuild) {
-            throw new InvalidActionException(buildable);
+        List<String> buildables = new ArrayList<>();
+        // Calculate if bow can be created
+        if (woodCount >= 1 && arrowCount >= 3) {
+            buildables.add("bow");
         }
 
-        // Build the item
-        // Add the item to the players inventory and remove items from players inventory
-        if (buildable.equals("shield")) {
-            Shield shield = new Shield(Integer.toString(latestUnusedId), "shield", false, configMap.get("shield_defence"), configMap.get("shield_durability"));
-            player.addToInventory(shield);
-            player.addToWeapons(shield);
-            player.removeForShield(); 
-        } else if (buildable.equals("bow")) {
-            Bow bow = new Bow(Integer.toString(latestUnusedId), "bow", false, configMap.get("bow_durability"));
-            player.addToInventory(bow);
-            player.addToWeapons(bow);
-            player.removeForBow();
+        // Calculate if shield can be created
+        if (woodCount >= 2 && (treasureCount >= 1 || keyCount >= 1)) {
+            buildables.add("shield");
         }
+
+        return buildables;
     }
 
     /**
@@ -354,21 +391,9 @@ public class Dungeon {
                 if (! entity.interactActionCheck(player)) {
                     throw new InvalidActionException(entityId);
                 }
-
-                else if (entity.getType().equals("mercenary")) {
-                    // Bribe the mercenary                    
-                    // Not done yet ...
-                }
-                
-                else if (entity.getType().equals("zombie_toast_spawner")) {
-                    // Destroy the zombie spawner
-                    this.entities.remove(entity);
-                    this.interactableEntities.remove(entity);
-
-                    // Decrease sword durability
-                    player.decreaseSwordDurability();
-                    break;
-                }
+                // Interact with the interactable entity.
+                entity.interact(this);
+                break;
             }
         }
     }
@@ -382,6 +407,7 @@ public class Dungeon {
     // Generate entities from Dungeon.json
     public void generateEntities(JsonObject dungeonJson) {
         // Read from dungeon json file. Generate all entities. 
+<<<<<<< HEAD
         for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
             int xPosition;
             int yPosition;
@@ -567,21 +593,47 @@ public class Dungeon {
         }
     }
 
+=======
+        List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
+        EntityFactory getEntities = new EntityFactory(this, configMap);
+
+        for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
+            MovingEntity newEnemies = getEntities.createEntity(entityinfo, latestUnusedId);
+            if (newEnemies != null) movingEntities.add(newEnemies);
+            latestUnusedId++;
+        }     
+        player.addAllEnemies(movingEntities);
+    }
+
+    /*
+     * Begin battles. 
+     */
+>>>>>>> master
     public void startBattles() {
         List<Battle> newBattles = player.battle();
         // Add all new battles to the list of battles.
         this.battles.addAll(newBattles);
-
-        // 
+        
+        /*
+         * Remove entities that lost the battle from the dungeon. 
+         */
         for (Battle battle : newBattles) {
+            // Enemy won
             if (battle.isEnemyWon()) {
                 entities.remove(player);
                 break;
             }
-    
+            
+            // Player won
             else if (battle.isPlayerWon()) {
                 String id = battle.getEnemyId();
                 removeEntity(id);
+                for (InteractableEntity entity : interactableEntities) {
+                    if (entity.getId().equals(id)) {
+                        interactableEntities.remove(entity);
+                        break;
+                    }
+                }
             }
     
             else {
@@ -593,7 +645,7 @@ public class Dungeon {
         }
     }
 
-    // Checks if players movement will be a static entity and handles it. 
+    // Checks if players movement will be into a static entity and handles it. 
     public boolean moveIntoStaticEntity(Direction movementDirection, Position targetSquare) {
         boolean normalMove = true;
         for (Entity entity : entities) {
@@ -627,6 +679,9 @@ public class Dungeon {
         return normalMove;
     }
 
+    /*
+     * Check if player can move a boulder. 
+     */
     public boolean moveIntoBoulder(Direction movementDirection, Position targetSquare, Entity entity) {
         // Check if the boulder can move
         Position nextTargetSquare = targetSquare.translateBy(movementDirection);
@@ -652,6 +707,9 @@ public class Dungeon {
         return true;
     }
 
+    /*
+     * Check if player can unlock a door
+     */
     public boolean moveIntoDoor(Entity entity) {
         // Check if the door is already open
         if (doors.get(entity.getId()).isOpen()) {
@@ -671,6 +729,9 @@ public class Dungeon {
         }
     }
 
+    /*
+     * Check the square which a portal will teleport the player to. 
+     */
     public Position moveIntoPortal(Entity entity, Direction movementDirection) {
         boolean foundFinalSquare = false;
             Position portalExitSquare = player.getPosition();
@@ -760,30 +821,168 @@ public class Dungeon {
         Goal newgoal = null;
         if (subGoal.get("goal").getAsString().equals("AND") || 
             subGoal.get("goal").getAsString().equals("OR")) {
-
-            newgoal = new ComplexGoal(subGoal.get("goal").getAsString(), false);
+            newgoal = new ComplexGoal(subGoal.get("goal").getAsString());
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(0).getAsJsonObject()));
             newgoal.add(setGoalsHelper(subGoal.get("subgoals").getAsJsonArray().get(1).getAsJsonObject()));
         }
-
         else {
             switch (subGoal.get("goal").getAsString()) {
                 case "enemies":
+<<<<<<< HEAD
                     newgoal = new EnemiesGoal("enemies", false, configMap.get("enemy_goal"), this);
+=======
+                    newgoal = new EnemiesGoal("enemies", configMap.get("enemy_goal"), this);
                 break;
                 case "boulders":
-                    newgoal = new BouldersGoal("boulders", false, this);
+                    newgoal = new BouldersGoal("boulders", this);
                 break;
                 case "treasure":
-                    newgoal = new TreasureGoal("treasure", false, configMap.get("treasure_goal"), this);
+                    newgoal = new TreasureGoal("treasure", configMap.get("treasure_goal"), this);
                 break;
                 case "exit":
-                    newgoal = new ExitGoal("exit", false, this);
+                    newgoal = new ExitGoal("exit", this);
+>>>>>>> master
                 break;
             }
         }
         return newgoal;
     }
 
+
+    // Getters
+    public String getDungeonId() {
+        return dungeonId;
+    }
+
+    public String getDungeonName() {
+        return dungeonName;
+    }
+
+    public List<Item> getInventory() {
+        return player.getInventory();
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public List<Battle> getBattles() {
+        return battles;
+    }
+
+    public void addToBattles(Battle battle) {
+        this.battles.add(battle);
+    }
+
+    public void addToEntities(Entity entity) {
+        this.entities.add(entity);
+    }
+
+    public void addToDoors(String latestUnusedId, Door door) {
+        this.doors.put(latestUnusedId, door);
+    }
+
+    public void addToPortals(String latestUnusedId, Portal portal) {
+        this.portals.put(latestUnusedId, portal);
+    }    
+    
+    public void addToInteractable(InteractableEntity entity) {
+        this.interactableEntities.add(entity);
+    }
+
+    public void addToCollectableEntities(String latestUnusedId, CollectableEntity entity) {
+        this.collectableEntities.put(latestUnusedId, entity);
+    }
+
+    public void addToBombs(Bomb entity) {
+        this.bombs.add(entity);
+    }
+
+    public void removeFromBombs(Bomb entity) {
+        this.bombs.remove(entity);
+    }
+
+    /*
+     * Remove from dungeon list of entities. 
+     */
+    public void removeEntity(String Id) {
+        for (Entity entity : entities) {
+            if (entity.getId().equals(Id)) {
+                entities.remove(entity);
+                break;
+            }
+        }
+    }
+
+    /*
+     * Remove from dungeon list interactable entities
+     */
+    public void removeInteractableEntity(String Id) {
+        for (InteractableEntity entity : interactableEntities) {
+            if (entity.getId().equals(Id)) {
+                interactableEntities.remove(entity);
+                break;
+<<<<<<< HEAD
+                case "exit":
+                    newgoal = new ExitGoal("exit", false, this);
+=======
+            }
+        }
+    }
+
+    /*
+     * Removes entity from all data structres except collectable entities,
+     * for bomb explosion.
+     */
+    public void removeEntityFully(String Id) {
+        for (Entity entity : entities) {
+            if (entity.getId().equals(Id)) {
+                if (entity instanceof InteractableEntity) {
+                    interactableEntities.remove(entity);
+                }
+
+                if (entity instanceof Door) {
+                    doors.remove(Id);
+                }
+
+                if (entity instanceof Portal) {
+                    portals.remove(Id);
+                }
+
+                if (entity instanceof Bomb) {
+                    bombs.remove(entity);
+                }
+>>>>>>> master
+                break;
+            }
+        }
+    }
+
+<<<<<<< HEAD
     //public void 
+=======
+    /*
+     * Remove a collectable entity
+     */
+    public void removeCollectable(String Id) {
+        for (String collectableEntity : collectableEntities.keySet()) {
+            if (collectableEntity.equals(Id)) {
+                collectableEntities.remove(collectableEntity);
+            }
+            break;
+        }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Goal getGoals() {
+        return goals;
+    }
+>>>>>>> master
 }

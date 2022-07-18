@@ -6,15 +6,16 @@ import dungeonmania.util.Position;
 
 public class ExitGoal implements Goal {
     private String name;
-    private boolean isCompleted;
     private Dungeon dungeon;
 
-    public ExitGoal(String name, boolean isCompleted, Dungeon dungeon) {
+    public ExitGoal(String name, Dungeon dungeon) {
         this.name = name;
-        this.isCompleted = isCompleted;
         this.dungeon = dungeon;
     }
 
+    /*
+     * Check if player is at the exit
+     */
     @Override
 	public boolean goalComplete() {
         // Do logic to find out if player is at the exit
@@ -53,21 +54,8 @@ public class ExitGoal implements Goal {
 		return false;
 	}
 
-    // Getters and Setters below .... 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
+    @Override
+    public boolean canComplete() {
+        return true;
     }
 }

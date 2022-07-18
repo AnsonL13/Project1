@@ -1,21 +1,16 @@
 package dungeonmania.MovingEntities;
 
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.Dungeon;
+import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
+import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
+import dungeonmania.MovingEntities.PositionMovements.Movement;
+import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
+import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 
 public class Mercenary extends MovingEntity implements InteractableEntity {
     private String type;
@@ -27,113 +22,151 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int bribeAmount;
     private int bribeRadius;
 
-//    private MovingPatterns;
-//    private MovingPatterns = new RunAwayMovement;
-//    private MovingPatterns = new RandomMovement;
-//    private MovingPatterns = new FollowMovement;
-//    private MovingPatterns = new AlliedMovement;
+    private Movement movement;
 
+    /**
+     * Constructor
+     * @param id
+     * @param type string name
+     * @param position position in game
+     * @param isInteractable if player can interact
+     * @param allyAttack
+     * @param allyDefence
+     * @param bribeAmount
+     * @param bribeRadius
+     * @param mercenaryAttack
+     * @param mercenaryHealth
+     */
     public Mercenary(String id, String type, Position position, boolean isInteractable, 
-        int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, int mercenaryAttack, int mercenaryHealth) {
+            int allyAttack, int allyDefence,  int bribeAmount, int bribeRadius, 
+            int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = type;
         this.isInteractable = isInteractable;
-
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        
+        this.movement = new FollowMovement(this);
+        this.isAllied = false;
     }
 
-    public boolean move(Position player) {
-        Position leftMove = super.getPosition().translateBy(Direction.LEFT);
-        Position rightMove = super.getPosition().translateBy(Direction.RIGHT);
-        Position upMove = super.getPosition().translateBy(Direction.UP);
-        Position downMove = super.getPosition().translateBy(Direction.DOWN);
-
-        //if any pos = player pos return and set battle
-
-        Position leftVector = Position.calculatePositionBetween(leftMove, player);
-        Position rightVector = Position.calculatePositionBetween(rightMove, player);
-        Position upVector = Position.calculatePositionBetween(upMove, player);
-        Position downVector = Position.calculatePositionBetween(downMove, player);
-
-        List<Double> distance = new ArrayList<>();
-        distance.add(calculateLenth(leftVector));
-        distance.add(calculateLenth(rightVector));
-        distance.add(calculateLenth(upVector));
-        distance.add(calculateLenth(downVector));
-        int minIndex = distance.indexOf(Collections.min(distance));
-        
-        Map<Position, Double> mapShortest = new HashMap<Position, Double>();
-        LinkedHashMap<Position, Double> sortedMap = new LinkedHashMap<>();
-
-     //   mapShortest = mapShortest.entrySet()
-       //     .stream()
-        //    .sorted(Entry.comparingByValue()).collect(Collectors.toMap(Entry::getKey, Entry::getValue, (o, c) -> o, LinkedHashMap::new));
-        mapShortest.entrySet()
-            .stream()
-            .sorted(Map.Entry.comparingByValue())
-            .forEachOrdered(o -> sortedMap.put(o.getKey(), o.getValue()));
-        Position smallest = sortedMap.keySet().stream().findFirst().get();
-        //sort map by double value
-
-        if (canMove(smallest)) {
-
-        } /*else if (canMove(null)) {
-
-        } else if (canMove(null)) {
-
-        } else if (canMove(null)) {
-
-        } */
-
-        return false;
+    /**
+     * Constructor
+     * @param id
+     * @param position
+     * @param allyAttack
+     * @param allyDefence
+     * @param bribeAmount
+     * @param bribeRadius
+     * @param mercenaryAttack
+     * @param mercenaryHealth
+     */
+    public Mercenary(String id, Position position, int allyAttack,
+            int allyDefence,  int bribeAmount, int bribeRadius, 
+            int mercenaryAttack, int mercenaryHealth) {
+        super(id, mercenaryAttack, mercenaryHealth, position);
+        this.type = "mercenary";
+        this.isInteractable = false;
+        this.bribeAmount = bribeAmount;
+        this.bribeRadius = bribeRadius;
+        this.movement = new FollowMovement(this);
+        this.isAllied = false;
     }
-  
-    private Double calculateLenth(Position vector) {
-        double squareX = Math.pow(vector.getX(), vector.getX());
-        double squareY = Math.pow(vector.getY(), vector.getY());
-        double addXY = squareX + squareY;
+    
+    /** 
+     * @param player
+     * @param entities
+     * @return boolean
+     */
+    @Override
+    public void move(Position playerPos, List<Entity> entities) {
+        Position newPos = null;
 
-        return Math.sqrt(addXY);
-    }
+        // Check if mercenary is allied
+        if (isAllied) {
+            this.movement = new FollowMovement(this);
+        }
 
-    public String getSimpleName() {
-        return "mercenary";
-    }
+        else {
+            // Check if player is Invincible
+            if (isInvincible) {
+                changeMovement(new RunAwayMovement(this));
+            }
 
-    private boolean canMove(Position pos) {
-        return false;
+            // Check if player is Invisible
+            else if (isInvisible) {
+                changeMovement(new RandomMovement(this));
+            }
+
+            else {
+                changeMovement(new FollowMovement(this));
+            }
+        }
+
+        newPos = movement.moveEnemy(playerPos, entities);
+
+        if (newPos != null) {
+            super.setPosition(newPos);
+        }
     }
 
-
+    /** 
+     * @param newMovement
+     * @return void
+     * Changes the movement strategy of the zombie.
+     */
+    public void changeMovement(Movement newMovement) {
+        this.movement = newMovement;
+    }
+    
+    /** 
+     * @return int
+     */
     public int getAllyAttack() {
         return allyAttack;
     }
 
+    /** 
+     * @return int
+     */
     public int getAllyDefence() {
         return allyDefence;
     }
-
+    
+    /** 
+     * @return boolean
+     */
+    @Override
     public boolean isInteractable() {
         return isInteractable;
     }
-
-
+    
+    /** 
+     * @return String
+     */
+    @Override
     public final String getType() {
         return type;
     }
 
-
+    /** 
+     * @return int
+     */
     public int getBribeAmount() {
         return bribeAmount;
     }
-
+    
+    /** 
+     * @return int
+     */
     public int getBribeRadius() {
         return bribeRadius;
     }
-
-
+    
+    /** 
+     * @param player
+     * @return boolean
+     */
+    @Override
     public boolean interactActionCheck(Player player) {
         int xTopBoundary = super.getPosition().getX() + bribeRadius;
         int xBottomBoundary = super.getPosition().getX() - bribeRadius;
@@ -142,15 +175,31 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         // Check if player is within the specified bribing radius
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
             (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
-                return true;
+                // Check if player has enough gold
+                if (player.treasureAmount() >= bribeAmount) {
+                    // Player can interact with the mercenary. 
+                    return true;
+                }
         }
 
-        // Check if player has enough gold
-        if (player.treasureAmount() < bribeAmount) {
-            return false;
-        }
+        return false;
+    }
 
-        return true;
+    /*
+     * Let the player interact with the mercenary. 
+     */
+    public void interact(Dungeon dungeon) {
+        this.isAllied = true;
+
+        // Remove player treasure cost
+        dungeon.getPlayer().removeTreasure(bribeAmount);
+    }
+
+    /*
+     * Check if the mercenary is allied or not
+     */
+    public boolean isAllied() {
+        return isAllied;
     }
 }
 
