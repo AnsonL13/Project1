@@ -1,0 +1,24 @@
+{
+    "entities": [
+      {
+        "x": 3,
+        "y": 0,
+        "type": "player"
+      },
+      {
+        "x": 1,
+        "y": 1,
+        "type": "portal",
+        "colour": "BLUE"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "type": "portal",
+        "colour": "BLUE"
+      }
+    ],
+    "goal-condition": {
+      "goal": "exit"
+    }
+  }
