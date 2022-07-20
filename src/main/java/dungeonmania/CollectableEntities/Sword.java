@@ -44,7 +44,6 @@ public class Sword implements CollectableEntity, Weapon {
         return swordDurability;
     }
 
-    // decrease durability after battle
     public void decreaseDurability() {
         this.swordDurability--;
     }
