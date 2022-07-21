@@ -9,6 +9,7 @@ import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.InvincibilityPotion;
 import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
+import dungeonmania.CollectableEntities.SunStone;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
@@ -139,6 +140,14 @@ public class EntityFactory {
                 Treasure treasure = new Treasure(Integer.toString(latestUnusedId), "treasure", new Position(xPosition, yPosition), false);
                 dungeon.addToEntities(treasure);
                 dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), treasure);
+                break;
+
+            case "sun_stone":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                SunStone sunStone = new SunStone(Integer.toString(latestUnusedId), "sun_stone", new Position(xPosition, yPosition), false);
+                dungeon.addToEntities(sunStone);
+                dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), sunStone);
                 break;
             
             case "key":

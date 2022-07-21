@@ -23,28 +23,32 @@ public class CollectableEntitesTest {
         EntityResponse expectedTreasure = new EntityResponse("0", "treasure", new Position(1, 1), false);
         assertEquals(expectedTreasure, treasure);
 
+        EntityResponse sunStone = getEntities(initDungonRes,"sun_stone").get(0);
+        EntityResponse expectedSunStone = new EntityResponse("1", "sun_stone", new Position(5, 5), false);
+        assertEquals(sunStone, expectedSunStone); 
+
         EntityResponse bomb = getEntities(initDungonRes,"bomb").get(0);
-        EntityResponse expectedBomb = new EntityResponse("1", "bomb", new Position(3, 2), false);
+        EntityResponse expectedBomb = new EntityResponse("2", "bomb", new Position(3, 2), false);
         assertEquals(bomb, expectedBomb);
 
         EntityResponse invincibilityPotion = getEntities(initDungonRes,"invincibility_potion").get(0);
-        EntityResponse expectedinvincibilityPotion = new EntityResponse("2", "invincibility_potion", new Position(2, 4), false);
+        EntityResponse expectedinvincibilityPotion = new EntityResponse("3", "invincibility_potion", new Position(2, 4), false);
         assertEquals(invincibilityPotion, expectedinvincibilityPotion);
 
         EntityResponse invisibilityPotion = getEntities(initDungonRes,"invisibility_potion").get(0);
-        EntityResponse expectedinvisibilityPotion = new EntityResponse("3", "invisibility_potion", new Position(2, 5), false);
+        EntityResponse expectedinvisibilityPotion = new EntityResponse("4", "invisibility_potion", new Position(2, 5), false);
         assertEquals(invisibilityPotion, expectedinvisibilityPotion);
 
         EntityResponse wood = getEntities(initDungonRes,"wood").get(0);
-        EntityResponse expectedWood = new EntityResponse("4", "wood", new Position(5, 2), false);
+        EntityResponse expectedWood = new EntityResponse("5", "wood", new Position(5, 2), false);
         assertEquals(wood, expectedWood);
 
         EntityResponse sword = getEntities(initDungonRes,"sword").get(0);
-        EntityResponse expectedSword = new EntityResponse("5", "sword", new Position(5, 3), false);
+        EntityResponse expectedSword = new EntityResponse("6", "sword", new Position(5, 3), false);
         assertEquals(sword, expectedSword);
 
         EntityResponse arrow = getEntities(initDungonRes,"arrow").get(0);
-        EntityResponse expectedArrow = new EntityResponse("6", "arrow", new Position(2, 2), false);
+        EntityResponse expectedArrow = new EntityResponse("7", "arrow", new Position(2, 2), false);
         assertEquals(arrow, expectedArrow);
     }   
 }

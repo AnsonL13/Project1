@@ -199,6 +199,8 @@ public class Dungeon {
         int arrowCount = 0;
         int treasureCount = 0;
         int keyCount = 0;
+        int sunStoneCount = 0;
+        int swordCount = 0;
 
         // Get all resource items in the players inventory
         for (Item item : player.getInventory()) {
@@ -219,6 +221,14 @@ public class Dungeon {
                     keyCount++;
                     break;
 
+                case "sun_stone":
+                    sunStoneCount++;
+                    break;
+                
+                case "sword":
+                    swordCount++;
+                    break;
+
                 default:
                     break;
             }
@@ -233,6 +243,20 @@ public class Dungeon {
         // Calculate if shield can be created
         if (woodCount >= 2 && (treasureCount >= 1 || keyCount >= 1)) {
             buildables.add("shield");
+        }
+
+        // Calculate if sceptre can be created
+        if ((woodCount >= 1 || arrowCount >= 2) && (keyCount >= 1 || treasureCount >= 1) && sunStoneCount >= 1) {
+            buildables.add("sceptre");
+        }
+
+        // Calculate if midnight armour can be created
+        for (Entity entity : entities) {
+            if (!entity.getType().equals("zombine_toast")) {
+                if (swordCount >= 1 && sunStoneCount >= 1) {
+                    buildables.add("midnight_armour");
+                }
+            }
         }
 
         return buildables;
@@ -397,9 +421,15 @@ public class Dungeon {
         if (doors.get(entity.getId()).isOpen()) {
             return true;
         }
-
+        // Check if player have sun stone
+        else for (Item item : player.getInventory()){
+            if (item.getType().equals("sun_stone")) {
+                return true;
+            }
+        }
+         
         // Check if the player can unlock the door
-        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
+        if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
             // Player unlocked door
             doors.get(entity.getId()).setOpen(true);
             return true;
