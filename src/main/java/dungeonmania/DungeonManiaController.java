@@ -10,7 +10,9 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,6 +20,7 @@ import com.google.gson.JsonParser;
 public class DungeonManiaController {
 
     private Dungeon dungeon;
+    private Map<String,Dungeon> GameLoad= new HashMap<>();
 
     public String getSkin() {
         return "default";
@@ -156,21 +159,29 @@ public class DungeonManiaController {
      * /game/save
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        GameLoad.put(name,dungeon);
+        return getDungeonResponseModel();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        Dungeon loading = GameLoad.get(name);
+        if (loading == null) return null;
+        dungeon = loading;
+        return getDungeonResponseModel();
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        List <String> GameList = new ArrayList<>();
+        for(String game:GameLoad.keySet()) {
+            GameList.add(game);
+        }
+        return GameList;
     }
 
 }
