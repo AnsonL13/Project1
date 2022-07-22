@@ -29,6 +29,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
+    private List<Item> allies = new ArrayList<Item>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -384,7 +385,7 @@ public class Player implements Entity {
     }
 
     public void moveMovingEntities(List<Entity> entities) {
-        movingEntities.stream().forEach(o -> o.move(new Position(this.position.getX(), this.position.getY()), entities));
+        movingEntities.stream().forEach(o -> o.move(position, entities));
     }
 
     /*
