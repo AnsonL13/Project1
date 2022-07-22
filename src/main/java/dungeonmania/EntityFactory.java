@@ -21,6 +21,7 @@ import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Exit;
 import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
+import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.util.Position;
@@ -199,6 +200,14 @@ public class EntityFactory {
                 Sword sword = new Sword(Integer.toString(latestUnusedId), "sword", new Position(xPosition, yPosition), false, configMap.get("sword_attack"), configMap.get("sword_durability"));
                 dungeon.addToEntities(sword);
                 dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), sword);
+                break;
+            
+            case "swamp_tile":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                int movementFactor = entityinfo.getAsJsonObject().get("movement_factor").getAsInt();
+                SwampTile swampTile = new SwampTile(Integer.toString(latestUnusedId), "swamp_tile", new Position(xPosition, yPosition), false, movementFactor);
+                dungeon.addToEntities(swampTile);
                 break;
 
             default:
