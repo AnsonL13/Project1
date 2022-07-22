@@ -70,6 +70,9 @@ public class ZombieToast extends MovingEntity {
      */
     @Override
     public void move(Position playerPos, List<Entity> entities) {
+        decrementStuckTimer();
+        if (this.stuckTimer > 0) return;
+
         Position newPos = null;
 
         // Check if player is is Invincible
@@ -91,7 +94,7 @@ public class ZombieToast extends MovingEntity {
         newPos = movement.moveEnemy(playerPos, entities);
 
         if (newPos != null) {
-            super.setPosition(newPos);
+            super.setPosition(newPos, entities);
         }
     }
 
