@@ -51,4 +51,119 @@ public class DijkstrasAlgoTest {
         assertEquals(expectedPath, merc.getPosition());
 
     }
+
+    @Test
+    @DisplayName("Test mercenary over swamp")
+    public void testMercSimpleSwamp() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("movement2/d_mercenaryTest_dijkstraSwamp", "c_potionsTest");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        
+        //check merc goes to shortest path
+        Position expectedPath = new Position(1, -1);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        
+        //check merc goes to shortest path
+        expectedPath = expectedPath.translateBy(Direction.DOWN);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+    }
+
+    @Test
+    @DisplayName("Test mercenary over mutiple swamp")
+    public void testMercMultipleSwamp() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("movement2/d_mercenaryTest_multipleSwamp", "c_potionsTest");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.DOWN);
+        
+        //check merc goes to shortest path
+        Position expectedPath = new Position(3, -1);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+        //merc stuck
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        
+        initDungonRes = dmc.tick(Direction.DOWN);
+        //check merc goes to shortest path
+        expectedPath = expectedPath.translateBy(Direction.DOWN);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());  
+        
+    }
+
+    @Test
+    @DisplayName("Test mercenary over lowest swamp and normal tiles")
+    public void testMercMixDijkstra() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("movement2/d_mercenaryTest_mixSwamp", "c_potionsTest");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.DOWN);
+        
+        //check merc goes to shortest path
+        Position expectedPath = new Position(1, -1);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+        //walk player to wall and merc stuck
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.DOWN);
+
+        initDungonRes = dmc.tick(Direction.DOWN);
+        
+        //check merc goes to shortest path
+        expectedPath = expectedPath.translateBy(Direction.LEFT);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+    }
+
+    @Test
+    @DisplayName("Test mercenary over lowest swamp")
+    public void testMercSmallestSwamp() {
+        // TODO 
+        /*
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("movement2/d_mercenaryTest_dijkstraSwamp", "c_potionsTest");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        
+        //check merc goes to shortest path
+        Position expectedPath = new Position(1, -1);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   
+
+        //walk player to wall
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        
+        //check merc goes to shortest path
+        expectedPath = expectedPath.translateBy(Direction.DOWN);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());   */
+
+    }
 }
