@@ -5,6 +5,7 @@ import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
+import dungeonmania.MovingEntities.PositionMovements.AlliedMovement;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -80,33 +81,28 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     @Override
     public void move(Position playerPos, List<Entity> entities) {
         Position newPos = null;
-
-        // Check if mercenary is allied
-        if (isAllied) {
-            this.movement = new FollowMovement(this);
-        }
-
-        else {
-            // Check if player is Invincible
-            if (isInvincible) {
-                changeMovement(new RunAwayMovement(this));
-            }
-
-            // Check if player is Invisible
-            else if (isInvisible) {
-                changeMovement(new RandomMovement(this));
-            }
-
-            else {
-                changeMovement(new FollowMovement(this));
-            }
-        }
-
+        setNewMovement(playerPos);
         newPos = movement.moveEnemy(playerPos, entities);
-
         if (newPos != null) {
             super.setPosition(newPos);
         }
+    }
+
+    private void setNewMovement(Position player) {
+        List<Position> adj = player.getAdjacentPositions();
+        // Check if mercenary is allied
+        if (isAllied && adj.contains(super.getPosition())) {
+            changeMovement(new AlliedMovement());
+        } else if (isAllied) {
+            changeMovement(new FollowMovement(this));
+        } else if (isInvincible) {
+            changeMovement(new RunAwayMovement(this));
+        } else if (isInvisible) {
+            changeMovement(new RandomMovement(this));
+        } else {
+            changeMovement(new FollowMovement(this));
+        }
+        
     }
 
     /** 

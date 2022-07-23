@@ -14,6 +14,7 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Potion;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+import dungeonmania.MovingEntities.AlliedEntities;
 import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
@@ -29,7 +30,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
-    private List<Item> allies = new ArrayList<Item>();
+    private List<AlliedEntities> allies = new ArrayList<AlliedEntities>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -366,7 +367,9 @@ public class Player implements Entity {
     }
 
     public void setPosition(Position position) {
+        Position prev = this.position;
         this.position = position;
+        moveAllies(prev);
     }
 
     public void removeFromInventory(String Id) {
@@ -473,6 +476,16 @@ public class Player implements Entity {
                 inventoryIterator.remove();
                 counter++;
             }
+        }
+    }
+
+    public void addAlly(AlliedEntities ally) {
+        allies.add(ally);
+    }
+    // TODO
+    private void moveAllies(Position player) {
+        for (AlliedEntities ally : allies) {
+            //ally.move(player, null);
         }
     }
 }
