@@ -140,6 +140,8 @@ public class BuildableTest {
 
         assertThrows(InvalidActionException.class, () -> dmc.build("shield"));
         assertThrows(InvalidActionException.class, () -> dmc.build("bow"));
+        assertThrows(InvalidActionException.class, () -> dmc.build("shield"));
+        assertThrows(InvalidActionException.class, () -> dmc.build("bow"));
     }
 
     @Test
