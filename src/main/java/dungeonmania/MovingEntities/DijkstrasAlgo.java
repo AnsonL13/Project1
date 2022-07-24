@@ -8,13 +8,13 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Portal;
+import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Position;
 
@@ -23,8 +23,6 @@ public class DijkstrasAlgo {
     private GraphNode adj_list[][] = new GraphNode[10][10];
     private Map<GraphNode, GraphNode> previous = new HashMap<>();
     private Map<Portal, Portal> portals = new HashMap<>();
-
-
 
     public DijkstrasAlgo () {}
     public void generateMap (List<Entity> entities) {
@@ -39,8 +37,12 @@ public class DijkstrasAlgo {
                 int x = block.getX();
                 int y = block.getY();
                 adj_list[x][y].setBlocked();
-            } else if (entity instanceof Portal) {
-                // TODO
+            } else if (entity instanceof SwampTile) {
+                Position block = entity.getPosition();
+                int x = block.getX();
+                int y = block.getY();
+                SwampTile swampTile = (SwampTile) entity;
+                adj_list[x][y].setCost(swampTile.getMovementFactor());
             } else if (entity instanceof Portal) {
                 // TODO
                 Position block = entity.getPosition();
