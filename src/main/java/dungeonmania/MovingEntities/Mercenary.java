@@ -89,6 +89,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         if (newPos != null) {
             super.setPosition(newPos, entities);
         }
+        
     }
 
     private void setNewMovement(Position player) {

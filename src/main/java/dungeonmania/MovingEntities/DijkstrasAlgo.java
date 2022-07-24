@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import dungeonmania.Entity;
@@ -22,7 +21,7 @@ import dungeonmania.util.Position;
 public class DijkstrasAlgo {
     private GraphNode adj_list[][] = new GraphNode[40][40];
     private Map<GraphNode, GraphNode> previous = new HashMap<>();
-    private Map<String, Position> portals = new HashMap<>();
+    private Map<String, List<Portal>> portals = new HashMap<String, List<Portal>>();
     private Position entity;
 
     public DijkstrasAlgo (Position entity) {
@@ -52,12 +51,19 @@ public class DijkstrasAlgo {
                 Portal currPortal = (Portal) entity;
                 String colour = currPortal.getColour();
                 if (portals.containsKey(colour)) {
-                    portals.put(colour, currPortal.getPosition());
+                    List<Portal> match = portals.get(colour);
+                    match.add(currPortal);
+                } else {
+                    List<Portal> match = new ArrayList<Portal>();
+                    match.add(currPortal);
+                    portals.put(colour, match);
                 }
 
             }
         }
+        for (Map.Entry<String, List<Portal>> match : portals.entrySet()) {
 
+        }
     }
 
     public void printMap() {
@@ -131,54 +137,6 @@ public class DijkstrasAlgo {
                 previous[v] := u
     return previous
  */
-
-/*
-    public Map<GraphNode, Double> DijstrasPositionAlgo (Position entity) {
-        Map<GraphNode, Double> dist = new HashMap<>();
-        Set<GraphNode> queue = new TreeSet<GraphNode>();
-
-        int startX = entity.getX();
-        int startY = entity.getY();
-
-        double inf = Double.POSITIVE_INFINITY;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                if (i == startX && j == startY) { 
-                    dist.put(adj_list[i][j], 0.0);
-                    queue.add(adj_list[i][j]);
-                } else {
-                    dist.put(adj_list[i][j], inf);
-                    queue.add(adj_list[i][j]);
-                }
-            }
-        }
-
-        while(!queue.isEmpty()) {
-            GraphNode min = null;
-            double minDis = Double.POSITIVE_INFINITY;
-
-            for (GraphNode node: queue) {
-                if (minDis > dist.get(node)) {
-                    minDis = dist.get(node);
-                    min = node;
-                }
-            }
-
-            queue.remove(min);
-
-            Position getAdj = min.getPos();
-            for (Position adj : getAdj.getAdjacentPositions()) {
-                int x = adj.getX();
-                int y = adj.getY();
-                GraphNode node = adj_list[x][y];
-                if ((node.getCost() + dist.get(min) < dist.get(node)) && !node.isBlocked()) { // and valid pos
-                    //queue.add(node);
-                    dist.replace(node, node.getCost() + dist.get(min));
-                }
-            }
-        }
-        return dist;
-    }*/
 
     public void DijstrasPosition () {
         Map<GraphNode, Double> dist = new HashMap<>();
