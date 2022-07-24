@@ -25,7 +25,7 @@ public class Build {
      */
     public void build (String buildable, Player player, int latestUnusedId) 
                 throws InvalidActionException {
-        if (! (buildable.equals("shield") || buildable.equals("bow")) || buildable.equals("sceptre") || buildable.equals("midnight_armour")) {
+        if (! (buildable.equals("shield") || buildable.equals("bow") || buildable.equals("sceptre") || buildable.equals("midnight_armour"))) {
             throw new IllegalArgumentException(buildable);
         }
 
@@ -65,7 +65,7 @@ public class Build {
             player.removeForBow();
         } else if (buildable.equals("sceptre")){
             Sceptre sceptre = new Sceptre(Integer.toString(latestUnusedId), "sceptre", 
-                    false, configMap.get("controlTime"));
+                    false, configMap.get("control_time"));
             // Add item to players inventory
             player.addToInventory(sceptre);
             // Add item to players weapons

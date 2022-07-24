@@ -195,8 +195,6 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             this.isAllied == false) {
                 for (Item i : player.getInventory()) {
                     if(i.getType().equals("sceptre")) {
-                        Sceptre s = (Sceptre) i;
-                        setBribeTime(s.getControlTime());
                         return true;
                     }
                 }
@@ -216,6 +214,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     public void interact(Dungeon dungeon) {
         this.isAllied = true;
 
+        for (Item i : dungeon.getPlayer().getInventory()) {
+            if(i.getType().equals("sceptre")) {
+                Sceptre s = (Sceptre) i;
+                setBribeTime(s.getControlTime());
+                return;
+            }
+        }
         // Remove player treasure cost
         dungeon.getPlayer().removeTreasure(bribeAmount);
     }
