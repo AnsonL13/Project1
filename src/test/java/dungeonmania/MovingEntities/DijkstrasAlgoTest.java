@@ -164,4 +164,26 @@ public class DijkstrasAlgoTest {
         assertEquals(expectedPath, merc.getPosition());   */
 
     }
+
+    @Test
+    @DisplayName("Test mercenary to Portal")
+    public void testMercPortal() {
+        // TODO 
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("movement2/d_mercenaryTest_dijkstraSwamp", "c_potionsTest");
+        
+        initDungonRes = dmc.tick(Direction.RIGHT);
+
+        //check merc goes to shortest path -> portal
+        Position expectedPath = new Position(1, -1);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());
+        
+        initDungonRes = dmc.tick(Direction.RIGHT);
+
+        //check merc goes out portal
+        expectedPath = new Position(1, -1);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedPath, merc.getPosition());
+    }
 }
