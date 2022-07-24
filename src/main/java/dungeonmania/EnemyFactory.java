@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import dungeonmania.MovingEntities.Hydra;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
 import dungeonmania.MovingEntities.ZombieToast;
@@ -16,16 +17,23 @@ public class EnemyFactory {
     private int zombieHealth;
     private int spiderAttack;
     private int spiderHealth;
+    //private int hydraAttack;
+    //private int hydraHealth;
     private int zombieRate;
     private int spiderRate;
+    //private int hydraRate;
     private int nextSpiderRate;
     private int nextZombieRate;
+    //private int nextHydraRate;
+
 
     public EnemyFactory (int zombieAttack, int zombieHealth, int spiderAttack, int spiderHealth) {
         this.zombieAttack = zombieAttack;
         this.zombieHealth = zombieHealth;
         this.spiderAttack = spiderAttack;
         this.spiderHealth = spiderHealth;
+        //this.hydraAttack = hydraAttack;
+        //this.hydraHealth = hydraHealth;
     }
 
     public void setSpawnRate (int spiderRate, int zombieRate) {
@@ -54,6 +62,7 @@ public class EnemyFactory {
         List<MovingEntity> newEnemies = new ArrayList<MovingEntity>();  
         --nextZombieRate;
         --nextSpiderRate;
+        //--nextHydraRate;
 
         // Check if it is time to spawn zombies.
         if (spawnZombie()) {
@@ -77,8 +86,19 @@ public class EnemyFactory {
             }
             newEnemies.add(new Spider(latestId, pos, spiderAttack, spiderHealth));
         }
+
+    /* 
+        // Check if it is time to spawn the hydra.
+        if (spawnHydra()) {
+            nextHydraRate = hydraRate;
+            Position pos = ifHydraSpawn();
+            newEnemies.add(new Hydra(latestId, hydraHealth, hydraAttack, pos));
+        }
+    */
         return newEnemies;
+    
     }
+    
 
     /*
      * Check if position on boulder. Cannot spawn on boulder.
@@ -105,6 +125,15 @@ public class EnemyFactory {
         return new Position(randomX, randomY);
     }
 
+    private Position ifHydraSpawn() {
+        Random random = new Random();
+        int i = 10;
+        int randomY = random.nextInt(i);
+        int randomX = random.nextInt(i);
+
+        return new Position(randomX, randomY);
+    }
+
     private boolean spawnZombie() {
         if (zombieRate > 0 && nextZombieRate == 0) return true;
         return false;
@@ -114,7 +143,12 @@ public class EnemyFactory {
         if (spiderRate > 0 && nextSpiderRate == 0) return true;
         return false;
     }
-
+    /* 
+    private boolean spawnHydra() {
+        if (hydraRate > 0 && nextHydraRate == 0) return true;
+        return false;
+    }
+    */
     /*
      * Generate the next Id
      */

@@ -72,13 +72,13 @@ public class ZombieToast extends MovingEntity {
     public void move(Position playerPos, List<Entity> entities) {
         Position newPos = null;
 
-        // Check if player is is Invincible
+        // Check if player is Invincible
         if (isInvincible) {
             // Use running away strategy
             changeMovement(new RunAwayMovement(this));
         }
 
-        // Check if player is is is Invisible
+        // Check if player is Invisible
         else if (isInvisible) {
             // Use random movement strategy
             changeMovement(new RandomMovement(this));
