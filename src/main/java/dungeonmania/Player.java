@@ -29,7 +29,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
-    private List<Item> allies = new ArrayList<Item>();
+    private List<MovingEntity> allies = new ArrayList<MovingEntity>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 

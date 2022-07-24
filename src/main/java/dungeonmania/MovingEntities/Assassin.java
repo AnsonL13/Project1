@@ -1,6 +1,7 @@
 package dungeonmania.MovingEntities;
 
 import java.util.List;
+import java.util.Random;
 
 import dungeonmania.util.Position;
 import dungeonmania.Dungeon;
@@ -34,6 +35,11 @@ public class Assassin extends Mercenary {
     
     @Override 
     public void interact(Dungeon dungeon) {
-        
+        super.interact(dungeon);
+
+        Random rand = new Random(); //instance of random class
+        Double chance = rand.nextDouble(); // check if 0 to 1
+        if (chance > failRate) return; // if success
+        super.setAllied(false);
     }
 }

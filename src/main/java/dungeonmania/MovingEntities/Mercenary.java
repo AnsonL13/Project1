@@ -208,5 +208,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     public void setType(String type) {
         this.type = type;
     }
+
+    public void setAllied(Boolean isAllied) {
+        this.isAllied = isAllied;
+    }
 }
 

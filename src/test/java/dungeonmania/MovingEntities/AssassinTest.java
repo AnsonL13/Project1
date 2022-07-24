@@ -1,11 +1,14 @@
 package dungeonmania.MovingEntities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static dungeonmania.TestUtils.countEntityOfType;
+import static dungeonmania.TestUtils.getInventory;
+import static dungeonmania.TestUtils.getEntities;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,7 @@ import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class AssassinTest {
@@ -23,9 +27,24 @@ public class AssassinTest {
     @DisplayName("Test assassin exists")
     public void testAssaSimple() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("d_spawned_basicAssassin", "");
+        DungeonResponse initDungonRes = dmc.newGame("MovingEntity/d_spawned_basicAssassin", "MovingEntity/c_assassinTest_simple");
         int mercCount = countEntityOfType(initDungonRes, "assassin");
         assertEquals(1, mercCount);
+    }
+
+    @Test
+    @DisplayName("Test assassin bribe")
+    public void testAssabribeWork() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse actualDungonRes = dmc.newGame("MovingEntity/d_spawned_basicAssassin", "MovingEntity/c_assassinTest_simple");
+
+        //collect treasure
+        actualDungonRes = dmc.tick(Direction.LEFT);
+        assertEquals(1, getInventory(actualDungonRes, "treasure").size());
+        String assaID = getEntities(actualDungonRes, "assassin").get(0).getId();
+        actualDungonRes = assertDoesNotThrow(() -> dmc.interact(assaID));
+        // TODO test no battle
+
     }
 /*
     // White box testing
