@@ -16,7 +16,7 @@
             "type": "swamp_tile",
             "x": 2,
             "y": 0,
-            "movement_factor" : 1
+            "movement_factor" : 2
         }
     ],
     "goal-condition": {"goal": "exit"}

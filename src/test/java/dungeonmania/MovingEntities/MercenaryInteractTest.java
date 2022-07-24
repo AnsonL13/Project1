@@ -40,6 +40,7 @@ public class MercenaryInteractTest {
         initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
         assertEquals(0, getInventory(initDungonRes, "treasure").size());
         initDungonRes = dmc.tick(Direction.DOWN);
+        
 
     }
 
@@ -105,4 +106,6 @@ public class MercenaryInteractTest {
         assertThrows(InvalidActionException.class, () -> dmc.interact(merceanryId));
         assertEquals(0, getInventory(initDungonRes, "treasure").size());
     }
+
+    
 }

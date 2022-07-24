@@ -20,7 +20,7 @@
         }, {
             "type": "swamp_tile",
             "x": 1,
-            "y": 0,
+            "y": -2,
             "movement_factor" : 5
         }, {
             "type": "swamp_tile",
@@ -31,11 +31,11 @@
             "type": "swamp_tile",
             "x": 2,
             "y": 0,
-            "movement_factor" : 5
+            "movement_factor" : 6
         }, {
             "type": "swamp_tile",
             "x": 2,
-            "y": -1,
+            "y": 1,
             "movement_factor" : 5
         }
     ],

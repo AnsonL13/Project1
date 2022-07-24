@@ -26,7 +26,7 @@ public class DijkstrasAlgoTest {
         initDungonRes = dmc.tick(Direction.DOWN);
         
         //check merc goes to shortest path
-        Position expectedPath = new Position(2, 2);
+        Position expectedPath = new Position(2, 3);
         EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
         assertEquals(expectedPath, merc.getPosition());   
 
@@ -36,17 +36,17 @@ public class DijkstrasAlgoTest {
         assertEquals(expectedPath, merc.getPosition());   
 
         initDungonRes = dmc.tick(Direction.DOWN);
-        expectedPath = expectedPath.translateBy(Direction.RIGHT);
+        expectedPath = expectedPath.translateBy(Direction.UP);
         merc = getEntities(initDungonRes, "mercenary").get(0);
         assertEquals(expectedPath, merc.getPosition());   
 
-        initDungonRes = dmc.tick(Direction.UP);
-        expectedPath = expectedPath.translateBy(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        expectedPath = expectedPath.translateBy(Direction.UP);
         merc = getEntities(initDungonRes, "mercenary").get(0);
         assertEquals(expectedPath, merc.getPosition());
         
-        initDungonRes = dmc.tick(Direction.UP);
-        expectedPath = expectedPath.translateBy(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        expectedPath = expectedPath.translateBy(Direction.LEFT);
         merc = getEntities(initDungonRes, "mercenary").get(0);
         assertEquals(expectedPath, merc.getPosition());
 
@@ -129,11 +129,9 @@ public class DijkstrasAlgoTest {
         initDungonRes = dmc.tick(Direction.DOWN);
         initDungonRes = dmc.tick(Direction.DOWN);
         initDungonRes = dmc.tick(Direction.DOWN);
-
-        initDungonRes = dmc.tick(Direction.DOWN);
         
         //check merc goes to shortest path
-        expectedPath = expectedPath.translateBy(Direction.LEFT);
+        expectedPath = expectedPath.translateBy(Direction.DOWN);
         merc = getEntities(initDungonRes, "mercenary").get(0);
         assertEquals(expectedPath, merc.getPosition());   
 

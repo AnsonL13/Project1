@@ -188,10 +188,14 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      * Let the player interact with the mercenary. 
      */
     public void interact(Dungeon dungeon) {
+        if (isAllied) return;
         this.isAllied = true;
 
         // Remove player treasure cost
-        dungeon.getPlayer().removeTreasure(bribeAmount);
+        Player player = dungeon.getPlayer();
+        player.removeTreasure(bribeAmount);
+        player.removeFromMovingEntities(super.getId());
+        player.addAlly(this);
     }
 
     /*
