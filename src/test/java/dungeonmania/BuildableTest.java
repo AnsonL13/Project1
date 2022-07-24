@@ -235,5 +235,21 @@ public class BuildableTest {
         assertEquals(0, getInventory(initDungonRes, "arrow").size());;
     }
 
+    @Test
+    @DisplayName("Test build midnight armour")
+    public void testBuildMidnightArmour() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_buildMidnightArmourTest", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+
+        assertDoesNotThrow(() -> dmc.build("midnight_armour"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "sword").size());
+    }
+    
 
 }

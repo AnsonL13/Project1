@@ -13,6 +13,7 @@ import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Potion;
 import dungeonmania.CollectableEntities.SunStone;
+import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.Mercenary;
@@ -288,8 +289,8 @@ public class Player implements Entity {
      * Remove inventory items that make the midnight armour
      */
     public void removeForMidnightArmour() {
-        // Remove 1 wood and 1 sun stone
-        int woodCount = 0;
+        // Remove 1 sword and 1 sun stone
+        int swordCount = 0;
         int sunStoneCount = 0;
 
         Iterator<Item> inventoryIterator = inventory.iterator();
@@ -297,9 +298,9 @@ public class Player implements Entity {
         while(inventoryIterator.hasNext()) {     
             item = inventoryIterator.next();     
 
-            if (item instanceof Wood && (woodCount != 1)) {
+            if (item instanceof Sword && (swordCount != 1)) {
                 inventoryIterator.remove();
-                woodCount++;
+                swordCount++;
             }
 
             else if (item instanceof SunStone && (sunStoneCount != 1)) {
