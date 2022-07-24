@@ -250,6 +250,22 @@ public class BuildableTest {
         assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
         assertEquals(0, getInventory(initDungonRes, "sword").size());
     }
+
+    @Test
+    @DisplayName("Test can not build midnight armour with zombie")
+    public void testBuildMidnightArmourWithZombie() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_buildMidnightArmourWithZombieTest", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+
+        assertThrows(InvalidActionException.class, () -> dmc.build("midnight_armour"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+    }
     
 
 }

@@ -251,12 +251,14 @@ public class Dungeon {
         }
 
         // Calculate if midnight armour can be created
+        
         for (Entity entity : entities) {
-            if (!entity.getType().equals("zombine_toast")) {
-                if (swordCount >= 1 && sunStoneCount >= 1) {
-                    buildables.add("midnight_armour");
-                }
+            if (entity.getType().equals("zombie_toast")) {
+                return buildables;
             }
+        }
+        if (swordCount >= 1 && sunStoneCount >= 1) {
+            buildables.add("midnight_armour");
         }
 
         return buildables;
