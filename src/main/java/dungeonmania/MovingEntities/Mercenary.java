@@ -52,6 +52,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.bribeTime = 0;
     }
 
     /**
