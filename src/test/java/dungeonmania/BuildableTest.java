@@ -74,7 +74,7 @@ public class BuildableTest {
         // Pickup an key
         initDungonRes = dmc.tick(Direction.RIGHT);
 
-        // Check wood in inventory
+        // Check key in inventory
         assertEquals(1, getInventory(initDungonRes, "key").size());
 
         // Build the shield
@@ -140,8 +140,8 @@ public class BuildableTest {
 
         assertThrows(InvalidActionException.class, () -> dmc.build("shield"));
         assertThrows(InvalidActionException.class, () -> dmc.build("bow"));
-        assertThrows(InvalidActionException.class, () -> dmc.build("shield"));
-        assertThrows(InvalidActionException.class, () -> dmc.build("bow"));
+        assertThrows(InvalidActionException.class, () -> dmc.build("sceptre"));
+        assertThrows(InvalidActionException.class, () -> dmc.build("midnight_armour"));
     }
 
     @Test
@@ -193,4 +193,47 @@ public class BuildableTest {
 
         assertEquals(expectedPlayer, initPlayer);
     }
+
+    @Test
+    @DisplayName("Test build sceptre with wood and treasure")
+    public void testBuildSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenaryWithSceptre", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "wood").size());
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());;
+    }
+    @Test
+    @DisplayName("Test build sceptre with arrow and key")
+    public void testBuildSceptre2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_testBuildSceptre", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "key").size());
+        assertEquals(2, getInventory(initDungonRes, "arrow").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "key").size());
+        assertEquals(0, getInventory(initDungonRes, "arrow").size());;
+    }
+
+
 }

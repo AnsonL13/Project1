@@ -237,7 +237,6 @@ public class Player implements Entity {
     public void removeForSceptre() {
         // Remove 1 wood or 2 arrows,  a treasure or key, 1 sun stone
         int woodCount = 0;
-        int arrowCount = 0;
         int treasurekeyCount = 0;
         int sunStoneCount = 0;
 
@@ -246,14 +245,9 @@ public class Player implements Entity {
         while(inventoryIterator.hasNext()) {     
             item = inventoryIterator.next();     
 
-            if (item instanceof Wood && (woodCount != 1) && (arrowCount == 0)) {
+            if (item instanceof Wood && (woodCount != 1)) {
                 inventoryIterator.remove();
                 woodCount++;
-            }
-
-            else if (item instanceof Arrow && (arrowCount != 2) && (woodCount == 0)) {
-                inventoryIterator.remove();
-                arrowCount++;
             }
 
             else if (item instanceof Key && (treasurekeyCount != 1)) {
@@ -269,11 +263,26 @@ public class Player implements Entity {
 
             else if (item instanceof SunStone && (sunStoneCount != 1)) {
                 inventoryIterator.remove();
-                arrowCount++;
-            }
+                sunStoneCount++;
+            }   
+        }
+        if (woodCount == 0) {
+            removeForSceptreArrow();
         }
     }
 
+    public void removeForSceptreArrow() {
+        int arrowCount = 0;
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next(); 
+            if (item instanceof Arrow && (arrowCount != 2)) {
+                inventoryIterator.remove();
+                arrowCount++;
+            }    
+        }
+    }
 
     /*
      * Remove inventory items that make the midnight armour

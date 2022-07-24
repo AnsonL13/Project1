@@ -422,7 +422,7 @@ public class Dungeon {
             return true;
         }
         // Check if player have sun stone
-        else for (Item item : player.getInventory()){
+        for (Item item : player.getInventory()){
             if (item.getType().equals("sun_stone")) {
                 return true;
             }
