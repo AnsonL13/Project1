@@ -65,7 +65,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = false;
+        this.isInteractable = true;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
@@ -203,6 +203,10 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     public boolean isAllied() {
         return isAllied;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
 
