@@ -4,7 +4,9 @@ import dungeonmania.util.Position;
 import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
+import dungeonmania.Item;
 import dungeonmania.Player;
+import dungeonmania.BuildableEntities.Sceptre;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -21,6 +23,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int allyDefence;
     private int bribeAmount;
     private int bribeRadius;
+    private int bribeTime;
+    
+
 
     private Movement movement;
 
@@ -161,6 +166,17 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     public int getBribeRadius() {
         return bribeRadius;
     }
+
+    /** 
+     * @return int
+     */
+    public int getBribeTime() {
+        return bribeTime;
+    }
+
+    public void setBribeTime(int bribeTime) {
+        this.bribeTime = bribeTime;
+    }
     
     /** 
      * @param player
@@ -174,7 +190,15 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         int yBottomBoundary = super.getPosition().getY() - bribeRadius;
         // Check if player is within the specified bribing radius
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
-            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
+            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary) &&
+            this.isAllied == false) {
+                for (Item i : player.getInventory()) {
+                    if(i.getType().equals("sceptre")) {
+                        Sceptre s = (Sceptre) i;
+                        setBribeTime(s.getControlTime());
+                        return true;
+                    }
+                }
                 // Check if player has enough gold
                 if (player.treasureAmount() >= bribeAmount) {
                     // Player can interact with the mercenary. 
@@ -200,6 +224,15 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     public boolean isAllied() {
         return isAllied;
+    }
+
+    public void updateMercenary() {
+        if (this.bribeTime > 0) {
+            this.bribeTime --;
+        }
+        if (this.bribeTime == 0) {
+            this.isAllied = false;
+        }
     }
 }
 
