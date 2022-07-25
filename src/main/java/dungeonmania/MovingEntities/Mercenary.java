@@ -87,19 +87,15 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         // Check if mercenary is allied
         if (isAllied) {
             this.movement = new FollowMovement(this);
-        }
-
-        else {
+        } else {
             // Check if player is Invincible
             if (isInvincible) {
                 changeMovement(new RunAwayMovement(this));
             }
-
             // Check if player is Invisible
             else if (isInvisible) {
                 changeMovement(new RandomMovement(this));
             }
-
             else {
                 changeMovement(new FollowMovement(this));
             }
