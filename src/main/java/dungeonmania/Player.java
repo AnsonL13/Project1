@@ -31,6 +31,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
+    private List<Mercenary> alliedMercenary = new ArrayList<Mercenary>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -99,6 +100,13 @@ public class Player implements Entity {
 
     public List<Weapon> getWeapons() {
         return weapons;
+    }
+
+    /*
+     * Add a mercenary to allied mercenary
+     */
+    public void addToMercenaty(Mercenary mercenary){
+        this.alliedMercenary.add(mercenary);
     }
 
     /*
@@ -485,6 +493,21 @@ public class Player implements Entity {
         // Go to the next potion. 
         if (goToNextPotion) {
             updateSpawnedEnemies();
+        }
+    }
+
+    /*
+     * Update the allied mercenary
+     */
+    public void updateAlliedMercenary(){
+        for(Mercenary m : alliedMercenary) {
+            if (m.getBribeTime() != 0) {
+                m.setBribeTime(m.getBribeTime() - 1);
+                if (m.getBribeTime() == 0){
+                    m.setAllied(false);
+                    alliedMercenary.remove(m);
+                }
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import dungeonmania.Goals.EnemiesGoal;
 import dungeonmania.Goals.ExitGoal;
 import dungeonmania.Goals.Goal;
 import dungeonmania.Goals.TreasureGoal;
+import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Portal;
@@ -158,27 +159,28 @@ public class Dungeon {
     }
 
     private void tickUpdates() {
-       // Explode any bombs
-       bombs.stream().forEach(o -> o.explode());
+        // Explode any bombs
+        bombs.stream().forEach(o -> o.explode());
 
-       //Move movingentities
-       player.moveMovingEntities(entities);
+        //Move movingentities
+        player.moveMovingEntities(entities);
        
-       // Check if Enemy has moved into a player (Battle)
-       startBattles();
+        // Check if Enemy has moved into a player (Battle)
+        startBattles();
        
-       // Spawn enemies
-       String nextID = Integer.toString(latestUnusedId);
-       List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
-       entities.addAll(newEnemy);
-       player.addAllEnemies(newEnemy);
-       latestUnusedId+= newEnemy.size();
+        // Spawn enemies
+        String nextID = Integer.toString(latestUnusedId);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
+        entities.addAll(newEnemy);
+        player.addAllEnemies(newEnemy);
+        latestUnusedId+= newEnemy.size();
        
-       // Update spawned enemy potion status. 
-       player.updateSpawnedEnemies();
+        player.updateAlliedMercenary();
+        // Update spawned enemy potion status. 
+        player.updateSpawnedEnemies();
        
-       // Update player potions
-       player.updatePotions();
+        // Update player potions
+        player.updatePotions();
     }
 
     /**
