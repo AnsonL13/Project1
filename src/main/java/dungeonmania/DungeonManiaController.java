@@ -8,7 +8,7 @@ import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class DungeonManiaController {
 
         // Create the new dungeon
         this.dungeon = new Dungeon(dungeonName, dungeonJson, configJson);
-
+        
         return getDungeonResponseModel();
     }
 
@@ -154,23 +154,28 @@ public class DungeonManiaController {
 
     /**
      * /game/save
+     * @throws IOException
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        DungeonResponse saved = getDungeonResponseModel();
+        SaveHelper.SaveGame(name, saved);
+        return saved;
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        DungeonResponse response = SaveHelper.LoadGame(name);
+        return response;        
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        return SaveHelper.showALlGame();
     }
+    
 
 }

@@ -654,4 +654,6 @@ public class Dungeon {
     public Goal getGoals() {
         return goals;
     }
+
+    
 }
