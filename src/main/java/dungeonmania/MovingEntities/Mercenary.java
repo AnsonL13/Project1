@@ -68,7 +68,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = false;
+        this.isInteractable = true;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
@@ -89,6 +89,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
 
         Position newPos = null;
         setNewMovement(playerPos);
+
         newPos = movement.moveEnemy(playerPos, entities);
         if (newPos != null) {
             super.setPosition(newPos, entities);
@@ -208,6 +209,14 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
      */
     public boolean isAllied() {
         return isAllied;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAllied(Boolean isAllied) {
+        this.isAllied = isAllied;
     }
 }
 

@@ -59,7 +59,7 @@ public class Dungeon {
         // Convert JsonObject configJson into HashMap<String, Integer> configMap
         this.configMap = configHelper(configJson);
         // Initialise all entities
-        generateEntities(dungeonJson);
+        generateEntities(dungeonJson, configJson);
         // Create the enemy spawner
         generateSpawner();
         // Create the goals composite pattern "tree"
@@ -275,10 +275,10 @@ public class Dungeon {
     }
 
     // Generate entities from Dungeon.json
-    public void generateEntities(JsonObject dungeonJson) {
+    public void generateEntities(JsonObject dungeonJson, JsonObject configJson) {
         // Read from dungeon json file. Generate all entities. 
         List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
-        EntityFactory getEntities = new EntityFactory(this, configMap);
+        EntityFactory getEntities = new EntityFactory(this, configJson, configMap);
 
         for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
             MovingEntity newEnemies = getEntities.createEntity(entityinfo, latestUnusedId);
