@@ -32,6 +32,7 @@ public class SaveHelper {
 
         try {   
             //Saving of object in a file
+            createFolder("src/main/java/dungeonmania/savedgames/");
             FileOutputStream file = new FileOutputStream("src/main/java/dungeonmania/savedgames/" + name + ".ser");
             ObjectOutputStream out = new ObjectOutputStream(file);
               
@@ -89,5 +90,18 @@ public class SaveHelper {
         }
 
         return filenames;
+    }
+
+    public static void createFolder(String path) {
+        File f = new File(path);
+            try{
+                if(f.mkdir()) { 
+                    System.out.println("Directory Created");
+                } else {
+                    System.out.println("Directory is not created");
+                }
+            } catch(Exception e){
+                e.printStackTrace();
+            } 
     }
 }
