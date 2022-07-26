@@ -65,7 +65,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = false;
+        this.isInteractable = true;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
@@ -87,19 +87,15 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         // Check if mercenary is allied
         if (isAllied) {
             this.movement = new FollowMovement(this);
-        }
-
-        else {
+        } else {
             // Check if player is Invincible
             if (isInvincible) {
                 changeMovement(new RunAwayMovement(this));
             }
-
             // Check if player is Invisible
             else if (isInvisible) {
                 changeMovement(new RandomMovement(this));
             }
-
             else {
                 changeMovement(new FollowMovement(this));
             }
@@ -203,6 +199,14 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     public boolean isAllied() {
         return isAllied;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAllied(Boolean isAllied) {
+        this.isAllied = isAllied;
     }
 }
 
