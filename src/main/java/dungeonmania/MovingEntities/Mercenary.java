@@ -85,24 +85,23 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     @Override
     public void move(Position playerPos, List<Entity> entities) {
+        decrementStuckTimer();
+        if (this.stuckTimer > 0) return;
+
         Position newPos = null;
 
         // Check if mercenary is allied
         if (isAllied) {
             this.movement = new FollowMovement(this);
-        }
-
-        else {
+        } else {
             // Check if player is Invincible
             if (isInvincible) {
                 changeMovement(new RunAwayMovement(this));
             }
-
             // Check if player is Invisible
             else if (isInvisible) {
                 changeMovement(new RandomMovement(this));
             }
-
             else {
                 changeMovement(new FollowMovement(this));
             }
@@ -111,9 +110,10 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         newPos = movement.moveEnemy(playerPos, entities);
 
         if (newPos != null) {
-            super.setPosition(newPos);
+            super.setPosition(newPos, entities);
         }
     }
+
 
     /** 
      * @param newMovement
