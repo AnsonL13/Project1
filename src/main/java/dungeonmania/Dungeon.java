@@ -425,9 +425,15 @@ public class Dungeon {
         if (doors.get(entity.getId()).isOpen()) {
             return true;
         }
-
+        // Check if player have sun stone
+        for (Item item : player.getInventory()){
+            if (item.getType().equals("sun_stone")) {
+                return true;
+            }
+        }
+         
         // Check if the player can unlock the door
-        else if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
+        if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
             // Player unlocked door
             doors.get(entity.getId()).setOpen(true);
             return true;

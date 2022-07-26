@@ -191,4 +191,78 @@ public class BuildableTest {
 
         assertEquals(expectedPlayer, initPlayer);
     }
+    
+    @Test
+    @DisplayName("Test build sceptre with wood and treasure")
+    public void testBuildSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenaryWithSceptre", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "wood").size());
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());;
+    }
+    @Test
+    @DisplayName("Test build sceptre with arrow and key")
+    public void testBuildSceptre2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_testBuildSceptre", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "key").size());
+        assertEquals(2, getInventory(initDungonRes, "arrow").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "key").size());
+        assertEquals(0, getInventory(initDungonRes, "arrow").size());;
+    }
+
+    @Test
+    @DisplayName("Test build midnight armour")
+    public void testBuildMidnightArmour() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_buildMidnightArmourTest", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+
+        assertDoesNotThrow(() -> dmc.build("midnight_armour"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(0, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "sword").size());
+    }
+
+    @Test
+    @DisplayName("Test can not build midnight armour with zombie")
+    public void testBuildMidnightArmourWithZombie() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_buildMidnightArmourWithZombieTest", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+
+        assertThrows(InvalidActionException.class, () -> dmc.build("midnight_armour"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "sword").size());
+    }
+    
 }
