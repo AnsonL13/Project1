@@ -22,7 +22,7 @@ public class TreasureGoal implements Goal {
         // Do logic to find out if required number of treasure is found
         int treasureCount = 0;
         for (Item item : dungeon.getPlayer().getInventory()) {
-            if (item.getType().equals("treasure")) {
+            if (item.getType().equals("treasure")|| item.getType().equals("sun_stone")) {
                 treasureCount++;
             }
         }

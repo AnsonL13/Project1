@@ -4,7 +4,9 @@ import dungeonmania.util.Position;
 import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
+import dungeonmania.Item;
 import dungeonmania.Player;
+import dungeonmania.BuildableEntities.Sceptre;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -21,6 +23,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     private int allyDefence;
     private int bribeAmount;
     private int bribeRadius;
+    private int bribeTime;
+    
+
 
     private Movement movement;
 
@@ -47,6 +52,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.bribeTime = 0;
     }
 
     /**
@@ -65,7 +71,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = true;
+        this.isInteractable = false;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
@@ -79,23 +85,24 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     @Override
     public void move(Position playerPos, List<Entity> entities) {
-        decrementStuckTimer();
-        if (this.stuckTimer > 0) return;
-
         Position newPos = null;
 
         // Check if mercenary is allied
         if (isAllied) {
             this.movement = new FollowMovement(this);
-        } else {
+        }
+
+        else {
             // Check if player is Invincible
             if (isInvincible) {
                 changeMovement(new RunAwayMovement(this));
             }
+
             // Check if player is Invisible
             else if (isInvisible) {
                 changeMovement(new RandomMovement(this));
             }
+
             else {
                 changeMovement(new FollowMovement(this));
             }
@@ -104,7 +111,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         newPos = movement.moveEnemy(playerPos, entities);
 
         if (newPos != null) {
-            super.setPosition(newPos, entities);
+            super.setPosition(newPos);
         }
     }
 
@@ -160,6 +167,17 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
     public int getBribeRadius() {
         return bribeRadius;
     }
+
+    /** 
+     * @return int
+     */
+    public int getBribeTime() {
+        return bribeTime;
+    }
+
+    public void setBribeTime(int bribeTime) {
+        this.bribeTime = bribeTime;
+    }
     
     /** 
      * @param player
@@ -173,7 +191,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         int yBottomBoundary = super.getPosition().getY() - bribeRadius;
         // Check if player is within the specified bribing radius
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
-            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
+            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary) &&
+            this.isAllied == false) {
+                for (Item i : player.getInventory()) {
+                    if(i.getType().equals("sceptre")) {
+                        return true;
+                    }
+                }
                 // Check if player has enough gold
                 if (player.treasureAmount() >= bribeAmount) {
                     // Player can interact with the mercenary. 
@@ -189,9 +213,18 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     public void interact(Dungeon dungeon) {
         this.isAllied = true;
-
+        Player player = dungeon.getPlayer();
+        for (Item i : dungeon.getPlayer().getInventory()) {
+            if(i.getType().equals("sceptre")) {
+                Sceptre s = (Sceptre) i;
+                setBribeTime(s.getControlTime());
+                player.addToMercenary(this);
+                return;
+            }
+        }
         // Remove player treasure cost
         dungeon.getPlayer().removeTreasure(bribeAmount);
+        player.addToMercenary(this);
     }
 
     /*
@@ -201,12 +234,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         return isAllied;
     }
 
+    public void setAllied(boolean isAllied) {
+        this.isAllied = isAllied;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
 
-    public void setAllied(Boolean isAllied) {
-        this.isAllied = isAllied;
-    }
+    
 }
-

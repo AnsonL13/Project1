@@ -176,7 +176,8 @@ public class Dungeon {
        
        // Update spawned enemy potion status. 
        player.updateSpawnedEnemies();
-       
+
+       player.updateAlliedMercenary();
        // Update player potions
        player.updatePotions();
     }
@@ -199,6 +200,8 @@ public class Dungeon {
         int arrowCount = 0;
         int treasureCount = 0;
         int keyCount = 0;
+        int sunStoneCount = 0;
+        int swordCount = 0;
 
         // Get all resource items in the players inventory
         for (Item item : player.getInventory()) {
@@ -219,6 +222,14 @@ public class Dungeon {
                     keyCount++;
                     break;
 
+                case "sun_stone":
+                    sunStoneCount++;
+                    break;
+                
+                case "sword":
+                    swordCount++;
+                    break;
+
                 default:
                     break;
             }
@@ -235,12 +246,29 @@ public class Dungeon {
             buildables.add("shield");
         }
 
+        // Calculate if sceptre can be created
+        if ((woodCount >= 1 || arrowCount >= 2) && (keyCount >= 1 || treasureCount >= 1) && sunStoneCount >= 1) {
+            buildables.add("sceptre");
+        }
+
+        // Calculate if midnight armour can be created
+        
+        for (Entity entity : entities) {
+            if (entity.getType().equals("zombie_toast")) {
+                return buildables;
+            }
+        }
+        if (swordCount >= 1 && sunStoneCount >= 1) {
+            buildables.add("midnight_armour");
+        }
+
         return buildables;
     }
 
     /**
      * /game/interact
      */
+
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
