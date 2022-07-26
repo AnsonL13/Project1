@@ -48,13 +48,6 @@ public class GraphNode implements Comparable<GraphNode> {
     public boolean isBlocked() {
         return block;
     }
-    
-    public boolean equalsPlayer(Position player) {
-        if (pos.getX() != player.getX()) return false;
-        if (pos.getY() != player.getY()) return false;
-
-        return true;
-    }
 
     @Override
     public boolean equals(Object obj) {

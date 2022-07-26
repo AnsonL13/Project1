@@ -90,6 +90,103 @@ public class AllyTest {
 
     }
 
+    // TODO
+    @Test
+    @DisplayName("Test bribed merc allied movement from far")
+    public void testMercenaryAlliedMovementFar() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenary", "c_battleTests_basicMercenaryMercenaryDies");
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+
+        assertEquals(3, getInventory(initDungonRes, "treasure").size());
+        String merceanryId = getEntities(initDungonRes, "mercenary").get(0).getId();
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        // check ally gets player prev
+        initDungonRes = dmc.tick(Direction.LEFT);
+        EntityResponse merc = getEntities(initDungonRes, "mercenary").get(0);
+        Position expectedAlly = new Position(4, 1);
+        assertEquals(expectedAlly, merc.getPosition());
+
+        // get player prev
+        EntityResponse initPlayer = getPlayer(initDungonRes).get();
+        expectedAlly = initPlayer.getPosition();
+
+        // check after move tick
+        initDungonRes = dmc.tick(Direction.LEFT);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedAlly, merc.getPosition());
+
+        // get player prev
+        initPlayer = getPlayer(initDungonRes).get();
+        expectedAlly = initPlayer.getPosition();
+
+        // check after move tick
+        initDungonRes = dmc.tick(Direction.DOWN);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedAlly, merc.getPosition());
+
+        // get player prev
+        initPlayer = getPlayer(initDungonRes).get();
+        expectedAlly = initPlayer.getPosition();
+
+        // check after move tick
+        initDungonRes = dmc.tick(Direction.DOWN);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedAlly, merc.getPosition());
+
+        // get player prev
+        initPlayer = getPlayer(initDungonRes).get();
+        expectedAlly = initPlayer.getPosition();
+
+        // check after move tick
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedAlly, merc.getPosition());       
+        
+        // get player prev
+        initPlayer = getPlayer(initDungonRes).get();
+        expectedAlly = initPlayer.getPosition();
+
+        // check after walk into merc
+        initDungonRes = dmc.tick(Direction.LEFT);
+        merc = getEntities(initDungonRes, "mercenary").get(0);
+        assertEquals(expectedAlly, merc.getPosition());  
+
+    }
+
+    // TODO
+    @Test
+    @DisplayName("Test mercenary interaction, bribe with one treasure and bribe again")
+    public void testBribingTheMercenaryAlready() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenary", "c_battleTests_basicMercenaryMercenaryDies");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.DOWN);
+        initDungonRes = dmc.tick(Direction.UP);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+        String merceanryId = getEntities(initDungonRes, "mercenary").get(0).getId();
+
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(0, getInventory(initDungonRes, "treasure").size());
+        initDungonRes = dmc.tick(Direction.DOWN);
+        
+
+    }
+
+    // TODO failed bribe from another boundary
+
     // white box testing with allied merc
 
     @Test
