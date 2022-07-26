@@ -31,7 +31,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-public class Dungeon {
+import java.io.Serializable;
+
+public class Dungeon implements Serializable {
 
     // All Configs stored as a hashmap
     private HashMap<String, Integer> configMap;

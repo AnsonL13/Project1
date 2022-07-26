@@ -1,8 +1,9 @@
 package dungeonmania;
 
 import java.util.List;
+import java.io.Serializable;
 
-public class Round {
+public class Round implements Serializable {
     private double deltaPlayerHealth;
     private double deltaEnemyHealth;
     private List<Item> weaponryUsed;

@@ -7,7 +7,9 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.exceptions.InvalidActionException;
 
-public class Build {
+import java.io.Serializable;
+
+public class Build implements Serializable {
     private Dungeon dungeon;
     private HashMap<String, Integer> configMap;
     public Build(Dungeon dungeon, HashMap<String, Integer> configMap) {

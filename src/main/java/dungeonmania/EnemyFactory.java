@@ -11,7 +11,9 @@ import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.util.Position;
 
-public class EnemyFactory {
+import java.io.Serializable;
+
+public class EnemyFactory implements Serializable {
     private int zombieAttack;
     private int zombieHealth;
     private int spiderAttack;

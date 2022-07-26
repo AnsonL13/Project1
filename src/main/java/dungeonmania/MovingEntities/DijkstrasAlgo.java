@@ -6,8 +6,9 @@ import dungeonmania.StaticEntities.Wall;
 import java.util.List;
 
 import org.w3c.dom.Node;
+import java.io.Serializable;
 
-public class DijkstrasAlgo {
+public class DijkstrasAlgo implements Serializable{
 
     public void generateMap(List<List<Node> > map, List<Entity> entities) {
         for (int i = 0; i < 40; i++) {

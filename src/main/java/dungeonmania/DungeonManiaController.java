@@ -157,25 +157,22 @@ public class DungeonManiaController {
      * @throws IOException
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        DungeonResponse saved = getDungeonResponseModel();
-        SaveHelper.SaveGame(name, saved);
-        return saved;
+        SaveHelper.SaveGame(name, this.dungeon);
+        return getDungeonResponseModel();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        DungeonResponse response = SaveHelper.LoadGame(name);
-        return response;        
+        this.dungeon = SaveHelper.LoadGame(name);
+        return getDungeonResponseModel();        
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return SaveHelper.showALlGame();
+        return SaveHelper.showAllGame();
     }
-    
-
 }

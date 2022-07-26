@@ -26,7 +26,9 @@ import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
 import dungeonmania.util.Position;
 
-public class EntityFactory {
+import java.io.Serializable;
+
+public class EntityFactory implements Serializable {
     private Dungeon dungeon;
     private HashMap<String, Integer> configMap;
     public EntityFactory (Dungeon dungeon, HashMap<String, Integer> configMap) {

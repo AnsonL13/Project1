@@ -1,6 +1,8 @@
 package dungeonmania.Goals;
 
-public interface Goal {
+import java.io.Serializable;
+
+public interface Goal extends Serializable{
     public String nameString();
 	public boolean goalComplete();
     public String listIncompleteGoals();
