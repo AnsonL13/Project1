@@ -82,7 +82,7 @@ public class SaveHelper {
         File folder = new File("src/main/java/dungeonmania/savedgames");
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
+        for (int i = 1; i < listOfFiles.length; i++) {
             filenames.add(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
             System.out.println(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
 
