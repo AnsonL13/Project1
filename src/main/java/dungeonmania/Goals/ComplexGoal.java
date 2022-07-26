@@ -50,7 +50,9 @@ public class ComplexGoal implements Goal {
     public String listIncompleteGoals() {
 
         if (name.equals("OR") && ! goalComplete()) {
-            String answer = "(" + children.get(0).listIncompleteGoals() + " " + this.name + " " + children.get(1).listIncompleteGoals() + ")";
+            String answer = "(" + children.get(0).listIncompleteGoals() 
+                                + " " + this.name + " " 
+                                + children.get(1).listIncompleteGoals() + ")";
             return answer;
         }
 
@@ -75,13 +77,6 @@ public class ComplexGoal implements Goal {
         return "";
     }
 
-    private String exitString(int index) {
-        if (children.get(index).nameString().equals("exit")) {
-            return ":exit";
-        }
-        return children.get(index).listIncompleteGoals();
-    }
-
     public boolean add(Goal child) {
 		children.add(child);
 		return true;
@@ -97,13 +92,26 @@ public class ComplexGoal implements Goal {
      */
     public boolean canComplete() {
         if (nameString().equals("OR")) return true;
-        if (children.get(0).nameString().contains("exit") && children.get(1).goalComplete()) {
+        if (childString(0).contains("exit") && children.get(1).goalComplete()) {
             return true;
-        } else if (children.get(1).nameString().contains("exit") && children.get(0).goalComplete()) {
+        } else if (childString(1).contains("exit") && children.get(0).goalComplete()) {
+            return true;
+        } else if (! childString(0).contains("exit") && ! childString(1).contains("exit")) {
             return true;
         }
 
         return false;
+    }
+
+    private String exitString(int index) {
+        if (childString(index).equals("exit")) {
+            return ":exit";
+        }
+        return children.get(index).listIncompleteGoals();
+    }
+
+    private String childString(int i) {
+        return children.get(i).nameString();
     }
 
 
