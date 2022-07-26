@@ -17,7 +17,6 @@ public class FollowMovement extends Movement {
         this.enemy = enemy;
     }
 
-
     /*
      * Find the next closest square to the player. 
      */
