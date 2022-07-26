@@ -30,7 +30,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
-    private List<MovingEntity> allies = new ArrayList<MovingEntity>();
+    private List<AlliedEntities> allies = new ArrayList<AlliedEntities>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -480,15 +480,22 @@ public class Player implements Entity {
     }
 
     public void addAlly(MovingEntity ally) {
-        allies.add(ally);
+        allies.add((AlliedEntities)ally);
     }
 
     // TODO implement shortest if not close to player
     private void moveAllies(Position player) {
-        for (MovingEntity ally : allies) {
+        for (AlliedEntities ally : allies) {
             ally.move(player, new ArrayList<Entity>());
         }
     }
 
-    // TODO calculate battle for ally
+    public double getPlayerAllyAttack() {
+        return allies.stream().mapToInt(AlliedEntities::getAllyAttack).sum() + playerAttack;
+
+    }
+
+    public double getAllyDefence() {
+        return allies.stream().mapToInt(AlliedEntities::getAllyDefence).sum();
+    }
 }

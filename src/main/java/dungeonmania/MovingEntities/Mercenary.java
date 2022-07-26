@@ -13,7 +13,7 @@ import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 
 import java.util.List;
 
-public class Mercenary extends MovingEntity implements InteractableEntity {
+public class Mercenary extends MovingEntity implements InteractableEntity, AlliedEntities{
     private String type;
     private boolean isInteractable;
     private boolean isAllied;
@@ -48,6 +48,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
 
     /**
@@ -71,6 +73,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
     
     /** 
