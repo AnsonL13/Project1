@@ -1,15 +1,12 @@
 package dungeonmania.MovingEntities;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import static dungeonmania.TestUtils.getPlayer;
-
-import static dungeonmania.TestUtils.countEntityOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +20,6 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import dungeonmania.exceptions.InvalidActionException;
 public class AllyTest {
 
     @Test
@@ -108,8 +104,25 @@ public class AllyTest {
         Battle result = Battle.battleCalculate(player, zombie);
 
         // check results
-        //assertTrue(result.isPlayerWon());
-        //assertFalse(result.isEnemyWon());
+        assertTrue(result.isPlayerWon());
+        assertFalse(result.isEnemyWon());
         assertEquals(2, result.getRounds().size());
     } 
+
+    @Test
+    @DisplayName("Test simple zombie battle with ally")
+    public void testAllyZombieDieInvisible() {
+        // Create zombie and player
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 10, 2, intial);
+        Player player = new Player("1", "player", intial.translateBy(Direction.DOWN), false, 1, 1);
+        Mercenary merc = new Mercenary("1", new Position(0, 2),0,10,1,1,1,1);
+        player.addAlly(merc);
+        Battle result = Battle.battleCalculate(player, zombie);
+
+        // check results
+        assertTrue(result.isPlayerWon());
+        assertFalse(result.isEnemyWon());
+        assertEquals(10, result.getRounds().size());
+    }
 }
