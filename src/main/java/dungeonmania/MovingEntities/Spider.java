@@ -4,7 +4,6 @@ import java.util.List;
 
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.util.Position;
 
 public class Spider extends MovingEntity {
@@ -74,9 +73,6 @@ public class Spider extends MovingEntity {
         // When the spider spawns, they immediately move the 1 square upwards
         // Cannot tranverse boulders, reverse direction
         // Begin 'circling' their spawn spot 
-
-        decrementStuckTimer();
-        if (this.stuckTimer > 0) return;
 
         if (movedUp == false) {
             moveUpwards(entities);
@@ -185,15 +181,6 @@ public class Spider extends MovingEntity {
                 return false;
             }
         }
-
-        // Check if spider is going to move onto a swamp tile. 
-        for (Entity entity : entities) {
-            if (entity instanceof SwampTile && entity.getPosition().equals(position)) {
-                SwampTile tile = (SwampTile) entity;
-                this.setStuckTimer(tile.getMovementFactor() + 1);
-            } 
-        }
-
         return true;
     }
 

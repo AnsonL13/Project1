@@ -3,7 +3,6 @@ package dungeonmania.MovingEntities;
 import java.util.List;
 
 import dungeonmania.Entity;
-import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.util.Position;
 
 public class MovingEntity implements Entity {
@@ -15,16 +14,14 @@ public class MovingEntity implements Entity {
     protected Position position;
     protected boolean inBattle;
     protected String type;
-    protected int stuckTimer;
 
     public MovingEntity (String id, double attack, double health, Position position) { 
         this.health = health;
         this.attack = attack;
         this.position = position;
         this.id = id;
-        this.stuckTimer = 0;
     }
-
+    
     /** 
      * @return double
      */
@@ -111,39 +108,11 @@ public class MovingEntity implements Entity {
     }
 
     public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    /*
-     * Setting the position, accounting for swamp tiles.
-     */
-    public void setPosition(Position position, List<Entity> entities) {
-        this.position = position;
-
-        // Check if moving into a swamp tile
-        for (Entity entity : entities) {
-            if (entity instanceof SwampTile && entity.getPosition().equals(position)) {
-                SwampTile swampTile = (SwampTile) entity;
-                this.stuckTimer = swampTile.getMovementFactor() + 1;
-            }
-        }
+        this.position = position;        
     }
 
     public void move(Position playerPos, List<Entity> entities) {
         return;
     }
 
-    public void setStuckTimer(int stuckTimer) {
-        this.stuckTimer = stuckTimer;
-    }
-
-    public int getStuckTimer() {
-        return stuckTimer;
-    }
-
-    public void decrementStuckTimer() {
-        if (stuckTimer > 0) {
-            this.stuckTimer--;
-        }
-    }
 }
