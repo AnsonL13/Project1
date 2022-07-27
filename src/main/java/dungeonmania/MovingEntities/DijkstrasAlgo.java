@@ -16,8 +16,9 @@ import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Position;
 
+import java.io.Serializable;
 
-public class DijkstrasAlgo {
+public class DijkstrasAlgo implements Serializable {
     private GraphNode graph[][] = new GraphNode[40][40];
     private Map<GraphNode, GraphNode> previous = new HashMap<>();
     private Map<String, List<Portal>> portals = new HashMap<String, List<Portal>>();

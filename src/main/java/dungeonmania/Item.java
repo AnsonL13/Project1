@@ -1,6 +1,8 @@
 package dungeonmania;
 
-public interface Item {
+import java.io.Serializable;
+
+public interface Item extends Serializable {
     public String getType();
     public String getId();
 }

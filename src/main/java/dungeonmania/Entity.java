@@ -2,7 +2,9 @@ package dungeonmania;
 
 import dungeonmania.util.Position;
 
-public interface Entity {
+import java.io.Serializable;
+
+public interface Entity extends Serializable {
     public boolean isInteractable();
     public String getId();
     public String getType();

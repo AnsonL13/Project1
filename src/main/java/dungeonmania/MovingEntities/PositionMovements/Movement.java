@@ -9,7 +9,9 @@ import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Position;
 
-public abstract class Movement {
+import java.io.Serializable;
+
+public abstract class Movement implements Serializable {
     
     public Position moveEnemy(Position player, List<Entity> entities) {
         return null;

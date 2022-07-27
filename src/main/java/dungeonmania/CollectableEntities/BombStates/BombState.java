@@ -1,6 +1,8 @@
 package dungeonmania.CollectableEntities.BombStates;
 
-public interface BombState {
+import java.io.Serializable;
+
+public interface BombState extends Serializable {
     public void pickUp();
 	public void putDown();
     public void explode();

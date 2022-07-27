@@ -8,7 +8,9 @@ import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.MovingEntities.MovingEntity;
 
-public class Battle {
+import java.io.Serializable;
+
+public class Battle implements Serializable {
     private String enemy;
     private double initialPlayerHealth;
     private double initialEnemyHealth;
