@@ -12,6 +12,8 @@ import dungeonmania.CollectableEntities.InvincibilityPotion;
 import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Potion;
+import dungeonmania.CollectableEntities.SunStone;
+import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.AlliedEntities;
@@ -114,6 +116,13 @@ public class Player implements Entity {
      */
     public void addToMovingEntites(MovingEntity entity) {
         this.movingEntities.add(entity);
+    }
+
+    /*
+     * Add a mercenary to allied mercenary
+     */
+    public void addToMercenary(Mercenary mercenary){
+        this.allies.add(mercenary);
     }
 
     /*
@@ -231,6 +240,86 @@ public class Player implements Entity {
             }
         }
     }
+
+    /*
+     * Remove inventory items that make the sceptre
+     */
+    public void removeForSceptre() {
+        // Remove 1 wood or 2 arrows,  a treasure or key, 1 sun stone
+        int woodCount = 0;
+        int treasurekeyCount = 0;
+        int sunStoneCount = 0;
+
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next();     
+
+            if (item instanceof Wood && (woodCount != 1)) {
+                inventoryIterator.remove();
+                woodCount++;
+            }
+
+            else if (item instanceof Key && (treasurekeyCount != 1)) {
+                keys.remove(item.getId());
+                inventoryIterator.remove();
+                treasurekeyCount++;
+            }
+
+            else if (item instanceof Treasure && (treasurekeyCount != 1)) {
+                inventoryIterator.remove();
+                treasurekeyCount++;
+            }
+
+            else if (item instanceof SunStone && (sunStoneCount != 1)) {
+                inventoryIterator.remove();
+                sunStoneCount++;
+            }   
+        }
+        if (woodCount == 0) {
+            removeForSceptreArrow();
+        }
+    }
+
+    public void removeForSceptreArrow() {
+        int arrowCount = 0;
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next(); 
+            if (item instanceof Arrow && (arrowCount != 2)) {
+                inventoryIterator.remove();
+                arrowCount++;
+            }    
+        }
+    }
+
+    /*
+     * Remove inventory items that make the midnight armour
+     */
+    public void removeForMidnightArmour() {
+        // Remove 1 sword and 1 sun stone
+        int swordCount = 0;
+        int sunStoneCount = 0;
+
+        Iterator<Item> inventoryIterator = inventory.iterator();
+        Item item;
+        while(inventoryIterator.hasNext()) {     
+            item = inventoryIterator.next();     
+
+            if (item instanceof Sword && (swordCount != 1)) {
+                inventoryIterator.remove();
+                swordCount++;
+            }
+
+            else if (item instanceof SunStone && (sunStoneCount != 1)) {
+                inventoryIterator.remove();
+                sunStoneCount++;
+            }
+        }
+    }
+
+
 
     /*
      * Get the amount of treasure in the players inventory
@@ -410,6 +499,26 @@ public class Player implements Entity {
             updateSpawnedEnemies();
         }
     }
+
+    /*
+     * Update the allied mercenary
+     */
+    public void updateAlliedMercenary(){
+        List<AlliedEntities> remove = new ArrayList<AlliedEntities>();
+        for(AlliedEntities m : allies) {
+            int bribeTime = m.getBribeTime();
+            if (bribeTime != 0) {
+                m.setBribeTime(bribeTime - 1);
+
+                if (bribeTime == 1){
+                    m.setAllied(false);
+                    remove.add(m);
+                }
+            }
+        }
+        allies.removeAll(remove);
+    }
+
 
     /*
      * Notify the enemies of the players potion use. 

@@ -5,7 +5,9 @@ import java.util.Random;
 
 import dungeonmania.Dungeon;
 import dungeonmania.Entity;
+import dungeonmania.Item;
 import dungeonmania.Player;
+import dungeonmania.BuildableEntities.Sceptre;
 import dungeonmania.util.Position;
 
 public class Assassin extends Mercenary {
@@ -48,7 +50,19 @@ public class Assassin extends Mercenary {
         Random rand = new Random(); //instance of random class
         Double chance = rand.nextDouble(); // check if 0 to 1
         Player player = dungeon.getPlayer();
-
+        
+        //check if player have sceptre to control mercenary
+        for (Item i : dungeon.getPlayer().getInventory()) {
+            if(i.getType().equals("sceptre")) {
+                Sceptre s = (Sceptre) i;
+                setBribeTime(s.getControlTime());
+                player.removeFromMovingEntities(super.getId());
+                super.setAllied(true);
+                player.addAlly(this);
+                return;
+            }
+        }
+        
         if (chance > failRate) { // not failed
             player.removeFromMovingEntities(super.getId());
             player.addAlly(this);
