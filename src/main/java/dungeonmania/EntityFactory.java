@@ -3,6 +3,7 @@ package dungeonmania;
 import java.util.HashMap;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import dungeonmania.CollectableEntities.Arrow;
 import dungeonmania.CollectableEntities.Bomb;
@@ -12,6 +13,7 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+import dungeonmania.MovingEntities.Assassin;
 import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
@@ -31,9 +33,12 @@ import java.io.Serializable;
 public class EntityFactory implements Serializable {
     private Dungeon dungeon;
     private HashMap<String, Integer> configMap;
-    public EntityFactory (Dungeon dungeon, HashMap<String, Integer> configMap) {
+    private JsonObject configJson; // reading in doubles
+    public EntityFactory (Dungeon dungeon, JsonObject configJson, 
+                HashMap<String, Integer> configMap) {
         this.dungeon = dungeon;
         this.configMap = configMap;
+        this.configJson = configJson;
     }
     
     /** 
@@ -212,10 +217,27 @@ public class EntityFactory implements Serializable {
                 dungeon.addToEntities(swampTile);
                 break;
 
+            case "assassin":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                Assassin assassin = new Assassin(Integer.toString(latestUnusedId), "assassin", 
+                                    new Position(xPosition, yPosition), true, 
+                                    configMap.get("ally_attack"), configMap.get("ally_defence"), 
+                                    configMap.get("assassin_bribe_amount"), configMap.get("bribe_radius"), 
+                                    configMap.get("assassin_attack"), configMap.get("assassin_health"), 
+                                    configMap.get("assassin_recon_radius"), getDoubleJson("assassin_bribe_fail_rate"));
+                dungeon.addToEntities(assassin);
+                dungeon.addToInteractable(assassin);
+                return assassin;            
+
             default:
                 break;
         }
         return null;
-    }        
+    }
+    
+    private Double getDoubleJson(String val) {
+        return configJson.get(val).getAsDouble();
+    }
 }
 

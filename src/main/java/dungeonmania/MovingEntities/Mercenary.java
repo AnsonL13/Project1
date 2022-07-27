@@ -5,6 +5,7 @@ import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
 import dungeonmania.Player;
+import dungeonmania.MovingEntities.PositionMovements.AlliedMovement;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -12,7 +13,7 @@ import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 
 import java.util.List;
 
-public class Mercenary extends MovingEntity implements InteractableEntity {
+public class Mercenary extends MovingEntity implements InteractableEntity, AlliedEntities{
     private String type;
     private boolean isInteractable;
     private boolean isAllied;
@@ -47,6 +48,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
 
     /**
@@ -65,11 +68,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = false;
+        this.isInteractable = true;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
     
     /** 
@@ -83,33 +88,30 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         if (this.stuckTimer > 0) return;
 
         Position newPos = null;
-
-        // Check if mercenary is allied
-        if (isAllied) {
-            this.movement = new FollowMovement(this);
-        }
-
-        else {
-            // Check if player is Invincible
-            if (isInvincible) {
-                changeMovement(new RunAwayMovement(this));
-            }
-
-            // Check if player is Invisible
-            else if (isInvisible) {
-                changeMovement(new RandomMovement(this));
-            }
-
-            else {
-                changeMovement(new FollowMovement(this));
-            }
-        }
+        setNewMovement(playerPos);
 
         newPos = movement.moveEnemy(playerPos, entities);
-
         if (newPos != null) {
             super.setPosition(newPos, entities);
         }
+        
+    }
+
+    private void setNewMovement(Position player) {
+        List<Position> adj = player.getAdjacentPositions();
+        // Check if mercenary is allied
+        if (isAllied && adj.contains(super.getPosition())) {
+            changeMovement(new AlliedMovement());
+        } else if (isAllied) {
+            changeMovement(new FollowMovement(this));
+        } else if (isInvincible) {
+            changeMovement(new RunAwayMovement(this));
+        } else if (isInvisible) {
+            changeMovement(new RandomMovement(this));
+        } else {
+            changeMovement(new FollowMovement(this));
+        }
+        
     }
 
     /** 
@@ -192,10 +194,14 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      * Let the player interact with the mercenary. 
      */
     public void interact(Dungeon dungeon) {
+        if (isAllied) return;
         this.isAllied = true;
 
         // Remove player treasure cost
-        dungeon.getPlayer().removeTreasure(bribeAmount);
+        Player player = dungeon.getPlayer();
+        player.removeTreasure(bribeAmount);
+        player.removeFromMovingEntities(super.getId());
+        player.addAlly(this);
     }
 
     /*
@@ -203,6 +209,14 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      */
     public boolean isAllied() {
         return isAllied;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAllied(Boolean isAllied) {
+        this.isAllied = isAllied;
     }
 }
 

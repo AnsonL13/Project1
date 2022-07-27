@@ -61,7 +61,7 @@ public class Dungeon implements Serializable {
         // Convert JsonObject configJson into HashMap<String, Integer> configMap
         this.configMap = configHelper(configJson);
         // Initialise all entities
-        generateEntities(dungeonJson);
+        generateEntities(dungeonJson, configJson);
         // Create the enemy spawner
         generateSpawner();
         // Create the goals composite pattern "tree"
@@ -277,10 +277,10 @@ public class Dungeon implements Serializable {
     }
 
     // Generate entities from Dungeon.json
-    public void generateEntities(JsonObject dungeonJson) {
+    public void generateEntities(JsonObject dungeonJson, JsonObject configJson) {
         // Read from dungeon json file. Generate all entities. 
         List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
-        EntityFactory getEntities = new EntityFactory(this, configMap);
+        EntityFactory getEntities = new EntityFactory(this, configJson, configMap);
 
         for (JsonElement entityinfo : dungeonJson.get("entities").getAsJsonArray()) {
             MovingEntity newEnemies = getEntities.createEntity(entityinfo, latestUnusedId);
@@ -418,60 +418,60 @@ public class Dungeon implements Serializable {
      */
     public Position moveIntoPortal(Entity entity, Direction movementDirection) {
         boolean foundFinalSquare = false;
-            Position portalExitSquare = player.getPosition();
-            Portal tempPortal = null;
+        Position portalExitSquare = player.getPosition();
+        Portal tempPortal = null;
 
-            // Find the portal in the portals Hashmap.
+        // Find the portal in the portals Hashmap.
+        for (String portal : portals.keySet()) {
+            if (entity.getId().equals(portals.get(portal).getId())) {
+                tempPortal = portals.get(portal);
+            }
+        }
+
+        while (! foundFinalSquare) {
+            portalExitSquare = portalExitSquare(tempPortal, movementDirection);
+
+            foundFinalSquare = true;
+
+            // Check if there is another portal on the portalExitSquare
             for (String portal : portals.keySet()) {
-                if (entity.getId().equals(portals.get(portal).getId())) {
+                int xPostion = portals.get(portal).getPosition().getX();
+                int yPosition = portals.get(portal).getPosition().getY();
+                if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
                     tempPortal = portals.get(portal);
+                    foundFinalSquare = false;
                 }
             }
+        }
 
-            while (! foundFinalSquare) {
-                portalExitSquare = portalExitSquare(tempPortal, movementDirection);
-
-                foundFinalSquare = true;
-
-                // Check if there is another portal on the portalExitSquare
-                for (String portal : portals.keySet()) {
-                    int xPostion = portals.get(portal).getPosition().getX();
-                    int yPosition = portals.get(portal).getPosition().getY();
-                    if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
-                        tempPortal = portals.get(portal);
-                        foundFinalSquare = false;
-                    }
+        // Check if the portalExitSquare contains a wall, boulder or door.
+        boolean normalMove = true;
+        for (Entity i : entities) {
+            // Check if the entity is in the position the player is going to move into.
+            if (i.getPosition().getX() == portalExitSquare.getX() && entity.getPosition().getY() == portalExitSquare.getY()) {
+                switch (i.getType()) {
+                    case "wall":
+                        // Player does not move because there is a wall in front.
+                        normalMove = false;
+                        break;
+    
+                    case "boulder":
+                        normalMove = moveIntoBoulder(movementDirection, portalExitSquare, entity);
+                        break;
+    
+                    case "door":
+                        normalMove = moveIntoDoor(entity);
+                        break;
+    
+                    default:
+                        break;
                 }
             }
+        }
 
-            // Check if the portalExitSquare contains a wall, boulder or door.
-            boolean normalMove = true;
-            for (Entity i : entities) {
-                // Check if the entity is in the position the player is going to move into.
-                if (i.getPosition().getX() == portalExitSquare.getX() && entity.getPosition().getY() == portalExitSquare.getY()) {
-                    switch (i.getType()) {
-                        case "wall":
-                            // Player does not move because there is a wall in front.
-                            normalMove = false;
-                            break;
-        
-                        case "boulder":
-                            normalMove = moveIntoBoulder(movementDirection, portalExitSquare, entity);
-                            break;
-        
-                        case "door":
-                            normalMove = moveIntoDoor(entity);
-                            break;
-        
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (! normalMove) {
-                return player.getPosition();
-            }
+        if (! normalMove) {
+            return player.getPosition();
+        }
         return portalExitSquare;
     }
 
