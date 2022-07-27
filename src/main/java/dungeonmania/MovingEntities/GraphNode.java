@@ -2,7 +2,9 @@ package dungeonmania.MovingEntities;
 
 import dungeonmania.util.Position;
 
-public class GraphNode implements Comparable<GraphNode> {
+import java.io.Serializable;
+
+public class GraphNode implements Comparable<GraphNode>, Serializable {
     private int cost;
     private boolean visited;
     private boolean block;

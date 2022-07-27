@@ -156,21 +156,23 @@ public class DungeonManiaController {
      * /game/save
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        SaveHelper.SaveGame(name, this.dungeon);
+        return getDungeonResponseModel();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        this.dungeon = SaveHelper.LoadGame(name);
+        return getDungeonResponseModel();        
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        return SaveHelper.showAllGame();
     }
 
 }

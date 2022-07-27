@@ -32,7 +32,9 @@ import dungeonmania.StaticEntities.LogicalEntities.SwitchDoor;
 import dungeonmania.StaticEntities.LogicalEntities.Wire;
 import dungeonmania.util.Position;
 
-public class EntityFactory {
+import java.io.Serializable;
+
+public class EntityFactory implements Serializable {
     private Dungeon dungeon;
     private HashMap<String, Integer> configMap;
     private JsonObject configJson; // reading in doubles
