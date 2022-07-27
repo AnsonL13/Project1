@@ -9,6 +9,7 @@ import dungeonmania.Player;
 import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.util.Position;
 import dungeonmania.MovingEntities.MovingEntity;
+import dungeonmania.StaticEntities.LogicalEntities.LogicalEntity;
 import dungeonmania.Entity;
 
 
@@ -114,5 +115,52 @@ public class ActiveBombState implements BombState {
         adjacentPositions.add(new Position(x  , y+1));
         adjacentPositions.add(new Position(x-1, y));
         return adjacentPositions;
+    }
+
+    
+    /*
+     * Destroy all entities with range of the bomb
+     */
+    public void explode(boolean logic) {
+        // Explode the bomb, remove everything with its radius (Including itself)
+        List<Position> targetSquares = bomb.getTargetSquares();
+
+        for (Position targetsquare : targetSquares) {
+            for (Entity entity : dungeon.getEntities()) {
+                if (entity instanceof LogicalEntity && entity.getPosition().equals(targetsquare)) {
+                    LogicalEntity logicalEntity = (LogicalEntity) entity;
+                    logicalEntity.updateNeighbours(logicalEntity, logicalEntity, false, 0, false);
+                }
+            }
+        }
+        
+        for (Position targetsquare : targetSquares) {
+            // Remove from players moving entity list
+            Iterator<MovingEntity> movingEntityIterator = player.getMovingEntities().iterator();
+            MovingEntity movingEntity;
+            while(movingEntityIterator.hasNext()) {     
+                movingEntity = movingEntityIterator.next();
+                // check if the moving entity is in the target square
+                if (movingEntity.getPosition().equals(targetsquare)) {
+                    // remove the entity
+                    movingEntityIterator.remove();
+                }
+            }
+
+            // Remove from dungeon
+            Iterator<Entity> entityIterator = dungeon.getEntities().iterator();
+            Entity entity;
+            while(entityIterator.hasNext()) {     
+                entity = entityIterator.next();
+                // check if the moving entity is in the target square
+                if (entity.getPosition().equals(targetsquare)) {
+                    // remove the entity
+                    if (!entity.getType().equals("player")) {
+                        entityIterator.remove();
+                        dungeon.removeEntityFully(entity.getId());
+                    }
+                }
+            }
+        }
     }
 }

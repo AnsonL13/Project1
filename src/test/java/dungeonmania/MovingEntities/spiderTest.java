@@ -16,9 +16,9 @@ import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Exit;
-import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
+import dungeonmania.StaticEntities.LogicalEntities.FloorSwitch;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -67,7 +67,7 @@ public class spiderTest {
         List<Entity> stuck = new ArrayList<Entity>();
         stuck.add(new Wall("0", "Wall", new Position(5, 6), false));
         stuck.add(new Door("0", "door", new Position(5, 4), false, 0));
-        stuck.add(new FloorSwitch("0", "floor_switch", new Position(6, 6), false));
+        stuck.add(new FloorSwitch("0", "floor_switch", new Position(6, 6), false, stuck));
         stuck.add(new Portal("0", "portal", new Position(6, 5), false, "blue"));
         stuck.add(new Exit("0", "exit", new Position(6, 4), false));
 

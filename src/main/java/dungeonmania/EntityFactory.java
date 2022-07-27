@@ -22,11 +22,14 @@ import dungeonmania.MovingEntities.ZombieToast;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Exit;
-import dungeonmania.StaticEntities.FloorSwitch;
 import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.StaticEntities.ZombieToastSpawner;
+import dungeonmania.StaticEntities.LogicalEntities.FloorSwitch;
+import dungeonmania.StaticEntities.LogicalEntities.LightBulb;
+import dungeonmania.StaticEntities.LogicalEntities.SwitchDoor;
+import dungeonmania.StaticEntities.LogicalEntities.Wire;
 import dungeonmania.util.Position;
 
 public class EntityFactory {
@@ -50,6 +53,7 @@ public class EntityFactory {
         int xPosition;
         int yPosition;
         int keyId;
+        String logic;
         switch (entityinfo.getAsJsonObject().get("type").getAsString()) {
             case "player":
                 xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
@@ -79,13 +83,6 @@ public class EntityFactory {
                 yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
                 Boulder boulder = new Boulder(Integer.toString(latestUnusedId), "boulder", new Position(xPosition, yPosition), false);
                 dungeon.addToEntities(boulder);
-                break;
-
-            case "switch":
-                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
-                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                FloorSwitch floorSwitch = new FloorSwitch(Integer.toString(latestUnusedId), "switch", new Position(xPosition, yPosition), false);
-                dungeon.addToEntities(floorSwitch);
                 break;
                 
             case "door":
@@ -199,15 +196,6 @@ public class EntityFactory {
                 dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), arrow);
                 break;
 
-            case "bomb":
-                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
-                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
-                Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"), dungeon, dungeon.getPlayer());
-                dungeon.addToEntities(bomb);
-                dungeon.addToBombs(bomb);
-                dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), bomb);
-                break;
-
             case "sword":
                 xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
                 yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
@@ -236,6 +224,77 @@ public class EntityFactory {
                 dungeon.addToEntities(assassin);
                 dungeon.addToInteractable(assassin);
                 return assassin;            
+
+            case "switch":
+            xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+            yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+            // Check if there is a "logic field in the json file"
+            try {
+                // Case where there is a "logic field"
+                logic = entityinfo.getAsJsonObject().get("logic").getAsString();
+                FloorSwitch floorSwitch = new FloorSwitch(Integer.toString(latestUnusedId), "switch", new Position(xPosition, yPosition), false, dungeon.getEntities(), logic);
+                dungeon.addToEntities(floorSwitch);
+                dungeon.addToLogicalEntities(floorSwitch);
+            }
+
+            catch(Exception NullPointerException) {
+                // There was no "logic" field
+                FloorSwitch floorSwitch = new FloorSwitch(Integer.toString(latestUnusedId), "switch", new Position(xPosition, yPosition), false, dungeon.getEntities());
+                dungeon.addToEntities(floorSwitch);
+                dungeon.addToLogicalEntities(floorSwitch);
+            }
+            break;
+            
+             
+            case "bomb":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+
+                // Check if there is a "logic field in the json file"
+                try {
+                    // Case where there is a "logic field"
+                    logic = entityinfo.getAsJsonObject().get("logic").getAsString();
+                    Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"), dungeon, dungeon.getPlayer(), dungeon.getEntities(), logic);
+                    dungeon.addToEntities(bomb);
+                    dungeon.addToBombs(bomb);
+                    dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), bomb);
+                }
+
+                catch(Exception NullPointerException) {
+                    // There was no "logic" field
+                    Bomb bomb = new Bomb(Integer.toString(latestUnusedId), "bomb", new Position(xPosition, yPosition), false, configMap.get("bomb_radius"), dungeon, dungeon.getPlayer(), dungeon.getEntities());
+                    dungeon.addToEntities(bomb);
+                    dungeon.addToBombs(bomb);
+                    dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), bomb);
+                }
+                break;
+            
+
+            case "light_bulb_off":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                logic = entityinfo.getAsJsonObject().get("logic").getAsString();
+                LightBulb lightBulb = new LightBulb(Integer.toString(latestUnusedId), "light_bulb_off", new Position(xPosition, yPosition), false, dungeon.getEntities(), logic);
+                dungeon.addToEntities(lightBulb);
+                break;
+            
+            case "wire":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                Wire wire = new Wire(Integer.toString(latestUnusedId), "wire", new Position(xPosition, yPosition), false, dungeon.getEntities());
+                dungeon.addToEntities(wire);
+                break;
+
+            case "switch_door":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                logic = entityinfo.getAsJsonObject().get("logic").getAsString();
+                keyId = entityinfo.getAsJsonObject().get("key").getAsInt();
+                SwitchDoor switchDoor = new SwitchDoor(Integer.toString(latestUnusedId), "switch_door", new Position(xPosition, yPosition), false, keyId, dungeon.getEntities(), logic);
+                dungeon.addToEntities(switchDoor);
+                dungeon.addToSwitchDoors(Integer.toString(latestUnusedId), switchDoor);
+                
+                break;
 
             default:
                 break;
