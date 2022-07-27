@@ -80,13 +80,9 @@ public class Spider extends MovingEntity {
 
         if (movedUp == false) {
             moveUpwards(entities);
-        } 
-        
-        else if (isClockwise) {
+        } else if (isClockwise) {
             circling(entities);
-        } 
-
-        else if (! isClockwise) { 
+        } else { 
             reverseDirection(entities);
         }        
     }
@@ -177,9 +173,6 @@ public class Spider extends MovingEntity {
      * Return false if there is a boulder
      */
     private boolean canMove(Position position, List<Entity> entities) {
-        if (position == null) {
-            return false;
-        }
         for (Entity entity : entities) {
             if (entity instanceof Boulder && entity.getPosition().equals(position)) {
                 return false;

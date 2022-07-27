@@ -11,14 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
-
 import dungeonmania.Entity;
-import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Exit;
-import dungeonmania.StaticEntities.FloorSwitch;
-import dungeonmania.StaticEntities.Portal;
-import dungeonmania.StaticEntities.Wall;
+import dungeonmania.StaticEntities.SwampTile;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -88,5 +82,23 @@ public class SwampTileTest {
 
         // Check mercenary moved, swamp tile timer finished
         assertEquals(position, getEntities(res, "mercenary").get(0).getPosition());
+    } 
+
+    @Test
+    @DisplayName("Test zombie move")
+    public void testZombieRandomMove() {
+        Position intial = new Position(0, 0);
+        ZombieToast zombie = new ZombieToast("0", 5, 5, intial);
+        zombie.setPotionStatus(false, true);
+        List<Entity> swamp = new ArrayList<Entity>();
+        swamp.add(new SwampTile("1", "swamp_tile",  new Position(-1, 0), false, 2));
+
+        // move onto swamp
+        zombie.move(new Position(5,0), swamp);
+        assertEquals(new Position(-1, 0), zombie.getPosition());
+
+        zombie.move(new Position(5,0), swamp);
+        assertEquals(new Position(-1, 0), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
     } 
 }
