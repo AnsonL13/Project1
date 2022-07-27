@@ -504,16 +504,19 @@ public class Player implements Entity {
      * Update the allied mercenary
      */
     public void updateAlliedMercenary(){
+        List<AlliedEntities> remove = new ArrayList<AlliedEntities>();
         for(AlliedEntities m : allies) {
             int bribeTime = m.getBribeTime();
             if (bribeTime != 0) {
                 m.setBribeTime(bribeTime - 1);
+
                 if (bribeTime == 1){
                     m.setAllied(false);
-                    allies.remove(m);
+                    remove.add(m);
                 }
             }
         }
+        allies.removeAll(remove);
     }
 
 

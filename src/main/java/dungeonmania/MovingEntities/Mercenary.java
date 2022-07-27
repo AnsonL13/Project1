@@ -196,9 +196,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
         int yTopBoundary = super.getPosition().getY() + bribeRadius;
         int yBottomBoundary = super.getPosition().getY() - bribeRadius;
         // Check if player is within the specified bribing radius
+
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
-            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary) &&
-            this.isAllied == false) {
+            (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
                 for (Item i : player.getInventory()) {
                     if(i.getType().equals("sceptre")) {
                         return true;
@@ -206,6 +206,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
                 }
                 // Check if player has enough gold
                 if (player.treasureAmount() >= bribeAmount) {
+
                     // Player can interact with the mercenary. 
                     return true;
                 }
@@ -219,13 +220,18 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
      */
     public void interact(Dungeon dungeon) {
         if (isAllied) return;
+
         setAllied(true);
         Player player = dungeon.getPlayer();
+
         //check if player have sceptre to control mercenary
         for (Item i : dungeon.getPlayer().getInventory()) {
-            if(i.getType().equals("sceptre")) {
+            if(i.getType().equals("sceptre") ) {
                 Sceptre s = (Sceptre) i;
+                if (s.getControlTime() == 0) break;
                 setBribeTime(s.getControlTime());
+                s.setControlTime(0);
+
                 player.removeFromMovingEntities(super.getId());
                 player.addAlly(this);
                 return;

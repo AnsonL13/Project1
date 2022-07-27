@@ -30,5 +30,9 @@ public class Sceptre implements Item{
     public int getControlTime() {
         return controlTime;
     }
+
+    public void setControlTime(int time) {
+        this.controlTime = time;
+    }
     
 }

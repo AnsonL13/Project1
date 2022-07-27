@@ -289,6 +289,7 @@ public class Dungeon {
                 if (! entity.interactActionCheck(player)) {
                     throw new InvalidActionException(entityId);
                 }
+
                 // Interact with the interactable entity.
                 entity.interact(this);
                 break;
