@@ -28,7 +28,6 @@ import java.io.ObjectOutputStream;
 public class SaveHelper {
     public static void SaveGame(String name, Dungeon response) {
         // Serialization 
-        System.out.println(name);
 
         try {   
             //Saving of object in a file
@@ -85,8 +84,6 @@ public class SaveHelper {
 
         for (int i = 0; i < listOfFiles.length; i++) {
             filenames.add(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
-            System.out.println(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
-
         }
 
         return filenames;
@@ -95,11 +92,8 @@ public class SaveHelper {
     public static void createFolder(String path) {
         File f = new File(path);
             try{
-                if(f.mkdir()) { 
-                    System.out.println("Directory Created");
-                } else {
-                    System.out.println("Directory is not created");
-                }
+                f.mkdir();
+                
             } catch(Exception e){
                 e.printStackTrace();
             } 
