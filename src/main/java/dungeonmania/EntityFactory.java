@@ -12,6 +12,7 @@ import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+import dungeonmania.MovingEntities.Hydra;
 import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
@@ -201,6 +202,16 @@ public class EntityFactory {
                 dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), sword);
                 break;
 
+            case "hydra":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                Hydra hydra = new Hydra(Integer.toString(latestUnusedId), "hydra",
+                                        new Position(xPosition, yPosition), false,
+                                        configMap.get("hydra_attack"), configMap.get("hydra_health"), 
+                                        configMap.get("hydra_health_increase_rate"), configMap.get("hydra_health_increase_amount")); 
+                dungeon.addToEntities(hydra);
+                return hydra;
+                
             default:
                 break;
         }

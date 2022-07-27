@@ -132,6 +132,10 @@ public class Battle {
                 c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                 player.setPlayerHealth(c.doubleValue());
                 
+                // Update hydra health
+                BigDecimal c = BigDecimal.valueOf(enemy.getHealth().subtract(BigDecimal.valueOf(playerAttack / 5)));
+                enemy.setHealth(c.doubleValue());
+
                 // Add round info to list
                 rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
             }

@@ -12,8 +12,9 @@ public class Hydra extends MovingEntity {
     private String type;
     private boolean isInteractable;
     private Movement movement;
-    private int healthIncreaseRate;
+    private double healthIncreaseRate;
     private int healthIncreaseAmount;
+    private boolean isAttack;
 
     /**
      * @param id
@@ -24,17 +25,19 @@ public class Hydra extends MovingEntity {
      * @param health
      */
     public Hydra(String id, String type, Position position, boolean isInteractable, int attack, int health,
-            int healthIncreaseRate, int healthIncreaseAmount) {
+            int healthIncreaseRate, int healthIncreaseAmount, boolean isAttack) {
         super(id, attack, health, position);
         this.type = type;
         this.isInteractable = isInteractable;
         this.movement = new RandomMovement(this);
         this.healthIncreaseRate = healthIncreaseRate;
         this.healthIncreaseAmount = healthIncreaseAmount;
+        this.isAttack = false;
+
     }
 
     // getters and setters
-    public int getHealthIncreaseRate() {
+    public double getHealthIncreaseRate() {
         return healthIncreaseRate;
     }
 
@@ -48,6 +51,16 @@ public class Hydra extends MovingEntity {
 
     public void setHealthIncreaseAmount(int healthIncreaseAmount) {
         this.healthIncreaseAmount = healthIncreaseAmount;
+    }
+
+    @Override
+    public double getHealth() {
+        if (healthIncreaseRate < 0 || healthIncreaseRate > 1 || isAttack) {
+        }
+        else if (! isAttack) {
+            health = health + healthIncreaseAmount;
+        }
+        return health;
     }
 
     /**
