@@ -4,7 +4,9 @@ import dungeonmania.util.Position;
 import dungeonmania.Dungeon;
 import dungeonmania.Entity;
 import dungeonmania.InteractableEntity;
+import dungeonmania.Item;
 import dungeonmania.Player;
+import dungeonmania.BuildableEntities.Sceptre;
 import dungeonmania.MovingEntities.PositionMovements.AlliedMovement;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
@@ -22,6 +24,9 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
     private int allyDefence;
     private int bribeAmount;
     private int bribeRadius;
+    private int bribeTime;
+    
+
 
     private Movement movement;
 
@@ -48,6 +53,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.bribeTime = 0;
         this.allyAttack = allyAttack;
         this.allyDefence = allyDefence;
     }
@@ -68,7 +74,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = true;
+        this.isInteractable = false;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
@@ -113,6 +119,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
         }
         
     }
+
 
     /** 
      * @param newMovement
@@ -166,6 +173,17 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
     public int getBribeRadius() {
         return bribeRadius;
     }
+
+    /** 
+     * @return int
+     */
+    public int getBribeTime() {
+        return bribeTime;
+    }
+
+    public void setBribeTime(int bribeTime) {
+        this.bribeTime = bribeTime;
+    }
     
     /** 
      * @param player
@@ -178,10 +196,17 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
         int yTopBoundary = super.getPosition().getY() + bribeRadius;
         int yBottomBoundary = super.getPosition().getY() - bribeRadius;
         // Check if player is within the specified bribing radius
+
         if ((player.getPosition().getX() >= xBottomBoundary && player.getPosition().getX() <= xTopBoundary) &&
             (player.getPosition().getY() >= yBottomBoundary && player.getPosition().getY() <= yTopBoundary)) {
+                for (Item i : player.getInventory()) {
+                    if(i.getType().equals("sceptre")) {
+                        return true;
+                    }
+                }
                 // Check if player has enough gold
                 if (player.treasureAmount() >= bribeAmount) {
+
                     // Player can interact with the mercenary. 
                     return true;
                 }
@@ -195,10 +220,24 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
      */
     public void interact(Dungeon dungeon) {
         if (isAllied) return;
-        this.isAllied = true;
 
-        // Remove player treasure cost
+        setAllied(true);
         Player player = dungeon.getPlayer();
+
+        //check if player have sceptre to control mercenary
+        for (Item i : dungeon.getPlayer().getInventory()) {
+            if(i.getType().equals("sceptre") ) {
+                Sceptre s = (Sceptre) i;
+                if (s.getControlTime() == 0) break;
+                setBribeTime(s.getControlTime());
+                s.setControlTime(0);
+
+                player.removeFromMovingEntities(super.getId());
+                player.addAlly(this);
+                return;
+            }
+        }
+        // Remove player treasure cost
         player.removeTreasure(bribeAmount);
         player.removeFromMovingEntities(super.getId());
         player.addAlly(this);
@@ -211,12 +250,13 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
         return isAllied;
     }
 
+    public void setAllied(boolean isAllied) {
+        this.isAllied = isAllied;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
 
-    public void setAllied(Boolean isAllied) {
-        this.isAllied = isAllied;
-    }
+    
 }
-

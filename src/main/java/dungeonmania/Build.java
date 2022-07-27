@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import dungeonmania.BuildableEntities.Bow;
+import dungeonmania.BuildableEntities.MidnightArmour;
+import dungeonmania.BuildableEntities.Sceptre;
 import dungeonmania.BuildableEntities.Shield;
 import dungeonmania.exceptions.InvalidActionException;
 
@@ -23,7 +25,7 @@ public class Build {
      */
     public void build (String buildable, Player player, int latestUnusedId) 
                 throws InvalidActionException {
-        if (! (buildable.equals("shield") || buildable.equals("bow"))) {
+        if (! (buildable.equals("shield") || buildable.equals("bow") || buildable.equals("sceptre") || buildable.equals("midnight_armour"))) {
             throw new IllegalArgumentException(buildable);
         }
 
@@ -61,6 +63,24 @@ public class Build {
             player.addToWeapons(bow);
             // Remove the materials that made the shield
             player.removeForBow();
+        } else if (buildable.equals("sceptre")){
+            Sceptre sceptre = new Sceptre(Integer.toString(latestUnusedId), "sceptre", 
+                    false, configMap.get("control_time"));
+            // Add item to players inventory
+            player.addToInventory(sceptre);
+            // Add item to players weapons
+            // player.addToWeapons(sceptre);
+            // Remove the materials that made the shield
+            player.removeForSceptre();
+        } else if (buildable.equals("midnight_armour")) {
+            MidnightArmour midnightArmour = new MidnightArmour(Integer.toString(latestUnusedId), "midnight_armour", 
+                    false, configMap.get("midnight_armour_defence"), configMap.get("midnight_armour_attack"));
+            // Add item to players inventory
+            player.addToInventory(midnightArmour);
+            // Add item to players weapons
+            player.addToWeapons(midnightArmour);
+            // Remove the materials that made the shield
+            player.removeForMidnightArmour();
         }
     }
 }

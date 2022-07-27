@@ -216,4 +216,59 @@ public class AllyTest {
         assertFalse(result.isEnemyWon());
         assertEquals(10, result.getRounds().size());
     }
+    @Test
+    @DisplayName("Test Assassin bribe with one sceptre bribe")
+    public void testBribingTheAssassinWithSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeAssassinWithSceptre", "MovingEntity/c_assassinTest_simple");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+
+        String merceanryId = getEntities(initDungonRes, "assassin").get(0).getId();
+
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+    }
+
+    @Test
+    @DisplayName("Test mercenary bribe with one sceptre bribe again after several ticks")
+    public void testBribingTheMercenaryWithSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenaryWithSceptre", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+
+        String merceanryId = getEntities(initDungonRes, "mercenary").get(0).getId();
+
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+        initDungonRes = dmc.tick(Direction.LEFT);
+        initDungonRes = dmc.tick(Direction.LEFT);
+        initDungonRes = dmc.tick(Direction.LEFT);
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(0, getInventory(initDungonRes, "treasure").size());
+        
+    }
 }

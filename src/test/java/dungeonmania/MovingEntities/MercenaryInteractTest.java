@@ -112,6 +112,34 @@ public class MercenaryInteractTest {
         assertEquals(0, getInventory(initDungonRes, "treasure").size());
     }
 
+    @Test
+    @DisplayName("Test mercenary interaction, bribe with one sceptre")
+    public void testBribingTheMercenaryWithSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_bribeMercenaryWithSceptre", "c_buildTests_M3");
+        int mercCount = countEntityOfType(initDungonRes, "mercenary");
+        assertEquals(1, mercCount);
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+
+        String merceanryId = getEntities(initDungonRes, "mercenary").get(0).getId();
+
+        initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+        initDungonRes = dmc.tick(Direction.DOWN);
+    }
     // White box testing
     @Test
     @DisplayName("Test mercenary bribe when not in range")
