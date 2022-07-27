@@ -5,6 +5,7 @@ import java.util.List;
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
+import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Position;
 
@@ -24,6 +25,8 @@ public abstract class Movement {
                 return false;
             } else if (entity instanceof Door && entity.getPosition().equals(position)) {
                 return false;
+            } else if (entity instanceof Portal && entity.getPosition().equals(position)) {
+                return false; // TODO
             }
         }
         return true;

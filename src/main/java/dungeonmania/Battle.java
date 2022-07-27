@@ -74,7 +74,7 @@ public class Battle {
      */
     public static Battle battleCalculate(Player player, MovingEntity enemy) {
         double playerHealth = player.getPlayerHealth();
-        double playerAttack = player.getPlayerAttack();
+        double playerAttack = player.getPlayerAllyAttack();
         double playerBow = 1;
         double playerSword = 0;
         double playerShield = 0;
@@ -91,7 +91,6 @@ public class Battle {
                 playerSword = weapon.getAttackDamage();
             } else if (weapon.getType().equals("shield")) {
                 playerShield = weapon.getDefenceDamage();
-                if (playerShield > enemyAttack) playerShield = enemyAttack;
             }
         }
 
@@ -119,9 +118,13 @@ public class Battle {
         else {
             playerAttack = playerAttack + playerSword;
             playerAttack *= playerBow;
+            // when defence is bigger than enemy attack
+            double playerDefence = playerShield + player.getAllyDefence();
+            if (playerDefence > enemyAttack) playerShield = enemyAttack;
+            // calculate rounds
             while (enemy.getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
                 // Find change in health
-                double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
+                double deltaPlayerHealth = - ((enemyAttack - playerDefence) / 10);
                 double deltaEnemyHealth = - (playerAttack / 5);
     
                 // Update zombie health
@@ -129,7 +132,7 @@ public class Battle {
                 enemy.setHealth(c.doubleValue());
 
                 // Update player health
-                c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
+                c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerDefence) / 10));
                 player.setPlayerHealth(c.doubleValue());
                 
                 // Add round info to list
