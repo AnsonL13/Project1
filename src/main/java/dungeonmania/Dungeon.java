@@ -11,7 +11,8 @@ import dungeonmania.Goals.TreasureGoal;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Portal;
-
+import dungeonmania.StaticEntities.LogicalEntities.FloorSwitch;
+import dungeonmania.StaticEntities.LogicalEntities.SwitchDoor;
 import dungeonmania.exceptions.InvalidActionException;
 
 import dungeonmania.util.Direction;
@@ -42,13 +43,16 @@ public class Dungeon {
     private Player player;
     private EnemyFactory spawner;
     private Goal goals;
-    int latestUnusedId = 0;
+    private int latestUnusedId = 0;
+    private int tickNumber;
 
     // Data structures for the dungeon
     private List<Entity> entities = new ArrayList<Entity>();
     private List<InteractableEntity> interactableEntities = new ArrayList<InteractableEntity>();
     private List<Battle> battles = new ArrayList<Battle>();
     private Map<String, Door> doors = new HashMap<String, Door>();
+    private Map<String, SwitchDoor> switchDoors = new HashMap<String, SwitchDoor>();
+    private List<FloorSwitch> logicalEntities = new ArrayList<FloorSwitch>();
     private Map<String, Portal> portals = new HashMap<String, Portal>();
     private List<Bomb> bombs = new ArrayList<Bomb>();
     private Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
@@ -64,12 +68,17 @@ public class Dungeon {
         generateSpawner();
         // Create the goals composite pattern "tree"
         setGoals(dungeonJson);
+
+        this.tickNumber = 0;
     }
 
     /**
      * /game/tick/item
      */
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        
+        this.tickNumber++;
+        
         // Check if item is not in the inventory
         boolean illegalItem = false;
         boolean foundItem = false;
@@ -107,6 +116,9 @@ public class Dungeon {
      * /game/tick/movement
      */
     public void tick(Direction movementDirection) {
+
+        this.tickNumber++;
+
         // Check the square that the player will move into
         Position targetSquare = player.getPosition().translateBy(movementDirection);
 
@@ -158,28 +170,33 @@ public class Dungeon {
     }
 
     private void tickUpdates() {
-       // Explode any bombs
-       bombs.stream().forEach(o -> o.explode());
+        // Explode any bombs
+        bombs.stream().forEach(o -> o.explode());
 
-       //Move movingentities
-       player.moveMovingEntities(entities);
-       
-       // Check if Enemy has moved into a player (Battle)
-       startBattles();
-       
-       // Spawn enemies
-       String nextID = Integer.toString(latestUnusedId);
-       List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
-       entities.addAll(newEnemy);
-       player.addAllEnemies(newEnemy);
-       latestUnusedId+= newEnemy.size();
-       
-       // Update spawned enemy potion status. 
-       player.updateSpawnedEnemies();
+        //Move movingentities
+        player.moveMovingEntities(entities);
+        
+        // Check if Enemy has moved into a player (Battle)
+        startBattles();
+        
+        // Spawn enemies
+        String nextID = Integer.toString(latestUnusedId);
+        List<MovingEntity> newEnemy = spawner.spawn(nextID, entities);
+        entities.addAll(newEnemy);
+        player.addAllEnemies(newEnemy);
+        latestUnusedId+= newEnemy.size();
+        
+        // Update spawned enemy potion status. 
+        player.updateSpawnedEnemies();
 
-       player.updateAlliedMercenary();
-       // Update player potions
-       player.updatePotions();
+        player.updateAlliedMercenary();
+        // Update player potions
+        player.updatePotions();
+
+        // Update floor switches.
+        for (FloorSwitch entity : logicalEntities) {
+            entity.boulderUpdate(tickNumber);
+        }
     }
 
     /**
@@ -375,6 +392,10 @@ public class Dungeon {
                     case "door":
                         normalMove = moveIntoDoor(entity);
                         break;
+                    
+                    case "switch_door":
+                        normalMove = moveIntoSwitchDoor(entity);
+                        break;
     
                     case "portal":
                         Position portalExitSquare = moveIntoPortal(entity, movementDirection);
@@ -437,6 +458,29 @@ public class Dungeon {
         if (player.unlockDoor(doors.get(entity.getId()).getKey())) {
             // Player unlocked door
             doors.get(entity.getId()).setOpen(true);
+            return true;
+        }
+
+        // Player cannot open the door
+        else {
+            return false;
+        }
+    }
+
+    /*
+     * Check if player can unlock a switch door
+     */
+    public boolean moveIntoSwitchDoor(Entity entity) {
+        // Check if the door is already open
+        if (switchDoors.get(entity.getId()).isOpen()) {
+            return true;
+        }
+
+        // Check if the player can unlock the door
+        else if (player.unlockDoor(switchDoors.get(entity.getId()).getKey())) {
+            // Player unlocked door
+            switchDoors.get(entity.getId()).setOpen(true);
+            switchDoors.get(entity.getId()).setOpenForever(true);
             return true;
         }
 
@@ -613,6 +657,14 @@ public class Dungeon {
 
     public void removeFromBombs(Bomb entity) {
         this.bombs.remove(entity);
+    }
+
+    public void addToLogicalEntities(FloorSwitch entity) {
+        this.logicalEntities.add(entity);
+    }
+
+    public void addToSwitchDoors(String latestUnusedId, SwitchDoor door) {
+        this.switchDoors.put(latestUnusedId, door);
     }
 
     /*
