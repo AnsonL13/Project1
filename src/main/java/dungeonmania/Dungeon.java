@@ -416,60 +416,60 @@ public class Dungeon {
      */
     public Position moveIntoPortal(Entity entity, Direction movementDirection) {
         boolean foundFinalSquare = false;
-            Position portalExitSquare = player.getPosition();
-            Portal tempPortal = null;
+        Position portalExitSquare = player.getPosition();
+        Portal tempPortal = null;
 
-            // Find the portal in the portals Hashmap.
+        // Find the portal in the portals Hashmap.
+        for (String portal : portals.keySet()) {
+            if (entity.getId().equals(portals.get(portal).getId())) {
+                tempPortal = portals.get(portal);
+            }
+        }
+
+        while (! foundFinalSquare) {
+            portalExitSquare = portalExitSquare(tempPortal, movementDirection);
+
+            foundFinalSquare = true;
+
+            // Check if there is another portal on the portalExitSquare
             for (String portal : portals.keySet()) {
-                if (entity.getId().equals(portals.get(portal).getId())) {
+                int xPostion = portals.get(portal).getPosition().getX();
+                int yPosition = portals.get(portal).getPosition().getY();
+                if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
                     tempPortal = portals.get(portal);
+                    foundFinalSquare = false;
                 }
             }
+        }
 
-            while (! foundFinalSquare) {
-                portalExitSquare = portalExitSquare(tempPortal, movementDirection);
-
-                foundFinalSquare = true;
-
-                // Check if there is another portal on the portalExitSquare
-                for (String portal : portals.keySet()) {
-                    int xPostion = portals.get(portal).getPosition().getX();
-                    int yPosition = portals.get(portal).getPosition().getY();
-                    if (xPostion == portalExitSquare.getX() && yPosition == portalExitSquare.getY()) {
-                        tempPortal = portals.get(portal);
-                        foundFinalSquare = false;
-                    }
+        // Check if the portalExitSquare contains a wall, boulder or door.
+        boolean normalMove = true;
+        for (Entity i : entities) {
+            // Check if the entity is in the position the player is going to move into.
+            if (i.getPosition().getX() == portalExitSquare.getX() && entity.getPosition().getY() == portalExitSquare.getY()) {
+                switch (i.getType()) {
+                    case "wall":
+                        // Player does not move because there is a wall in front.
+                        normalMove = false;
+                        break;
+    
+                    case "boulder":
+                        normalMove = moveIntoBoulder(movementDirection, portalExitSquare, entity);
+                        break;
+    
+                    case "door":
+                        normalMove = moveIntoDoor(entity);
+                        break;
+    
+                    default:
+                        break;
                 }
             }
+        }
 
-            // Check if the portalExitSquare contains a wall, boulder or door.
-            boolean normalMove = true;
-            for (Entity i : entities) {
-                // Check if the entity is in the position the player is going to move into.
-                if (i.getPosition().getX() == portalExitSquare.getX() && entity.getPosition().getY() == portalExitSquare.getY()) {
-                    switch (i.getType()) {
-                        case "wall":
-                            // Player does not move because there is a wall in front.
-                            normalMove = false;
-                            break;
-        
-                        case "boulder":
-                            normalMove = moveIntoBoulder(movementDirection, portalExitSquare, entity);
-                            break;
-        
-                        case "door":
-                            normalMove = moveIntoDoor(entity);
-                            break;
-        
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (! normalMove) {
-                return player.getPosition();
-            }
+        if (! normalMove) {
+            return player.getPosition();
+        }
         return portalExitSquare;
     }
 

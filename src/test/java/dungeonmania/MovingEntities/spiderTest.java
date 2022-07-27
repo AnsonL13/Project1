@@ -57,6 +57,8 @@ public class spiderTest {
 
         assertEquals(new Position(5, 4), spider.getPosition());
         assertEquals(spider.getId(), "0");
+        spider.move(new Position(0,0), stuck);
+
     } 
 
     @Test

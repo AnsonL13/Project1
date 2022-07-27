@@ -5,6 +5,7 @@ import java.util.Random;
 
 import dungeonmania.Dungeon;
 import dungeonmania.Entity;
+import dungeonmania.Player;
 import dungeonmania.util.Position;
 
 public class Assassin extends Mercenary {
@@ -44,13 +45,17 @@ public class Assassin extends Mercenary {
     
     @Override 
     public void interact(Dungeon dungeon) {
-        super.interact(dungeon);
-
         Random rand = new Random(); //instance of random class
         Double chance = rand.nextDouble(); // check if 0 to 1
-        if (chance <= failRate) { // fail
-            super.setAllied(false);
+        Player player = dungeon.getPlayer();
+
+        if (chance > failRate) { // not failed
+            player.removeFromMovingEntities(super.getId());
+            player.addAlly(this);
+            super.setAllied(true);
         }
+        player.removeTreasure(super.getBribeAmount());
+
     }
 
 
