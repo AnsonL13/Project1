@@ -42,4 +42,12 @@ public class InactiveBombState implements BombState {
         // Cannot explode the bomb.
         return;
     }
+    
+    /*
+     * Destroy all entities with range of the bomb
+     */
+    public void explode(boolean logic) {
+        // Cannot explode the bomb.
+        return;
+    }
 }
