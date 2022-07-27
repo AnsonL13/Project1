@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 
@@ -13,8 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.Entity;
+import dungeonmania.Player;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
 import dungeonmania.exceptions.InvalidActionException;
 
 
@@ -40,6 +45,7 @@ public class MercenaryInteractTest {
         initDungonRes = assertDoesNotThrow(() -> dmc.interact(merceanryId));
         assertEquals(0, getInventory(initDungonRes, "treasure").size());
         initDungonRes = dmc.tick(Direction.DOWN);
+        
 
     }
 
@@ -134,4 +140,29 @@ public class MercenaryInteractTest {
         assertEquals(1, getInventory(initDungonRes, "treasure").size());
         initDungonRes = dmc.tick(Direction.DOWN);
     }
+    // White box testing
+    @Test
+    @DisplayName("Test mercenary bribe when not in range")
+    public void testMercInteractNotRange() {
+        Position intial = new Position(0, 0);
+        // merc with low radius
+        Mercenary mercenary = new Mercenary("1", intial, 1, 1, 1, 3, 1, 1);
+
+        //test lower y bound
+        Player player = new Player("1", "player", new Position(3, -5), false, 1, 1);
+        mercenary.interactActionCheck(player);
+        
+        //test lower x bound
+        player = new Player("1", "player", new Position(-5, 3), false, 1, 1);
+        mercenary.interactActionCheck(player);
+
+        //test upper y bound
+        player = new Player("1", "player", new Position(0, 5), false, 1, 1);
+        mercenary.interactActionCheck(player);
+        
+        //test upper x bound
+        player = new Player("1", "player", new Position(4, 0), false, 1, 1);
+        mercenary.interactActionCheck(player);
+    }
+    
 }

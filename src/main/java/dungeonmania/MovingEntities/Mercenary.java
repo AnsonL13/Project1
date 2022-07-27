@@ -7,6 +7,7 @@ import dungeonmania.InteractableEntity;
 import dungeonmania.Item;
 import dungeonmania.Player;
 import dungeonmania.BuildableEntities.Sceptre;
+import dungeonmania.MovingEntities.PositionMovements.AlliedMovement;
 import dungeonmania.MovingEntities.PositionMovements.FollowMovement;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -14,7 +15,7 @@ import dungeonmania.MovingEntities.PositionMovements.RunAwayMovement;
 
 import java.util.List;
 
-public class Mercenary extends MovingEntity implements InteractableEntity {
+public class Mercenary extends MovingEntity implements InteractableEntity, AlliedEntities{
     private String type;
     private boolean isInteractable;
     private boolean isAllied;
@@ -53,6 +54,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.movement = new FollowMovement(this);
         this.isAllied = false;
         this.bribeTime = 0;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
 
     /**
@@ -76,6 +79,8 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
         this.isAllied = false;
+        this.allyAttack = allyAttack;
+        this.allyDefence = allyDefence;
     }
     
     /** 
@@ -89,29 +94,30 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
         if (this.stuckTimer > 0) return;
 
         Position newPos = null;
-
-        // Check if mercenary is allied
-        if (isAllied) {
-            this.movement = new FollowMovement(this);
-        } else {
-            // Check if player is Invincible
-            if (isInvincible) {
-                changeMovement(new RunAwayMovement(this));
-            }
-            // Check if player is Invisible
-            else if (isInvisible) {
-                changeMovement(new RandomMovement(this));
-            }
-            else {
-                changeMovement(new FollowMovement(this));
-            }
-        }
+        setNewMovement(playerPos);
 
         newPos = movement.moveEnemy(playerPos, entities);
-
         if (newPos != null) {
             super.setPosition(newPos, entities);
         }
+        
+    }
+
+    private void setNewMovement(Position player) {
+        List<Position> adj = player.getAdjacentPositions();
+        // Check if mercenary is allied
+        if (isAllied && adj.contains(super.getPosition())) {
+            changeMovement(new AlliedMovement());
+        } else if (isAllied) {
+            changeMovement(new FollowMovement(this));
+        } else if (isInvincible) {
+            changeMovement(new RunAwayMovement(this));
+        } else if (isInvisible) {
+            changeMovement(new RandomMovement(this));
+        } else {
+            changeMovement(new FollowMovement(this));
+        }
+        
     }
 
 
@@ -212,19 +218,23 @@ public class Mercenary extends MovingEntity implements InteractableEntity {
      * Let the player interact with the mercenary. 
      */
     public void interact(Dungeon dungeon) {
-        this.isAllied = true;
+        if (isAllied) return;
+        setAllied(true);
         Player player = dungeon.getPlayer();
+        //check if player have sceptre to control mercenary
         for (Item i : dungeon.getPlayer().getInventory()) {
             if(i.getType().equals("sceptre")) {
                 Sceptre s = (Sceptre) i;
                 setBribeTime(s.getControlTime());
-                player.addToMercenary(this);
+                player.removeFromMovingEntities(super.getId());
+                player.addAlly(this);
                 return;
             }
         }
         // Remove player treasure cost
-        dungeon.getPlayer().removeTreasure(bribeAmount);
-        player.addToMercenary(this);
+        player.removeTreasure(bribeAmount);
+        player.removeFromMovingEntities(super.getId());
+        player.addAlly(this);
     }
 
     /*

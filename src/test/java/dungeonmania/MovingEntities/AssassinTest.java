@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import dungeonmania.DungeonManiaController;
 import dungeonmania.Entity;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -33,7 +32,7 @@ public class AssassinTest {
     @Test
     @DisplayName("Test assassin bribe")
     public void testAssabribeWork() {
-      /*DungeonManiaController dmc = new DungeonManiaController();
+        DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse actualDungonRes = dmc.newGame("MovingEntity/d_spawned_basicAssassin", "MovingEntity/c_assassinTest_simple");
 
         //collect treasure
@@ -47,9 +46,8 @@ public class AssassinTest {
         Position expected = getPlayer(actualDungonRes).get().getPosition();
         actualDungonRes = dmc.tick(Direction.RIGHT);
         assertEquals(0, actualDungonRes.getBattles().size());
-        System.out.println(getPlayer(actualDungonRes).get().getPosition());
         assertEquals(expected, getEntities(actualDungonRes, "assassin").get(0).getPosition());
-        */
+        
     }
 
     @Test

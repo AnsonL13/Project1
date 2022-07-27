@@ -16,6 +16,7 @@ import dungeonmania.CollectableEntities.SunStone;
 import dungeonmania.CollectableEntities.Sword;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
+import dungeonmania.MovingEntities.AlliedEntities;
 import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.util.Position;
@@ -31,7 +32,7 @@ public class Player implements Entity {
     private Map<String, Key> keys = new HashMap<String, Key>();
     private List<Weapon> weapons = new ArrayList<Weapon>();
     private List<Potion> potionQueue = new ArrayList<Potion>();
-    private List<Mercenary> alliedMercenary = new ArrayList<Mercenary>();
+    private List<AlliedEntities> allies = new ArrayList<AlliedEntities>();
 
     List<MovingEntity> movingEntities = new ArrayList<MovingEntity>();
 
@@ -121,7 +122,7 @@ public class Player implements Entity {
      * Add a mercenary to allied mercenary
      */
     public void addToMercenary(Mercenary mercenary){
-        this.alliedMercenary.add(mercenary);
+        this.allies.add(mercenary);
     }
 
     /*
@@ -455,7 +456,9 @@ public class Player implements Entity {
     }
 
     public void setPosition(Position position) {
+        Position prev = this.position;
         this.position = position;
+        moveAllies(prev);
     }
 
     public void removeFromInventory(String Id) {
@@ -501,12 +504,13 @@ public class Player implements Entity {
      * Update the allied mercenary
      */
     public void updateAlliedMercenary(){
-        for(Mercenary m : alliedMercenary) {
-            if (m.getBribeTime() != 0) {
-                m.setBribeTime(m.getBribeTime() - 1);
-                if (m.getBribeTime() == 0){
+        for(AlliedEntities m : allies) {
+            int bribeTime = m.getBribeTime();
+            if (bribeTime != 0) {
+                m.setBribeTime(bribeTime - 1);
+                if (bribeTime == 1){
                     m.setAllied(false);
-                    alliedMercenary.remove(m);
+                    allies.remove(m);
                 }
             }
         }
@@ -579,5 +583,25 @@ public class Player implements Entity {
                 counter++;
             }
         }
+    }
+
+    public void addAlly(MovingEntity ally) {
+        allies.add((AlliedEntities)ally);
+    }
+
+    // TODO implement shortest if not close to player
+    private void moveAllies(Position player) {
+        for (AlliedEntities ally : allies) {
+            ally.move(player, new ArrayList<Entity>());
+        }
+    }
+
+    public double getPlayerAllyAttack() {
+        return allies.stream().mapToInt(AlliedEntities::getAllyAttack).sum() + playerAttack;
+
+    }
+
+    public double getAllyDefence() {
+        return allies.stream().mapToInt(AlliedEntities::getAllyDefence).sum();
     }
 }
