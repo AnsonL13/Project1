@@ -1,6 +1,7 @@
 package dungeonmania.MovingEntities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static dungeonmania.TestUtils.countEntityOfType;
 import static dungeonmania.TestUtils.getEntities;
 
@@ -188,4 +189,24 @@ public class DijkstrasAlgoTest {
         assertEquals(expectedPath, merc.getPosition());
         */
     }
+
+    // White box testing
+    @Test
+    @DisplayName("Test graph node equal")
+    public void testGraphNode() {
+        GraphNode equallNode = new GraphNode(1, new Position(1, 1));
+        assertEquals(equallNode, equallNode);
+
+        GraphNode copy = equallNode;
+        assertEquals(equallNode, copy);
+
+        assertNotEquals(equallNode, null);
+
+        Position graphPos = new Position(1, 1);
+        assertNotEquals(equallNode, graphPos);
+
+        assertNotEquals(equallNode, new GraphNode(1, new Position(1, 0)));
+
+    } 
+
 }
