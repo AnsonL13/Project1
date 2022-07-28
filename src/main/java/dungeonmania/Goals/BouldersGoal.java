@@ -69,8 +69,4 @@ public class BouldersGoal implements Goal {
 		return false;
 	}
 
-    @Override
-    public boolean canComplete() {
-        return true;
-    }
 }
