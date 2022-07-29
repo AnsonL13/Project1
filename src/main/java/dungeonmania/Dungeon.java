@@ -135,7 +135,7 @@ public class Dungeon implements Serializable {
         // Check if the player moved into a collectable entity. 
         Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
         Entry<String, CollectableEntity> collectable;
-        while(collectableIterator.hasNext()) {     
+        while(collectableIterator.hasNext()) {   
             collectable = collectableIterator.next();     
             Position collectablePosition = collectable.getValue().getPosition();
             // Check if collectable entity is in the same square as the player. 
@@ -287,7 +287,6 @@ public class Dungeon implements Serializable {
     /**
      * /game/interact
      */
-
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
@@ -314,6 +313,14 @@ public class Dungeon implements Serializable {
                 break;
             }
         }
+    }
+
+    /**
+     * /game/rewind
+     */
+    public void rewind(int ticks) throws IllegalArgumentException {
+        if (ticks <= 0 || ticks > tickNumber) throw new IllegalArgumentException("Invalid tick.");
+             
     }
 
     // Convert config.json to Hashmap<String, Integer>
