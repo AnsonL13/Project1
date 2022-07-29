@@ -5,11 +5,13 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
+import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.JsonObject;
@@ -114,8 +116,12 @@ public class DungeonManiaController {
         // Get the list of incomplete goals
         String goals = dungeon.getGoals().listIncompleteGoals();
 
+        // Get Animation
+        List<AnimationQueue> animations = new ArrayList<>();
+        animations = dungeon.getAnimations();
+        animations.add(new AnimationQueue("PostTick", "entity-player", Arrays.asList("healthbar shake, over 0.5s, ease Sin"), false, 0.5));
         DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
-        inventory, battles, buildables, goals);
+        inventory, battles, buildables, goals, animations);
 
         return newDungeonResponse;
     }

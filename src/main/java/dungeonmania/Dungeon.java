@@ -15,11 +15,12 @@ import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.LogicalEntities.FloorSwitch;
 import dungeonmania.StaticEntities.LogicalEntities.SwitchDoor;
 import dungeonmania.exceptions.InvalidActionException;
-
+import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,6 +60,8 @@ public class Dungeon implements Serializable {
     private Map<String, Portal> portals = new HashMap<String, Portal>();
     private List<Bomb> bombs = new ArrayList<Bomb>();
     private Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
+    private List<AnimationQueue> animations = new ArrayList<>();
+
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonId = "dungeon-0";
@@ -174,6 +177,24 @@ public class Dungeon implements Serializable {
                     break;
                 }
             }
+        }
+        //
+        if(movementDirection == Direction.RIGHT) {
+            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
+            "translate-x 1, over 1s"
+            ), false, -1));
+        } else if(movementDirection == Direction.LEFT) {
+            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
+            "translate-x -1, over 1s"
+            ), false, -1));
+        } else if(movementDirection == Direction.UP) {
+            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
+            "translate-y 1, over 1s"
+            ), false, -1));
+        } else if(movementDirection == Direction.DOWN) {
+            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
+            "translate-y -1, over 1s"
+            ), false, -1));
         }
 
         // Check if moved into an enemy (Battle)
@@ -646,6 +667,10 @@ public class Dungeon implements Serializable {
 
     public List<Battle> getBattles() {
         return battles;
+    }
+
+    public List<AnimationQueue> getAnimations() {
+        return animations;
     }
 
     public void addToBattles(Battle battle) {
