@@ -90,8 +90,7 @@ public class ComplexGoal implements Goal {
     /*
      * Exit goal must be completed last. Check if goal can be completed. 
      */
-    public boolean canComplete() {
-        if (nameString().equals("OR")) return true;
+    private boolean canComplete() {
         if (childString(0).contains("exit") && children.get(1).goalComplete()) {
             return true;
         } else if (childString(1).contains("exit") && children.get(0).goalComplete()) {

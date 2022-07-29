@@ -12,6 +12,7 @@ import dungeonmania.CollectableEntities.InvisibilityPotion;
 import dungeonmania.CollectableEntities.Key;
 import dungeonmania.CollectableEntities.SunStone;
 import dungeonmania.CollectableEntities.Sword;
+import dungeonmania.CollectableEntities.TimeTurner;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.Assassin;
@@ -296,6 +297,14 @@ public class EntityFactory implements Serializable {
                 dungeon.addToEntities(switchDoor);
                 dungeon.addToSwitchDoors(Integer.toString(latestUnusedId), switchDoor);
                 
+                break;
+
+            case "time_turner":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                TimeTurner timeTurner = new TimeTurner(Integer.toString(latestUnusedId), "time_turner", new Position(xPosition, yPosition), false);
+                dungeon.addToEntities(timeTurner);
+                dungeon.addToCollectableEntities(Integer.toString(latestUnusedId), timeTurner);
                 break;
 
             default:

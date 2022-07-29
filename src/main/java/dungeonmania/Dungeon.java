@@ -299,7 +299,6 @@ public class Dungeon implements Serializable {
     /**
      * /game/interact
      */
-
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
@@ -326,6 +325,14 @@ public class Dungeon implements Serializable {
                 break;
             }
         }
+    }
+
+    /**
+     * /game/rewind
+     */
+    public void rewind(int ticks) throws IllegalArgumentException {
+        if (ticks <= 0 || ticks > tickNumber) throw new IllegalArgumentException("Invalid tick.");
+             
     }
 
     // Convert config.json to Hashmap<String, Integer>

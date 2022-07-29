@@ -35,7 +35,7 @@ public class RandomMovement extends Movement{
             case 2:
                 pos = pos.translateBy(Direction.DOWN);
                 break;
-            case 3:
+            default:
                 pos = pos.translateBy(Direction.RIGHT);
                 break;
 
