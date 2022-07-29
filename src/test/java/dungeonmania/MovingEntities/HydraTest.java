@@ -97,7 +97,7 @@ public class HydraTest {
 
     @Test
     @DisplayName("Test health will increase after being attacked if health increase rate out of range")
-    public void testHydraHealthNotIncrease() {
+    public void testHydraHealthIncrease() {
         Position initial = new Position(0, 0);
         Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 0.8, 3, false);
         Player player = new Player("0", "player", initial.translateBy(Direction.DOWN), false, 5, 5);
