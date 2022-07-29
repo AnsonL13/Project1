@@ -48,9 +48,7 @@ public abstract class LogicalEntity implements Entity {
     public void updateNeighbours(LogicalEntity source, LogicalEntity logicalEntity, boolean isActive, int tickNumber, boolean usePrevActiveTickNumber) {
         List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
 
-        // logicalEntities.stream().forEach(o -> o.update(logicalEntity, isActive, tickNumber, usePrevActiveTickNumber));
         for (LogicalEntity entity : logicalEntities) {
-            
             if (entity.equals(source)) {
                 continue;
             }

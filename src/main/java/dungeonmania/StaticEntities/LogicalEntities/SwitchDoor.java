@@ -10,22 +10,6 @@ public class SwitchDoor extends LogicalEntity {
     private boolean isOpen;
     private boolean openForever;
 
-    /*
-     * Constructor for no logic field in json file.
-     */
-    public SwitchDoor(String id, String type, Position position, boolean isInteractable, int key, List<Entity> entities) {
-        this.id = id;
-        this.type = type;
-        this.position = position;
-        this.isInteractable = isInteractable;
-        this.key = key;
-        this.isOpen = false;
-        this.entities = entities;
-        this.logic = "none";
-        this.activeTickNumber = -1;
-        this.openForever = false;
-    }
-
     public SwitchDoor(String id, String type, Position position, boolean isInteractable, int key, List<Entity> entities, String logic) {
         this.id = id;
         this.type = type;
@@ -155,14 +139,10 @@ public class SwitchDoor extends LogicalEntity {
                 break;
 
             default:
-                // This entity has no logic statement.  
-                if (activeEntities.size() >= 1) {
-                    active = true;
-                }
                 break;
         }
         
-        // This entity go activated.
+        // This entity got activated.
         if (active && this.activeTickNumber == -1) {
             if (usePrevActiveTickNumber) {
                 this.activeTickNumber = this.prevActiveTickNumber;
