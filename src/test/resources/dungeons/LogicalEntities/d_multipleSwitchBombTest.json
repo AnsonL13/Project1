@@ -13,7 +13,7 @@
             "x": 5,
             "y": 1
         }, {
-            "type": "light_bulb_off",
+            "type": "bomb",
             "x": 6,
             "y": 1,
             "logic" : "or"
@@ -25,8 +25,13 @@
             "type": "switch",
             "x": 3,
             "y": 1        
+        }, {
+            "type": "light_bulb_off",
+            "x": 7,
+            "y": 1, 
+            "logic": "or"        
         }, 
-        
+
 
         {
             "type": "boulder",
@@ -38,22 +43,36 @@
             "y": 1        
         }, {
             "type": "wire",
-            "x": -2,
+            "x": -3,
             "y": 1
         }, {
-            "type": "wire",
-            "x": -1,
-            "y": 0
-        }, {
-            "type": "light_bulb_off",
-            "x": -2,
+            "type": "bomb",
+            "x": -3,
             "y": 0,
             "logic" : "xor"        
         }, {
-            "type": "light_bulb_off",
-            "x": -3,
+            "type": "bomb",
+            "x": -4,
             "y": 1,
             "logic" : "xor"        
+        }, {
+            "type": "light_bulb_off",
+            "x": -5,
+            "y": 1, 
+            "logic": "or"        
+        }, {
+            "type": "light_bulb_off",
+            "x": -3,
+            "y": -1, 
+            "logic": "or"        
+        }, {
+            "type": "wire",
+            "x": -2,
+            "y": 0
+        }, {
+            "type": "wire",
+            "x": -2,
+            "y": 1
         }, 
 
 
@@ -86,12 +105,12 @@
             "x": -2,
             "y": 5
         }, {
-            "type": "light_bulb_off",
+            "type": "bomb",
             "x": -1,
             "y": 4,
             "logic" : "co_and"        
         }, {
-            "type": "light_bulb_off",
+            "type": "bomb",
             "x": 1,
             "y": 6,
             "logic" : "co_and"        
@@ -99,6 +118,16 @@
             "type": "boulder",
             "x": 1,
             "y": 2
+        }, {
+            "type": "light_bulb_off",
+            "x": -1,
+            "y": 3, 
+            "logic": "or"        
+        }, {
+            "type": "light_bulb_off",
+            "x": 1,
+            "y": 7, 
+            "logic": "or"        
         }, 
         
         
@@ -115,12 +144,12 @@
             "x": 2,
             "y": -2
         }, {
-            "type": "light_bulb_off",
+            "type": "bomb",
             "x": 1,
             "y": -4,
             "logic" : "and"
         }, {
-            "type": "light_bulb_off",
+            "type": "bomb",
             "x": 2,
             "y": -3,
             "logic" : "and"
@@ -132,6 +161,16 @@
             "type": "switch",
             "x": 1,
             "y": -1        
+        }, {
+            "type": "light_bulb_off",
+            "x": 3,
+            "y": -3, 
+            "logic": "or"        
+        }, {
+            "type": "light_bulb_off",
+            "x": 1,
+            "y": -5, 
+            "logic": "or"        
         }
     ],
     "goal-condition": {"goal": "exit"}

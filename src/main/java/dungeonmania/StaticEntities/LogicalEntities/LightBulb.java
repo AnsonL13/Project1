@@ -6,19 +6,6 @@ import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 public class LightBulb extends LogicalEntity {
-    
-    /*
-     * Constructor for no logic field in json file.
-     */
-    public LightBulb(String id, String type, Position position, boolean isInteractable, List<Entity> entities) {
-        this.id = id;
-        this.type = type;
-        this.position = position;
-        this.isInteractable = isInteractable;
-        this.entities = entities;
-        this.logic = "none";
-        this.activeTickNumber = -1;
-    }
 
     public LightBulb(String id, String type, Position position, boolean isInteractable, List<Entity> entities, String logic) {
         this.id = id;
@@ -124,14 +111,10 @@ public class LightBulb extends LogicalEntity {
                 break;
 
             default:
-                // This entity has no logic statement.  
-                if (activeEntities.size() >= 1) {
-                    active = true;
-                }
                 break;
         }
         
-        // This entity go activated.
+        // This entity got activated.
         if (active && this.activeTickNumber == -1) {
             if (usePrevActiveTickNumber) {
                 this.activeTickNumber = this.prevActiveTickNumber;
