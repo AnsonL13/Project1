@@ -2,6 +2,7 @@ package dungeonmania;
 
 import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.CollectableEntity;
+import dungeonmania.CollectableEntities.Key;
 import dungeonmania.Goals.BouldersGoal;
 import dungeonmania.Goals.ComplexGoal;
 import dungeonmania.Goals.EnemiesGoal;
@@ -135,7 +136,8 @@ public class Dungeon implements Serializable {
         // Check if the player moved into a collectable entity. 
         Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
         Entry<String, CollectableEntity> collectable;
-        while(collectableIterator.hasNext()) {   
+        whileLoop:
+        while(collectableIterator.hasNext()) {     
             collectable = collectableIterator.next();     
             Position collectablePosition = collectable.getValue().getPosition();
             // Check if collectable entity is in the same square as the player. 
@@ -154,6 +156,16 @@ public class Dungeon implements Serializable {
                 }
                 
                 else {
+                    if (collectable.getValue().getType().equals("key")) {
+                        List<Item> items = player.getInventory();
+                        // Check if player already has a key in their inventory. 
+                        for (Item item : items) {
+                            if (item instanceof Key) {
+                                continue whileLoop;
+                            }
+                        }
+                    }
+                    
                     // Collect the item
                     player.addToInventory(collectable.getValue());
                     // Remove from list of entities
