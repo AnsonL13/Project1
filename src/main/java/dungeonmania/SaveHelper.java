@@ -14,7 +14,7 @@ public class SaveHelper {
     public static void SaveGame(String name, Dungeon response) {
         // Serialization 
 
-        try {   
+        try {
             //Saving of object in a file
             createFolder("src/main/java/dungeonmania/savedgames/");
             FileOutputStream file = new FileOutputStream("src/main/java/dungeonmania/savedgames/" + name + ".ser");
@@ -33,11 +33,18 @@ public class SaveHelper {
         }
     }
 
-    public static Dungeon LoadGame(String name) {
+    public static Dungeon LoadGame(String name) throws IllegalArgumentException {
         Dungeon dungeon = null;
+
+        List<String> allGames = showAllGame();
+
+        // Check if id is not a valid game name
+        if (! allGames.contains(name)) {
+            throw new IllegalArgumentException();
+        }
   
         // Deserialization
-        try {   
+        try {
             // Reading the object from a file
             FileInputStream file = new FileInputStream("src/main/java/dungeonmania/savedgames/" + name + ".ser");
             ObjectInputStream in = new ObjectInputStream(file);

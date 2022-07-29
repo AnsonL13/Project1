@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 
@@ -70,6 +69,8 @@ public class PersistenceTests {
         // Delete file
         File myObj = new File("src/main/java/dungeonmania/savedgames/d_movementTest_testMovementDown1.ser"); 
         myObj.delete();
+        File myObj2 = new File("src/main/java/dungeonmania/savedgames/d_movementTest_testMovementDown2.ser"); 
+        myObj2.delete();
     }
 
     @Test
@@ -82,7 +83,7 @@ public class PersistenceTests {
 
         dmc.saveGame("dungeon1");
 
-        assertThrows(InvalidActionException.class, () -> dmc.loadGame("djlfsjdlkfjwslf"));
+        assertThrows(IllegalArgumentException.class, () -> dmc.loadGame("djlfsjdlkfjwslf"));
 
         // Delete file
         File myObj = new File("src/main/java/dungeonmania/savedgames/dungeon1.ser"); 
