@@ -175,4 +175,13 @@ public class DungeonManiaController {
         return SaveHelper.showAllGame();
     }
 
+    /**
+     * /game/rewind
+     */
+    public DungeonResponse rewind(int ticks) throws IllegalArgumentException {
+        dungeon.rewind(ticks);
+        return getDungeonResponseModel();        
+    }
+
+
 }

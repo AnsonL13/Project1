@@ -22,10 +22,9 @@ public class Wire extends LogicalEntity {
      */
     @Override
     public void update(LogicalEntity logicalEntity, boolean isActive, int tickNumber, boolean usePrevActiveTickNumber) {
-
+        
         // A logical entity next to this wire has become active. 
         if (isActive) {
-            
             // Check if entity is already in the list of switches.
             if (! activeEntities.contains(logicalEntity)) {
                 // Add the entity to the list of active adjacent entities.
@@ -36,27 +35,10 @@ public class Wire extends LogicalEntity {
             else {
                 return;
             }
-
-            // Check if this entity is not active
-            if (this.activeTickNumber == -1) {
-                // Update the activeTickNumber
-                if (usePrevActiveTickNumber) {
-                    this.activeTickNumber = this.prevActiveTickNumber;
-                }
-
-                else {
-                    this.activeTickNumber = tickNumber;
-                    this.prevActiveTickNumber = tickNumber;
-                }
-
-                // Tell all neighbours of the change. 
-                updateNeighbours(logicalEntity, this, isActive, tickNumber, usePrevActiveTickNumber);
-            }
         }
 
         // A logical entity next to this wire has become inactive. 
         else if (! isActive) {
-            
             if (activeEntities.contains(logicalEntity)) {
                 // Remove the entity from the list of active adjacent entities.
                 activeEntities.remove(logicalEntity);
@@ -66,16 +48,29 @@ public class Wire extends LogicalEntity {
             else {
                 return;
             }
+        }
 
-            // Check if this entity is active
-            if (this.activeTickNumber != -1 && activeEntities.size() == 0) {
-                // Update the activeTickNumber
-                this.activeTickNumber = -1;
+        // Check if this entity is not active
+        if (this.activeTickNumber == -1 && activeEntities.size() >= 0) {
+            // Update the activeTickNumber
+            if (usePrevActiveTickNumber) {
+                this.activeTickNumber = this.prevActiveTickNumber;
+            }
 
-                // Tell all neighbours of the change
-                updateNeighbours(logicalEntity, this, isActive, tickNumber, usePrevActiveTickNumber);
+            else {
+                this.activeTickNumber = tickNumber;
+                this.prevActiveTickNumber = tickNumber;
             }
         }
+
+        // Check if this entity is active
+        else if (this.activeTickNumber != -1 && activeEntities.size() == 0) {
+            // Update the activeTickNumber
+            this.activeTickNumber = -1;
+        }
+
+        // Tell all neighbours of the change. 
+        updateNeighbours(logicalEntity, this, isActive, tickNumber, usePrevActiveTickNumber);
     }
 
     /*

@@ -10,6 +10,8 @@ import dungeonmania.util.Position;
 
 public class FloorSwitch extends LogicalEntity implements StaticEntity {
 
+    private boolean hasBoulder;
+
     /*
      * Constructor for Milestone 2 compatibility (no logic field)
      */
@@ -21,6 +23,7 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         this.entities = entities;
         this.logic = "none";
         this.activeTickNumber = -1;
+        this.hasBoulder = false;
     }
 
     /*
@@ -34,6 +37,7 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         this.entities = entities;
         this.logic = logic;
         this.activeTickNumber = -1;
+        this.hasBoulder = false;
     }
 
     @Override
@@ -79,74 +83,7 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
 
         // Not found boulder.  
         if (! active) {
-            // Check if floorswitch can still be active through other cardinally adjacent logical entities. 
-            switchstatement:
-            switch (this.logic) {
-                case "and":
-                    List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
-
-                    // Get the number of adjacent floorswitches
-                    int floorSwitchCount = 0;
-                    for (LogicalEntity entity : logicalEntities) {
-                        if (entity instanceof FloorSwitch) {
-                            floorSwitchCount++;
-                        }
-                    }
-
-                    // If there are more than two switches adjacent, all must be activated.
-                    if (floorSwitchCount > 2) {
-                        for (LogicalEntity entity : logicalEntities) {
-                            if (entity instanceof FloorSwitch && entity.isActive() == -1) {
-                                break switchstatement;
-                            }
-                        }
-                    }
-
-                    if (activeEntities.size() >= 2) {
-                        active = true;
-                    }
-
-                    break;
-                
-                case "or":
-                    if (activeEntities.size() >= 1) {
-                        active = true;
-                    }
-
-                    break;
-                
-                case "xor":
-                    if (activeEntities.size() == 1) {
-                        active = true;
-                    }
-
-                    break;
-    
-                case "co_and":
-                    // Check if there are 2 or more active entities. 
-                    if (activeEntities.size() < 2) {
-                        break switchstatement;
-                    }
-
-                    // Check if all entities were activated on the same tick.
-                    int targetTick = activeEntities.get(0).isActive();
-                    for (LogicalEntity entity : activeEntities) {
-                        if (entity.isActive() != targetTick) {
-                            break switchstatement;
-                        }
-                    }
-
-                    active = true;
-
-                    break;
-    
-                default:
-                    // This entity has no logic statement.  
-                    if (activeEntities.size() >= 1) {
-                        active = true;
-                    }
-                    break;
-            }
+            active = activeThroughAdjacent();
         }
 
         // Floorswitch got activated. 
@@ -159,15 +96,50 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
                 this.activeTickNumber = tickNumber;
                 this.prevActiveTickNumber = tickNumber;
             }
-            
-            updateNeighbours(logicalEntity, this, active, tickNumber, usePrevActiveTickNumber);
         }
 
         // Floorswitch got deactivated. 
         else if (! active && this.activeTickNumber != -1) {
             this.activeTickNumber = -1;
-            updateNeighbours(logicalEntity, this, active, tickNumber, usePrevActiveTickNumber);
         }
+
+        updateNeighbours(logicalEntity, this, active, tickNumber, usePrevActiveTickNumber);
+    }
+
+    public void updateThis(LogicalEntity logicalEntity, boolean isActive, int tickNumber, boolean usePrevActiveTickNumber) {
+        // Check if there are any changes to this entity's activity.
+        // Check if there is a boulder on this switch. 
+        boolean active = false;
+        for (Entity entity : entities) {
+            if (entity instanceof Boulder && entity.getPosition().equals(this.position)) {
+                // Boulder found. This switch is definitely active. 
+                active = true;
+            }
+        }
+
+        // Not found boulder.  
+        if (! active) {
+            active = activeThroughAdjacent();
+        }
+
+        // Floorswitch got activated. 
+        if (active && this.activeTickNumber == -1) {
+            if (usePrevActiveTickNumber) {
+                this.activeTickNumber = this.prevActiveTickNumber;
+            }
+
+            else {
+                this.activeTickNumber = tickNumber;
+                this.prevActiveTickNumber = tickNumber;
+            }
+        }
+
+        // Floorswitch got deactivated. 
+        else if (! active && this.activeTickNumber != -1) {
+            this.activeTickNumber = -1;
+        }
+
+        updateNeighbours(logicalEntity, this, active, tickNumber, usePrevActiveTickNumber);
     }
 
     /*
@@ -179,7 +151,7 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         for (Entity entity : entities) {
             if (entity instanceof Boulder && entity.getPosition().equals(this.position)) {
                 foundBoulder = true;
-
+                this.hasBoulder = true;
                 // Found boulder, and this floorswitch is inactive. Complete Changes. 
                 if (this.activeTickNumber == -1) {
                     this.activeTickNumber = tickNumber;
@@ -190,7 +162,8 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         }
 
         // Not found boulder and this entity is active. Complete changes if necessary. 
-        if (! foundBoulder && this.activeTickNumber != -1) {
+        if (! foundBoulder && this.activeTickNumber != -1 && this.hasBoulder) {
+            this.hasBoulder = false;
 
             // Turn off the switch
             this.activeTickNumber = -1;
@@ -210,10 +183,88 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
 
             // Let cardinally adjacent active entities update this floor switch
             for (LogicalEntity entity : newActiveEntities) {
-                this.update(entity, true, tickNumber, true);
+                this.updateThis(entity, true, tickNumber, true);
             }
         }
     }
+
+    /*
+     * Checks if this entity can still be active through adjacent entities. 
+     */
+    public boolean activeThroughAdjacent() { 
+        boolean activeAdjacent = false;
+        // Check if floorswitch can still be active through other cardinally adjacent logical entities. 
+        switchstatement:
+        switch (this.logic) {
+            case "and":
+                List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
+
+                // Get the number of adjacent floorswitches
+                int floorSwitchCount = 0;
+                for (LogicalEntity entity : logicalEntities) {
+                    if (entity instanceof FloorSwitch) {
+                        floorSwitchCount++;
+                    }
+                }
+
+                // If there are more than two switches adjacent, all must be activated.
+                if (floorSwitchCount > 2) {
+                    for (LogicalEntity entity : logicalEntities) {
+                        if (entity instanceof FloorSwitch && entity.isActive() == -1) {
+                            break switchstatement;
+                        }
+                    }
+                }
+
+                if (activeEntities.size() >= 2) {
+                    activeAdjacent = true;
+                }
+
+                break;
+            
+            case "or":
+                if (activeEntities.size() >= 1) {
+                    activeAdjacent = true;
+                }
+
+                break;
+            
+            case "xor":
+                if (activeEntities.size() == 1) {
+                    activeAdjacent = true;
+                }
+
+                break;
+
+            case "co_and":
+                // Check if there are 2 or more active entities. 
+                if (activeEntities.size() < 2) {
+                    break switchstatement;
+                }
+
+                // Check if all entities were activated on the same tick.
+                int targetTick = activeEntities.get(0).isActive();
+                for (LogicalEntity entity : activeEntities) {
+                    if (entity.isActive() != targetTick) {
+                        break switchstatement;
+                    }
+                }
+
+                activeAdjacent = true;
+
+                break;
+
+            default:
+                // This entity has no logic statement.  
+                if (activeEntities.size() >= 1) {
+                    activeAdjacent = true;
+                }
+                break;
+        }
+
+        return activeAdjacent;
+    }
+
 
 
     /*

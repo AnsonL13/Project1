@@ -202,6 +202,16 @@ public class zombieTest {
 
         assertEquals(new Position(5, 5), zombie.getPosition());
         assertEquals(zombie.getId(), "0");
+
+        zombie.move(new Position(0,0), stuck);
+
+        assertEquals(new Position(5, 5), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
+
+        zombie.move(new Position(0,0), stuck);
+
+        assertEquals(new Position(5, 5), zombie.getPosition());
+        assertEquals(zombie.getId(), "0");
     } 
 
     @Test

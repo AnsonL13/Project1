@@ -67,12 +67,12 @@ public class Build implements Serializable {
             player.removeForBow();
         } else if (buildable.equals("sceptre")){
             Sceptre sceptre = new Sceptre(Integer.toString(latestUnusedId), "sceptre", 
-                    false, configMap.get("control_time"));
+                    false, configMap.get("mind_control_duration"));
             // Add item to players inventory
             player.addToInventory(sceptre);
             // Add item to players weapons
             // player.addToWeapons(sceptre);
-            // Remove the materials that made the shield
+            // Remove the materials that made the sceptre
             player.removeForSceptre();
         } else if (buildable.equals("midnight_armour")) {
             MidnightArmour midnightArmour = new MidnightArmour(Integer.toString(latestUnusedId), "midnight_armour", 

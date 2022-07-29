@@ -2,6 +2,7 @@ package dungeonmania;
 
 import dungeonmania.CollectableEntities.Bomb;
 import dungeonmania.CollectableEntities.CollectableEntity;
+import dungeonmania.CollectableEntities.Key;
 import dungeonmania.Goals.BouldersGoal;
 import dungeonmania.Goals.ComplexGoal;
 import dungeonmania.Goals.EnemiesGoal;
@@ -135,6 +136,7 @@ public class Dungeon implements Serializable {
         // Check if the player moved into a collectable entity. 
         Iterator<Entry<String, CollectableEntity>> collectableIterator = collectableEntities.entrySet().iterator();
         Entry<String, CollectableEntity> collectable;
+        whileLoop:
         while(collectableIterator.hasNext()) {     
             collectable = collectableIterator.next();     
             Position collectablePosition = collectable.getValue().getPosition();
@@ -154,6 +156,16 @@ public class Dungeon implements Serializable {
                 }
                 
                 else {
+                    if (collectable.getValue().getType().equals("key")) {
+                        List<Item> items = player.getInventory();
+                        // Check if player already has a key in their inventory. 
+                        for (Item item : items) {
+                            if (item instanceof Key) {
+                                continue whileLoop;
+                            }
+                        }
+                    }
+                    
                     // Collect the item
                     player.addToInventory(collectable.getValue());
                     // Remove from list of entities
@@ -287,7 +299,6 @@ public class Dungeon implements Serializable {
     /**
      * /game/interact
      */
-
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         // Check for IllegalArgumentException
         boolean foundEntity = false;
@@ -314,6 +325,14 @@ public class Dungeon implements Serializable {
                 break;
             }
         }
+    }
+
+    /**
+     * /game/rewind
+     */
+    public void rewind(int ticks) throws IllegalArgumentException {
+        if (ticks <= 0 || ticks > tickNumber) throw new IllegalArgumentException("Invalid tick.");
+             
     }
 
     // Convert config.json to Hashmap<String, Integer>

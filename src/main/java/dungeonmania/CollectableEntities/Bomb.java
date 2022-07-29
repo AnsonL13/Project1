@@ -264,15 +264,5 @@ public class Bomb extends LogicalEntity implements CollectableEntity {
 
             this.Activate();
         }
-
-        /*
-        // This entity got deactivated. 
-        else if (! active && this.activeTickNumber != -1) {
-            this.activeTickNumber = -1;
-
-            this.Deactivate();
-        }
-        */
-        
     }
 }

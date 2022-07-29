@@ -13,9 +13,10 @@
             "x": 5,
             "y": 1
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": 6,
             "y": 1,
+            "key" : 1,
             "logic" : "or"
         }, {
             "type": "boulder",
@@ -45,14 +46,16 @@
             "x": -1,
             "y": 0
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": -2,
             "y": 0,
+            "key" : 2,
             "logic" : "xor"        
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": -3,
             "y": 1,
+            "key" : 3,
             "logic" : "xor"        
         }, 
 
@@ -86,14 +89,16 @@
             "x": -2,
             "y": 5
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": -1,
             "y": 4,
+            "key" : 4,
             "logic" : "co_and"        
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": 1,
             "y": 6,
+            "key" : 5,
             "logic" : "co_and"        
         }, {
             "type": "boulder",
@@ -115,14 +120,16 @@
             "x": 2,
             "y": -2
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": 1,
             "y": -4,
+            "key" : 6,
             "logic" : "and"
         }, {
-            "type": "light_bulb_off",
+            "type": "switch_door",
             "x": 2,
             "y": -3,
+            "key" : 7,
             "logic" : "and"
         }, {
             "type": "boulder",

@@ -147,41 +147,21 @@ public class PlayerMovement {
     }
 
     @Test
-    @DisplayName("Test player through 2 doors, collect the 2 keys first")
-    public void testPlayerThrough2Doors2keys() {
+    @DisplayName("Test player cannot pickup two keys at the same time")
+    public void testPlayer2Keys() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_2doorsTest", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
 
         // Collect first key
         res = dmc.tick(Direction.RIGHT);
-        Position pos = getEntities(res, "player").get(0).getPosition();
         assertEquals(1, getInventory(res, "key").size());
 
-        // Collect the second key
+        // Try and collect the second key
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.LEFT);
         res = dmc.tick(Direction.DOWN);
-        pos = getEntities(res, "player").get(0).getPosition();
-        assertEquals(2, getInventory(res, "key").size());
-
-        // Go to the door and unlock it
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
         assertEquals(1, getInventory(res, "key").size());
-        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
-
-        // Go to the door and unlock it
-        res = dmc.tick(Direction.LEFT);
-        res = dmc.tick(Direction.DOWN);
-        assertEquals(0, getInventory(res, "key").size());
-        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
-
-        // Go to the exit
-        res = dmc.tick(Direction.RIGHT);
-
-        // Check the exit goal is done
-        assertFalse(getGoals(res).contains(":exit"));
     }
 
     @Test
