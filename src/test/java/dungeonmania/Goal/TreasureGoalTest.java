@@ -51,5 +51,44 @@ public class TreasureGoalTest {
         assertFalse(getGoals(initDungonRes).contains(":treasure"));
         assertEquals("", getGoals(initDungonRes));
     }
+
+    @Test
+    @DisplayName("Treasure complete with sunstone")
+    public void testTresureSimpleSunStone() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("goals/d_treasureTest_simpleStone", "c_movementTest_testMovementDown");
+        assertTrue(getGoals(initDungonRes).contains(":treasure"));
+        assertFalse(getGoals(initDungonRes).contains(":exit"));
+        assertFalse(getGoals(initDungonRes).contains(":boulders"));
+        assertFalse(getGoals(initDungonRes).contains(":enemies"));
+        initDungonRes = dmc.tick(Direction.DOWN);
+
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals("", getGoals(initDungonRes));
+    }
+
+    @Test
+    @DisplayName("Treasure complete with sunstione")
+    public void testTresureSunStone() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("goals/d_treasureTest_simpleStone", "c_treasureTest_multiple");
+        assertTrue(getGoals(initDungonRes).contains(":treasure"));
+        assertFalse(getGoals(initDungonRes).contains(":exit"));
+        assertFalse(getGoals(initDungonRes).contains(":boulders"));
+        assertFalse(getGoals(initDungonRes).contains(":enemies"));
+
+        initDungonRes = dmc.tick(Direction.DOWN);
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertTrue(getGoals(initDungonRes).contains(":treasure"));
+
+        initDungonRes = dmc.tick(Direction.DOWN);
+        assertEquals(1, getInventory(initDungonRes, "treasure").size());
+        assertTrue(getGoals(initDungonRes).contains(":treasure"));
+
+        initDungonRes = dmc.tick(Direction.DOWN);
+        assertEquals(2, getInventory(initDungonRes, "treasure").size());
+        assertFalse(getGoals(initDungonRes).contains(":treasure"));
+        assertEquals("", getGoals(initDungonRes));
+    }
     
 }

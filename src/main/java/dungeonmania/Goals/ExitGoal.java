@@ -54,8 +54,5 @@ public class ExitGoal implements Goal {
 		return false;
 	}
 
-    @Override
-    public boolean canComplete() {
-        return true;
-    }
+
 }
