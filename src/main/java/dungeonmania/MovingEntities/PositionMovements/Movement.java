@@ -27,9 +27,7 @@ public abstract class Movement implements Serializable {
                 return false;
             } else if (entity instanceof Door && entity.getPosition().equals(position)) {
                 return false;
-            } else if (entity instanceof Portal && entity.getPosition().equals(position)) {
-                return false; // TODO
-            }
+            } 
         }
         return true;
     }

@@ -6,24 +6,13 @@ import java.io.Serializable;
 
 public class GraphNode implements Comparable<GraphNode>, Serializable {
     private int cost;
-    private boolean visited;
     private boolean block;
     private Position pos;
-    
 
     public GraphNode(int cost, Position pos) {
         this.cost = cost;
         this.pos = pos;
-        this.visited = false;
         this.block = false;
-    }
-
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisit() {
-        this.visited = true;
     }
 
     public void setPos(Position pos) {
