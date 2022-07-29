@@ -25,7 +25,7 @@ public class Hydra extends MovingEntity {
      * @param health
      */
     public Hydra(String id, String type, Position position, boolean isInteractable, int attack, int health,
-            int healthIncreaseRate, int healthIncreaseAmount, boolean isAttack) {
+            double healthIncreaseRate, int healthIncreaseAmount, boolean isAttack) {
         super(id, attack, health, position);
         this.type = type;
         this.isInteractable = isInteractable;
@@ -33,24 +33,6 @@ public class Hydra extends MovingEntity {
         this.healthIncreaseRate = healthIncreaseRate;
         this.healthIncreaseAmount = healthIncreaseAmount;
         this.isAttack = false;
-
-    }
-
-    // getters and setters
-    public double getHealthIncreaseRate() {
-        return healthIncreaseRate;
-    }
-
-    public void setHealthIncreaseRate(int healthIncreaseRate) {
-        this.healthIncreaseRate = healthIncreaseRate;
-    }
-
-    public int getHealthIncreaseAmount() {
-        return healthIncreaseAmount;
-    }
-
-    public void setHealthIncreaseAmount(int healthIncreaseAmount) {
-        this.healthIncreaseAmount = healthIncreaseAmount;
     }
 
     /**
@@ -77,7 +59,7 @@ public class Hydra extends MovingEntity {
      * @param healthIncreaseAmount
      */
     public Hydra(String id, String type, Position position, boolean isInteractable, int attack, int health,
-            int healthIncreaseRate, int healthIncreaseAmount) {
+            double healthIncreaseRate, int healthIncreaseAmount) {
         super(id, attack, health, position);
         this.type = "hydra";
         this.healthIncreaseAmount = healthIncreaseAmount;
@@ -85,22 +67,60 @@ public class Hydra extends MovingEntity {
         this.isInteractable = false;
     }
 
-    @Override
-    public double getHealth() {
-        if (healthIncreaseRate < 0 || healthIncreaseRate > 1 || isAttack) {
-        } else if (!isAttack) {
-            this.isAttack = true;
-            health = health + healthIncreaseAmount;
-        }
+    // getters and setters
+    public double getHealthIncreaseRate() {
+        return healthIncreaseRate;
+    }
+
+    public void setHealthIncreaseRate(int healthIncreaseRate) {
+        this.healthIncreaseRate = healthIncreaseRate;
+    }
+
+    public int getHealthIncreaseAmount() {
+        return healthIncreaseAmount;
+    }
+
+    public void setHealthIncreaseAmount(int healthIncreaseAmount) {
+        this.healthIncreaseAmount = healthIncreaseAmount;
+    }
+
+    public double getOriginHealth() {
         return health;
     }
-    
+
+    @Override
+    public double getHealth() {
+
+        if (isAttack || this.getHealthIncreaseRate() <= 0 || this.getHealthIncreaseRate() > 1 ) {
+            return this.health;
+        }
+        else {
+            increaseHealth();
+            this.isAttack = true;
+        }
+        return this.health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
+    }
+
+    public void increaseHealth() {
+        double health = this.getOriginHealth();
+        health += this.getHealthIncreaseAmount();
+        this.setHealth(health);
+    }
+
     /**
      * @return boolean
      */
     @Override
     public boolean isInteractable() {
         return isInteractable;
+    }
+
+    public boolean isAttack() {
+        return isAttack;
     }
 
     /**
@@ -124,7 +144,7 @@ public class Hydra extends MovingEntity {
      * 
      */
     @Override
-    public void move(Position zombiePos, List<Entity> entities) {
+    public void move(Position hydraPos, List<Entity> entities) {
         Position newPos = null;
 
         // Check if player is invicible
@@ -143,7 +163,7 @@ public class Hydra extends MovingEntity {
             changeMovement(new RandomMovement(this));
         }
 
-        newPos = movement.moveEnemy(zombiePos, entities);
+        newPos = movement.moveEnemy(hydraPos, entities);
 
         if (newPos != null) {
             super.setPosition(newPos);
