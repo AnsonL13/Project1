@@ -111,14 +111,10 @@ public class LightBulb extends LogicalEntity {
                 break;
 
             default:
-                // This entity has no logic statement.  
-                if (activeEntities.size() >= 1) {
-                    active = true;
-                }
                 break;
         }
         
-        // This entity go activated.
+        // This entity got activated.
         if (active && this.activeTickNumber == -1) {
             if (usePrevActiveTickNumber) {
                 this.activeTickNumber = this.prevActiveTickNumber;

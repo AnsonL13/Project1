@@ -163,4 +163,35 @@ public class SwitchDoorTest {
         expectedPlayer = new EntityResponse(player.getId(), player.getType(), new Position(2, 1), false);
         assertEquals(expectedPlayer, player);
     } 
+
+    @Test
+    @DisplayName("Test switch door is not activated when there are three switches and one is not active")
+    public void testSwitchDoor3Switches() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("LogicalEntities/d_testSwitchDorr3Switches", "c_logicalEntities");
+        
+        // Player pushes the boulder onto one switch
+        res = dmc.tick(Direction.RIGHT);
+
+        // Player pushes the boulder onto one switch
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+
+        // Player pushes the boulder onto one switch
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.LEFT);
+
+        EntityResponse actualPlayer = getPlayer(res).get();
+        EntityResponse expectedPlayer = new EntityResponse(actualPlayer.getId(), actualPlayer.getType(), new Position(3, 0), false);
+        assertEquals(expectedPlayer, actualPlayer);
+    } 
 }
