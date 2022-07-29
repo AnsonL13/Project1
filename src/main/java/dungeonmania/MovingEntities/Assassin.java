@@ -32,6 +32,7 @@ public class Assassin extends Mercenary {
         this.failRate = failRate;
 
     }
+    
     // TODO move for invisible potion
     @Override
     public void move(Position playerPos, List<Entity> entities) {

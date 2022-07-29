@@ -71,11 +71,17 @@ public class SaveHelper {
     public static List<String> showAllGame() {
         List<String> filenames = new ArrayList<String>();
 
-        File folder = new File("src/main/java/dungeonmania/savedgames");
-        File[] listOfFiles = folder.listFiles();
+        try {
+            File folder = new File("src/main/java/dungeonmania/savedgames");
+            File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            filenames.add(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
+            for (int i = 0; i < listOfFiles.length; i++) {
+                filenames.add(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
+            }
+        }
+
+        catch (NullPointerException ex) {
+            return filenames;
         }
 
         return filenames;

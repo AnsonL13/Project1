@@ -23,7 +23,7 @@
     "zombie_attack": 1,
     "zombie_health": 5,
     "zombie_spawn_rate": 0,
-    "control_time": 2,
+    "mind_control_duration": 2,
     "midnight_armour_defence": 3,
     "midnight_armour_attack": 3
 }
