@@ -126,7 +126,6 @@ public class Battle implements Serializable {
             if (playerDefence > enemyAttack) playerShield = enemyAttack;
             // calculate rounds
             while (enemy.getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
-                System.out.println("health = " + enemy.getHealth() );
                 // Battle for Hydra
                 if (enemy instanceof Hydra) {
                     Hydra hyrda = (Hydra) enemy;
