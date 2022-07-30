@@ -273,12 +273,12 @@ public class Dungeon implements Serializable {
         }
 
         // Calculate if shield can be created
-        if (woodCount >= 2 && (treasureCount >= 1 || keyCount >= 1)) {
+        if (woodCount >= 2 && (treasureCount >= 1 || keyCount >= 1 || sunStoneCount >= 1 )) {
             buildables.add("shield");
         }
 
         // Calculate if sceptre can be created
-        if ((woodCount >= 1 || arrowCount >= 2) && (keyCount >= 1 || treasureCount >= 1) && sunStoneCount >= 1) {
+        if ((woodCount >= 1 || arrowCount >= 2) && (keyCount >= 1 || treasureCount >= 1 || sunStoneCount >= 2) && sunStoneCount >= 1) {
             buildables.add("sceptre");
         }
 
