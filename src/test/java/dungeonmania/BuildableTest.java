@@ -232,7 +232,55 @@ public class BuildableTest {
         assertEquals(0, getInventory(initDungonRes, "key").size());
         assertEquals(0, getInventory(initDungonRes, "arrow").size());;
     }
+    @Test
+    @DisplayName("Test build sceptre with arrow and 2 sun stone")
+    public void testBuildSceptre3() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_testBuildSceptre2SunStone", "c_buildTests_M3");
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        initDungonRes = dmc.tick(Direction.RIGHT);
+        assertEquals(2, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(2, getInventory(initDungonRes, "arrow").size());
 
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, getInventory(initDungonRes, "sceptre").size());
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(0, getInventory(initDungonRes, "arrow").size());;
+    }
+
+    @Test
+    @DisplayName("Test building a Shield with a treasure")
+    public void testBuildShieldWithSunstone() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("d_buildShieldTestSunstone", "c_collectableEntitiesTest");
+        // Pickup the wood
+        initDungonRes = dmc.tick(Direction.LEFT);
+
+        // Check wood in inventory
+        assertEquals(1, getInventory(initDungonRes, "wood").size());
+
+        // Pickup the wood
+        initDungonRes = dmc.tick(Direction.LEFT);
+
+        // Check wood in inventory
+        assertEquals(2, getInventory(initDungonRes, "wood").size());
+
+        // Pickup an sun stone
+        initDungonRes = dmc.tick(Direction.LEFT);
+
+        // Check sun stone in inventory
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+
+        // Build the shield
+        assertDoesNotThrow(() -> dmc.build("shield"));
+        initDungonRes = dmc.getDungeonResponseModel();
+        assertEquals(0, getInventory(initDungonRes, "wood").size());
+        assertEquals(1, getInventory(initDungonRes, "sun_stone").size());
+        assertEquals(1, getInventory(initDungonRes, "shield").size());
+    }
     @Test
     @DisplayName("Test build midnight armour")
     public void testBuildMidnightArmour() {
