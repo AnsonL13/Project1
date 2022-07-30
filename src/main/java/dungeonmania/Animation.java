@@ -16,7 +16,7 @@ public class Animation implements Serializable{
     public AnimationQueue moveAnimation(Direction movementDirection){
         if(movementDirection == Direction.RIGHT) {
             return new AnimationQueue("tick_right", dungeon.getPlayer().getId(), Arrays.asList(
-                "translate-x -1, over 0s", "scale-x 2, over 1s"
+                "translate-x -1, over 0s", "translate-x 1, over 1s"
             ), false, -1);
         } else if(movementDirection == Direction.LEFT) {
             return new AnimationQueue("tick_left", dungeon.getPlayer().getId(), Arrays.asList(

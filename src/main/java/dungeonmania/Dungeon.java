@@ -180,9 +180,9 @@ public class Dungeon implements Serializable {
             }
         }
         //
-        animations.clear();
-        Animation animation = new Animation(this, configMap);
-        animations.add(animation.moveAnimation(movementDirection));
+        // animations.clear();
+        // Animation animation = new Animation(this, configMap);
+        // animations.add(animation.moveAnimation(movementDirection));
         //"healthbar set " + getHealthString(), "healthbar tint 0x00ff00",
     
         // Check if moved into an enemy (Battle)
