@@ -5,6 +5,7 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
+import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
@@ -114,9 +115,12 @@ public class DungeonManiaController {
         // Get the list of incomplete goals
         String goals = dungeon.getGoals().listIncompleteGoals();
 
-        DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
-        inventory, battles, buildables, goals);
+        // Get Animation
+        List<AnimationQueue> animations = dungeon.getAnimations();
 
+        DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
+        inventory, battles, buildables, goals, animations);
+        
         return newDungeonResponse;
     }
 
@@ -183,5 +187,13 @@ public class DungeonManiaController {
         return getDungeonResponseModel();        
     }
 
+    /**
+     * /game/new/generate
+     */
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) throws IllegalArgumentException {
+        DungeonGenerator dungeonGenerator = new DungeonGenerator(xStart, yStart, xEnd, yEnd, configName);
+        this.dungeon = dungeonGenerator.generateDungeon();
 
+        return getDungeonResponseModel();
+    }
 }

@@ -15,7 +15,7 @@ import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.LogicalEntities.FloorSwitch;
 import dungeonmania.StaticEntities.LogicalEntities.SwitchDoor;
 import dungeonmania.exceptions.InvalidActionException;
-
+import dungeonmania.response.models.AnimationQueue;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -59,6 +59,7 @@ public class Dungeon implements Serializable {
     private Map<String, Portal> portals = new HashMap<String, Portal>();
     private List<Bomb> bombs = new ArrayList<Bomb>();
     private Map<String, CollectableEntity> collectableEntities = new HashMap<String, CollectableEntity>();
+    private List<AnimationQueue> animations = new ArrayList<>();
 
     public Dungeon(String dungeonName, JsonObject dungeonJson, JsonObject configJson) {
         this.dungeonId = "dungeon-0";
@@ -173,6 +174,11 @@ public class Dungeon implements Serializable {
                     collectableIterator.remove();
                     break;
                 }
+            // animations.clear();
+            // Animation animation = new Animation(this, configMap);
+            // animations.add(animation.moveAnimation(movementDirection));
+            //"healthbar set " + getHealthString(), "healthbar tint 0x00ff00",
+
             }
         }
 
@@ -749,6 +755,10 @@ public class Dungeon implements Serializable {
             }
             break;
         }
+    }
+
+    public List<AnimationQueue> getAnimations() {
+        return animations;
     }
 
     public Player getPlayer() {
