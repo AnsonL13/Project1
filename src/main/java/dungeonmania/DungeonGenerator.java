@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -67,6 +66,7 @@ public class DungeonGenerator {
             }
         }
 
+        // Get border positions. 
         List<Position> border = borderPositions();
         for (Position pos : border) {
             dungeonsString = dungeonsString + ",{\"x\": " + pos.getX() + ",\"y\": " + pos.getY() + ",\"type\": \"wall\"}";
@@ -74,8 +74,10 @@ public class DungeonGenerator {
 
         dungeonsString = dungeonsString + ",{\"x\": " + xEnd + ",\"y\": " + yEnd + ",\"type\": \"exit\"}],\"goal-condition\": {\"goal\": \"exit\"}}";
         
+        // Turn json string into a json object. 
         JsonObject dungeonJson = JsonParser.parseString(dungeonsString).getAsJsonObject();
 
+        // Create the dungeon. 
         Dungeon dungeon = new Dungeon("Dungeon-" + strDate, dungeonJson, configJson);
         return dungeon;
     }
@@ -86,6 +88,7 @@ public class DungeonGenerator {
     public Map<Position, Boolean> PrimsAlgorithm(Position start, Position end) {
         Map<Position, Boolean> maze = new HashMap<Position, Boolean>();
 
+        // Initialise entire map to false. 
         for (int i = xStart; i <= xEnd; i++) {
             for (int j = yStart; j <= yEnd; j++) {
                 if (i == xStart && j == yStart) {
@@ -95,8 +98,10 @@ public class DungeonGenerator {
             }
         }
 
+        // Make the start value true.
         maze.put(start, true);
 
+        // Get the list of positions that are distance 2 away and are walls. 
         List<Position> options = new ArrayList<Position>();
         for (Position pos : getNeigbours(start, 2)) {
             if (! maze.get(pos)) {
@@ -109,10 +114,12 @@ public class DungeonGenerator {
             Random random = new Random();
             int randomIndex = random.nextInt(0, options.size());
 
+            // Remove a random from options. 
             Position next = options.remove(randomIndex);
 
             List<Position> neighbours = new ArrayList<Position>();
 
+            // Add distnace 2 and not on boundary that are empty to neighbours. 
             for (Position pos: getNeigbours(next, 2)) {
                 if (maze.get(pos)) {
                     neighbours.add(pos);
@@ -134,6 +141,7 @@ public class DungeonGenerator {
                 maze.replace(neighbour, true);
             }
 
+            // add to options all neighbours of 'next' not on boundary that are of distance 2 away and are walls
             for (Position pos: getNeigbours(next, 2)) {
                 if (maze.get(pos) == false) {
                     options.add(pos);
@@ -141,6 +149,7 @@ public class DungeonGenerator {
             }
         }
 
+        // clear space for the exit if necessary. 
         if (maze.get(end) == false) {
             maze.replace(end, true);
             List<Position> neighbours = getNeigbours(end, 1);
