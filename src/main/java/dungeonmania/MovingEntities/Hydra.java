@@ -16,7 +16,6 @@ public class Hydra extends MovingEntity {
     private Movement movement;
     private double healthIncreaseRate;
     private int healthIncreaseAmount;
-    private boolean isAttack;
 
     /**
      * @param id
@@ -27,14 +26,13 @@ public class Hydra extends MovingEntity {
      * @param health
      */
     public Hydra(String id, String type, Position position, boolean isInteractable, int attack, int health,
-            double healthIncreaseRate, int healthIncreaseAmount, boolean isAttack) {
+            double healthIncreaseRate, int healthIncreaseAmount) {
         super(id, attack, health, position);
-        this.type = type;
-        this.isInteractable = isInteractable;
+        this.type = "hydra";
+        this.isInteractable = false;
         this.movement = new RandomMovement(this);
         this.healthIncreaseRate = healthIncreaseRate;
         this.healthIncreaseAmount = healthIncreaseAmount;
-        this.isAttack = false;
     }
 
     /**
@@ -48,25 +46,6 @@ public class Hydra extends MovingEntity {
         this.isInteractable = false;
         this.type = "hydra";
         this.movement = new RandomMovement(this);
-    }
-
-    /**
-     * @param id
-     * @param type
-     * @param position
-     * @param isInteractable
-     * @param attack
-     * @param health
-     * @param healthIncreaseRate
-     * @param healthIncreaseAmount
-     */
-    public Hydra(String id, String type, Position position, boolean isInteractable, int attack, int health,
-            double healthIncreaseRate, int healthIncreaseAmount) {
-        super(id, attack, health, position);
-        this.type = "hydra";
-        this.healthIncreaseAmount = healthIncreaseAmount;
-        this.healthIncreaseRate = healthIncreaseRate;
-        this.isInteractable = false;
     }
 
     // getters and setters
@@ -84,10 +63,6 @@ public class Hydra extends MovingEntity {
 
     public void setHealthIncreaseAmount(int healthIncreaseAmount) {
         this.healthIncreaseAmount = healthIncreaseAmount;
-    }
-
-    public double getOriginHealth() {
-        return health;
     }
 
     @Override
@@ -122,15 +97,8 @@ public class Hydra extends MovingEntity {
         }
     }
 
-
     public void setHealth(double health) {
         this.health = health;
-    }
-
-    public void increaseHealth() {
-        double health = this.getOriginHealth();
-        health += this.getHealthIncreaseAmount();
-        this.setHealth(health);
     }
 
     /**
@@ -159,7 +127,10 @@ public class Hydra extends MovingEntity {
     }
 
     /**
-     * 
+     * @param hydraPos
+     * @param entities
+     * @return void
+     *         Movement of Hydra.
      */
     @Override
     public void move(Position hydraPos, List<Entity> entities) {

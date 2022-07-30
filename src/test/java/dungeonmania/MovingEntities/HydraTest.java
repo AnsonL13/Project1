@@ -1,8 +1,6 @@
 package dungeonmania.MovingEntities;
 
 import static dungeonmania.TestUtils.countEntityOfType;
-import static dungeonmania.TestUtils.getEntities;
-import static dungeonmania.TestUtils.getInventory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -10,9 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static dungeonmania.TestUtils.getPlayer;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +20,6 @@ import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -99,27 +93,27 @@ public class HydraTest {
     @DisplayName("Test health will not increase if health increase rate is 0")
     public void testHydraHealthNotIncrease() {
         Position initial = new Position(0, 0);
-        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 0, 3, false);
+        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 0, 3);
         Player player = new Player("0", "player", initial.translateBy(Direction.DOWN), false, 5, 5);
         
-        assertEquals(5, hydra.getOriginHealth());
+        assertEquals(5, hydra.getHealth());
         
         player.battle();
         Battle result = Battle.battleCalculate(player, hydra);
 
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
-        assertEquals(0, hydra.getOriginHealth());
+        assertEquals(0, hydra.getHealth());
     }
 
     @Test
     @DisplayName("Test health will always increase if health increase rate is 1")
     public void testHydraHealthAlwaysIncrease() {
         Position initial = new Position(0, 0);
-        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 1, 3, false);
+        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 1, 3);
         Player player = new Player("0", "player", initial.translateBy(Direction.DOWN), false, 5, 5);
         
-        assertEquals(5, hydra.getOriginHealth());
+        assertEquals(5, hydra.getHealth());
         
         player.battle();
         Battle result = Battle.battleCalculate(player, hydra);
