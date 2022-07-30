@@ -179,23 +179,27 @@ public class Dungeon implements Serializable {
             }
         }
         //
+        animations.clear();
         if(movementDirection == Direction.RIGHT) {
-            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
-            "translate-x 1, over 1s"
-            ), false, -1));
-        } else if(movementDirection == Direction.LEFT) {
-            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
-            "translate-x -1, over 1s"
-            ), false, -1));
-        } else if(movementDirection == Direction.UP) {
-            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
-            "translate-y 1, over 1s"
-            ), false, -1));
-        } else if(movementDirection == Direction.DOWN) {
-            animations.add(new AnimationQueue("tick", "player", Arrays.asList(
-            "translate-y -1, over 1s"
+            animations.add(new AnimationQueue("tick_right", player.getId(), Arrays.asList(
+                "translate-x 1, over 0.5s", "translate-x, over 0s"
             ), false, -1));
         }
+        // } else if(movementDirection == Direction.LEFT) {
+        //     animations.add(new AnimationQueue("tick_left", player.getId(), Arrays.asList(
+        //         "translate-x 1, over 0s"
+        //     ), false, 0.5));
+        // } else if(movementDirection == Direction.UP) {
+        //     animations.add(new AnimationQueue("tick_up", player.getId(), Arrays.asList(
+        //         "translate-y 1, over 0s"
+        //     ), false, 0.5));
+        // } else if(movementDirection == Direction.DOWN) {
+        //     animations.add(new AnimationQueue("tick_down", player.getId(), Arrays.asList(
+        //         "translate-y -1, over 0s"
+        //     ), false, 0.5));
+        // }
+        //     //"healthbar set " + getHealthString(), "healthbar tint 0x00ff00",
+        
 
         // Check if moved into an enemy (Battle)
         startBattles();
@@ -786,5 +790,11 @@ public class Dungeon implements Serializable {
 
     public Goal getGoals() {
         return goals;
+    }
+
+    public String getHealthString(){
+        double cur_health = player.getPlayerHealth();
+        double return_value = cur_health / configMap.get("player_health");
+        return Double.toString(return_value);
     }
 }

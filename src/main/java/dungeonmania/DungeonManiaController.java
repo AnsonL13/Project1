@@ -117,12 +117,11 @@ public class DungeonManiaController {
         String goals = dungeon.getGoals().listIncompleteGoals();
 
         // Get Animation
-        List<AnimationQueue> animations = new ArrayList<>();
-        animations = dungeon.getAnimations();
-        animations.add(new AnimationQueue("PostTick", "entity-player", Arrays.asList("healthbar shake, over 0.5s, ease Sin"), false, 0.5));
+        List<AnimationQueue> animations = dungeon.getAnimations();
+
         DungeonResponse newDungeonResponse = new DungeonResponse(dungeon.getDungeonId(), dungeon.getDungeonName(), entities,
         inventory, battles, buildables, goals, animations);
-
+        
         return newDungeonResponse;
     }
 
