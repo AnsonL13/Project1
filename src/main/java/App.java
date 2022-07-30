@@ -161,6 +161,40 @@ public class App implements SparkApplication {
             return callUsingSessionAndArgument(request, (dmc) -> dmc.allGames());
         }, gson::toJson);
 
+        // Time Travel
+        Spark.post("api/game/rewind/", "application/json", (request, response) -> {
+            return callUsingSessionAndArgument(request, (dmc) -> {
+                try {
+                    return dmc.rewind(Integer.valueOf(request.queryParams("ticks")));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                } catch (Exception e) {
+                    throw new InvalidActionExceptionAPI(e.getMessage());
+                }
+            });
+        }, gson::toJson);
+
+        // Dungeon Generation
+        Spark.post("api/game/new/generate/", "application/json", (request, response) -> {
+            return callUsingSessionAndArgument(request, (dmc) -> {
+                try {
+                    return dmc.generateDungeon(Integer.valueOf(request.queryParams("xStart")), 
+                    Integer.valueOf(request.queryParams("yStart")), 
+                    Integer.valueOf(request.queryParams("xEnd")), 
+                    Integer.valueOf(request.queryParams("yEnd")), 
+                    request.queryParams("configName"));
+                } 
+                
+                catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                }
+
+                catch (Exception e) {
+                    throw new InvalidActionExceptionAPI(e.getMessage());
+                }
+            });
+        }, gson::toJson);
+
         Scintilla.start();
     }
 
