@@ -6,6 +6,7 @@ import java.util.List;
 
 import dungeonmania.BuildableEntities.Bow;
 import dungeonmania.CollectableEntities.Sword;
+import dungeonmania.MovingEntities.Hydra;
 import dungeonmania.MovingEntities.MovingEntity;
 
 public class Battle {
@@ -120,6 +121,24 @@ public class Battle {
             playerAttack = playerAttack + playerSword;
             playerAttack *= playerBow;
             while (enemy.getHealth() > 0.0 && player.getPlayerHealth() > 0.0) {
+                System.out.println("health = " + enemy.getHealth() );
+                // Battle for Hydra
+                if (enemy instanceof Hydra) {
+                    Hydra hyrda = (Hydra) enemy;
+
+                    if (hyrda.isHealthIncrease()) {
+                        double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
+                        double deltaEnemyHealth = 0;
+                        // Update player health
+                        BigDecimal c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
+                        player.setPlayerHealth(c.doubleValue());
+
+                        // Add round info to list
+                        rounds.add(new Round(deltaPlayerHealth, deltaEnemyHealth, items));
+                        continue;
+                    }
+                }
+
                 // Find change in health
                 double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
                 double deltaEnemyHealth = - (playerAttack / 5);

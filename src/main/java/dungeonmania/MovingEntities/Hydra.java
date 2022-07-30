@@ -1,6 +1,8 @@
 package dungeonmania.MovingEntities;
 
 import java.util.List;
+import java.util.Random;
+
 import dungeonmania.Entity;
 import dungeonmania.MovingEntities.PositionMovements.Movement;
 import dungeonmania.MovingEntities.PositionMovements.RandomMovement;
@@ -90,16 +92,36 @@ public class Hydra extends MovingEntity {
 
     @Override
     public double getHealth() {
-
-        if (isAttack || this.getHealthIncreaseRate() <= 0 || this.getHealthIncreaseRate() > 1 ) {
-            return this.health;
-        }
-        else {
-            increaseHealth();
-            this.isAttack = true;
-        }
         return this.health;
     }
+
+    /*
+     * Checks whether the Hydras health will increase or not. 
+     */
+    public boolean isHealthIncrease() {
+        // Increase rate is 0. Health will never increase. 
+        if (this.getHealthIncreaseRate() == 0) {
+            return false;
+        }
+
+        // Increase rate is 1. Health will always increase. 
+        else if (this.getHealthIncreaseRate() == 1) {
+            this.health += healthIncreaseAmount;
+            return true;
+        }
+
+        // Increase rate is random. choose a random boolean. 
+        else {
+            Random rd = new Random();
+            boolean healthIncrease = rd.nextBoolean();
+            if (healthIncrease) {
+                this.health += healthIncreaseAmount;
+                return true;
+            }
+            return false;
+        }
+    }
+
 
     public void setHealth(double health) {
         this.health = health;
@@ -117,10 +139,6 @@ public class Hydra extends MovingEntity {
     @Override
     public boolean isInteractable() {
         return isInteractable;
-    }
-
-    public boolean isAttack() {
-        return isAttack;
     }
 
     /**

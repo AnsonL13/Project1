@@ -96,22 +96,36 @@ public class HydraTest {
     }
 
     @Test
-    @DisplayName("Test health will increase after being attacked if health increase rate out of range")
+    @DisplayName("Test health will not increase if health increase rate is 0")
     public void testHydraHealthNotIncrease() {
         Position initial = new Position(0, 0);
-        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 0.8, 3, false);
+        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 0, 3, false);
         Player player = new Player("0", "player", initial.translateBy(Direction.DOWN), false, 5, 5);
         
-        assertFalse(hydra.isAttack());
         assertEquals(5, hydra.getOriginHealth());
         
         player.battle();
         Battle result = Battle.battleCalculate(player, hydra);
 
-        assertTrue(hydra.isAttack());
-        assertEquals(8, hydra.getHealth());
-
         assertTrue(result.isPlayerWon());
         assertFalse(result.isEnemyWon());
+        assertEquals(0, hydra.getOriginHealth());
+    }
+
+    @Test
+    @DisplayName("Test health will always increase if health increase rate is 1")
+    public void testHydraHealthAlwaysIncrease() {
+        Position initial = new Position(0, 0);
+        Hydra hydra = new Hydra("0", "hydra", initial, false, 1, 5, 1, 3, false);
+        Player player = new Player("0", "player", initial.translateBy(Direction.DOWN), false, 5, 5);
+        
+        assertEquals(5, hydra.getOriginHealth());
+        
+        player.battle();
+        Battle result = Battle.battleCalculate(player, hydra);
+
+        assertTrue(result.isEnemyWon());
+        assertFalse(result.isPlayerWon());
+        assertEquals(0, player.getPlayerHealth());
     }
 }
