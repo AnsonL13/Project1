@@ -183,5 +183,13 @@ public class DungeonManiaController {
         return getDungeonResponseModel();        
     }
 
+    /**
+     * /game/new/generate
+     */
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) throws IllegalArgumentException {
+        DungeonGenerator dungeonGenerator = new DungeonGenerator(xStart, yStart, xEnd, yEnd, configName);
+        this.dungeon = dungeonGenerator.generateDungeon();
 
+        return getDungeonResponseModel();
+    }
 }
