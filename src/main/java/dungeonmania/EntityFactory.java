@@ -16,6 +16,7 @@ import dungeonmania.CollectableEntities.TimeTurner;
 import dungeonmania.CollectableEntities.Treasure;
 import dungeonmania.CollectableEntities.Wood;
 import dungeonmania.MovingEntities.Assassin;
+import dungeonmania.MovingEntities.Hydra;
 import dungeonmania.MovingEntities.Mercenary;
 import dungeonmania.MovingEntities.MovingEntity;
 import dungeonmania.MovingEntities.Spider;
@@ -227,6 +228,16 @@ public class EntityFactory implements Serializable {
                 dungeon.addToEntities(assassin);
                 dungeon.addToInteractable(assassin);
                 return assassin;            
+            
+            case "hydra":
+                xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
+                yPosition = entityinfo.getAsJsonObject().get("y").getAsInt();
+                Hydra hydra = new Hydra(Integer.toString(latestUnusedId), "hydra",
+                                        new Position(xPosition, yPosition), false,
+                                        configMap.get("hydra_attack"), configMap.get("hydra_health"), 
+                                        configMap.get("hydra_health_increase_rate"), configMap.get("hydra_health_increase_amount")); 
+                dungeon.addToEntities(hydra);
+                return hydra;
 
             case "switch":
             xPosition = entityinfo.getAsJsonObject().get("x").getAsInt();
