@@ -14,10 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import dungeonmania.response.models.BattleResponse;
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.ItemResponse;
+
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 
@@ -28,13 +25,14 @@ public class DungeonGenerator {
     private int xEnd;
     private int yEnd;
     private String configName;
-    private Dungeon dungeon;
     
     public DungeonGenerator(int xStart, int yStart, int xEnd, int yEnd, String configName) {
         this.xStart = xStart;
         this.yStart = yStart;
+
         this.xEnd = xEnd;
         this.yEnd = yEnd;
+
         this.configName = configName;
     }
 
@@ -57,25 +55,121 @@ public class DungeonGenerator {
         Date date = Calendar.getInstance().getTime();  
         DateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");  
         String strDate = dateFormat.format(date);
-        
-        // Get the entities. 
 
-        //Dungeon dungeon = new Dungeon("Dungeon-" + strDate, dungeonJson, configJson);
+        String dungeonsString = "{\"entities\": [{\"x\": " + xStart + ",\"y\": " + yStart + ",\"type\": \"player\"}";
+        
+        // Get wall Positions. 
+        Map<Position, Boolean> emptyPositions = PrimsAlgorithm(new Position(this.xStart, this.yStart), new Position(this.xEnd, this.yEnd)); 
+
+        for (Position pos : emptyPositions.keySet()) {
+            if (! emptyPositions.get(pos)) {
+                dungeonsString = dungeonsString + ",{\"x\": " + pos.getX() + ",\"y\": " + pos.getY() + ",\"type\": \"wall\"}";
+            }
+        }
+
+        dungeonsString = dungeonsString + ",{\"x\": " + xEnd + ",\"y\": " + yEnd + ",\"type\": \"exit\"}],\"goal-condition\": {\"goal\": \"exit\"}}";
+
+        System.out.println(dungeonsString);
+        
+        JsonObject dungeonJson = JsonParser.parseString(dungeonsString).getAsJsonObject();
+
+        Dungeon dungeon = new Dungeon("Dungeon-" + strDate, dungeonJson, configJson);
         return dungeon;
     }
 
-    
-    public static void generate(int xStart, int yStart, int xEnd, int yEnd,String name,Dungeon response) {
-        Position start = new Position(xStart,yStart);
-        Position end = new Position(xEnd,yEnd);
-        //To do ()
+    /*
+     * Prims algorithm to find the position of walls. 
+     */
+    public Map<Position, Boolean> PrimsAlgorithm(Position start, Position end) {
+        Map<Position, Boolean> maze = new HashMap<Position, Boolean>();
+
+        for (int i = xStart; i <= xEnd; i++) {
+            for (int j = yStart; j <= yEnd; j++) {
+                if (i == xStart && j == yStart) {
+                    continue;
+                }
+                maze.put(new Position(i, j), false);
+            }
+        }
+
+        maze.put(start, true);
+
+        List<Position> options = new ArrayList<Position>();
+        for (Position pos : getNeigbours(start, 2)) {
+            if (! maze.get(pos)) {
+                options.add(pos);
+            }  
+        }
+
+        while (! options.isEmpty()) {
+
+            Random random = new Random();
+            int randomIndex = random.nextInt(0, options.size());
+
+            Position next = options.remove(randomIndex);
+
+            List<Position> neighbours = new ArrayList<Position>();
+
+            for (Position pos: getNeigbours(next, 2)) {
+                if (maze.get(pos)) {
+                    neighbours.add(pos);
+                }
+            }
+
+            if (! neighbours.isEmpty()) {
+                random = new Random();
+                randomIndex = random.nextInt(0, neighbours.size());
+
+                Position neighbour = neighbours.remove(randomIndex);
+
+                maze.replace(next, true);
+
+                Position midPos = new Position((next.getX() + neighbour.getX()) / 2, (next.getY() + neighbour.getY()) / 2);
+
+                maze.replace(midPos, true);
+
+                maze.replace(neighbour, true);
+            }
+
+            for (Position pos: getNeigbours(next, 2)) {
+                if (maze.get(pos) == false) {
+                    options.add(pos);
+                }
+            }
+        }
+
+        if (maze.get(end) == false) {
+            maze.replace(end, true);
+            List<Position> neighbours = getNeigbours(end, 1);
+
+            boolean isConnected = false;
+            for (Position pos: neighbours) {
+                if (maze.get(pos) == true) { 
+                    isConnected = true;
+                }
+            }
+
+            if (isConnected == false) {
+                Random random = new Random();
+                int randomIndex = random.nextInt(0, neighbours.size());
+
+                Position neighbour = neighbours.remove(randomIndex);
+                maze.replace(neighbour, true);
+            }
+        }
+
+        return maze;
     }
-    public static List<Position> getNeigbours(Position position, int distance) {
+
+    /*
+     * Get the cardinally adjacent neighbours of a position at a certain distance away. 
+     */
+    public List<Position> getNeigbours(Position position, int distance) {
         List<Position> neigbours = new ArrayList<Position>();
-        neigbours.add(new Position(position.getX(),position.getY()+distance));
-        neigbours.add(new Position(position.getX(),position.getY()-distance));
-        neigbours.add(new Position(position.getX()+distance,position.getY()));
-        neigbours.add(new Position(position.getX()-distance,position.getY()));
+        neigbours.add(new Position(position.getX(), position.getY() + distance));
+        neigbours.add(new Position(position.getX(), position.getY() - distance));
+        neigbours.add(new Position(position.getX() + distance, position.getY()));
+        neigbours.add(new Position(position.getX() - distance, position.getY()));
 
         List<Position> finalList = new ArrayList<Position>();
         for(Position positions : neigbours) {
@@ -83,85 +177,15 @@ public class DungeonGenerator {
         }
 
         for(Position pos : neigbours) {
-            if (pos.getX() <= 0 || pos.getX() >= 50) {
+            if (pos.getX() < this.xStart || pos.getX() > this.xEnd) {
                 finalList.remove(pos);
             }
-            else if (pos.getY() <= 0 || pos.getX() >= 50) {
+
+            else if (pos.getY() < this.yStart || pos.getY() > this.yEnd) {
                 finalList.remove(pos);
             }
         }
+
         return finalList;
     }
-
-    public static Map<Position, Boolean> RandomizedPrims(Position start, Position end) {
-        Map<Position, Boolean> maze = new HashMap<Position, Boolean>();
-        maze.put(start, true);
-        for (int i = 0;i < 50;i++) {
-            for (int j = 0;j<50;j++) {
-                maze.put(new Position(i,j),false);
-            }
-        }
-        List<Position> options = new ArrayList<Position>();
-        for (Position pos : getNeigbours(start,2)) {
-            if (! maze.get(pos)) {
-                options.add(pos);
-            }  
-        }
-
-        while (options.size() > 0) {
-            int num1 = ThreadLocalRandom.current().nextInt(0,options.size());
-            // num  = 0,...size - 1;
-            Position next = options.remove(num1);
-
-            List<Position> neighbours = new ArrayList<Position>();
-
-            // Adding neighbours of 'next' that are distance 2 away and are empty
-            for (Position pos: getNeigbours(next, 2)) {
-                if (maze.get(pos) == true) {
-                    // Is empty i.e. true
-                    neighbours.add(pos);
-                }
-            }
-
-            if (neighbours.size() > 0) {
-                int num2 = ThreadLocalRandom.current().nextInt(0,neighbours.size());
-                // num  = 0,...size - 1;
-                Position neighbour = neighbours.remove(num2);
-
-                maze.put(next, true);
-                // midPos is the position inbetween next and neigbhour
-                Position midPos = new Position((next.getX() + neighbour.getX())/2, (next.getY() + neighbour.getY())/2);
-                maze.put(midPos, true);
-                maze.put(neighbour, true);
-            }
-
-            // Add all neighbours of 'next' that are distance 2 away and are walls
-            for (Position pos: getNeigbours(next, 2)) {
-                if ( maze.get(pos) == false) {
-                    // Is a wall i.e. false
-                    options.add(pos);
-                }
-            }
-        }
-
-        List<Position> neighbours = getNeigbours(end, 1);
-        Boolean isConnected = false;
-
-        for (Position pos: neighbours) {
-            if (maze.get(pos) == true) { 
-                // true i.e. empty
-                isConnected = true;
-            }
-        }
-
-        if (isConnected == false) {
-            int num = ThreadLocalRandom.current().nextInt(0,neighbours.size());
-            // num  = 0,...size - 1;
-            Position neighbour = neighbours.remove(num);
-            maze.put(neighbour, true);
-        }
-
-        return maze;
-    }
-
 }
