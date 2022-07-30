@@ -16,19 +16,19 @@ public class Animation implements Serializable{
     public AnimationQueue moveAnimation(Direction movementDirection){
         if(movementDirection == Direction.RIGHT) {
             return new AnimationQueue("tick_right", dungeon.getPlayer().getId(), Arrays.asList(
-                "translate-x -1, over 0s", "translate-x 1, over 0.5s"
+                "translate-x -1, over 0s", "translate-x 1, over 1s"
             ), false, -1);
         } else if(movementDirection == Direction.LEFT) {
-            return new AnimationQueue("tick_lift", dungeon.getPlayer().getId(), Arrays.asList(
-                "translate-x 1, over 0s", "translate-x -1, over 0.5s"
+            return new AnimationQueue("tick_left", dungeon.getPlayer().getId(), Arrays.asList(
+                "translate-x 1, over 0s", "translate-x -1, over 1s"
             ), false, -1);
         } else if(movementDirection == Direction.UP) {
             return new AnimationQueue("tick_up", dungeon.getPlayer().getId(), Arrays.asList(
-                "translate-y 1, over 0s", "translate-y -1, over 0.5s"
+                "translate-y 1, over 0s", "translate-y -1, over 1s"
             ), false, -1);
         } else if(movementDirection == Direction.DOWN) {
             return new AnimationQueue("tick_down", dungeon.getPlayer().getId(), Arrays.asList(
-                "translate-y -1, over 0s", "translate-y 1, over 0.5s"
+                "translate-y -1, over 0s", "translate-y 1, over 1s"
             ), false, -1);
         }
         else return null;
