@@ -57,7 +57,7 @@ public class DungeonGenerator {
         String strDate = dateFormat.format(date);
 
         String dungeonsString = "{\"entities\": [{\"x\": " + xStart + ",\"y\": " + yStart + ",\"type\": \"player\"}";
-        
+
         // Get wall Positions. 
         Map<Position, Boolean> emptyPositions = PrimsAlgorithm(new Position(this.xStart, this.yStart), new Position(this.xEnd, this.yEnd)); 
 
@@ -67,9 +67,12 @@ public class DungeonGenerator {
             }
         }
 
-        dungeonsString = dungeonsString + ",{\"x\": " + xEnd + ",\"y\": " + yEnd + ",\"type\": \"exit\"}],\"goal-condition\": {\"goal\": \"exit\"}}";
+        List<Position> border = borderPositions();
+        for (Position pos : border) {
+            dungeonsString = dungeonsString + ",{\"x\": " + pos.getX() + ",\"y\": " + pos.getY() + ",\"type\": \"wall\"}";
+        }
 
-        System.out.println(dungeonsString);
+        dungeonsString = dungeonsString + ",{\"x\": " + xEnd + ",\"y\": " + yEnd + ",\"type\": \"exit\"}],\"goal-condition\": {\"goal\": \"exit\"}}";
         
         JsonObject dungeonJson = JsonParser.parseString(dungeonsString).getAsJsonObject();
 
@@ -187,5 +190,30 @@ public class DungeonGenerator {
         }
 
         return finalList;
+    }
+
+    /*
+     * Get positions to make border. 
+     */
+    public List<Position> borderPositions() {
+        List<Position> positions = new ArrayList<Position>();
+
+        for (int i = xStart - 1; i <= xEnd + 1; i++) {
+            positions.add(new Position(i, yStart - 1));
+        }
+
+        for (int i = xStart - 1; i <= xEnd + 1; i++) {
+            positions.add(new Position(i, yEnd + 1));
+        }
+
+        for (int i = yStart; i <= yEnd; i++) {
+            positions.add(new Position(xEnd + 1, i));
+        }
+
+        for (int i = yStart; i <= yEnd; i++) {
+            positions.add(new Position(xStart - 1, i));
+        }
+
+        return positions;
     }
 }

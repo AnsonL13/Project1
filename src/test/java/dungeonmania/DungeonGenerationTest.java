@@ -20,6 +20,6 @@ public class DungeonGenerationTest {
         DungeonManiaController dmc = new DungeonManiaController();
 
         assertDoesNotThrow(() -> dmc.generateDungeon(-50, -50, 0, 0, "simple")); 
-        //assertThrows(IllegalArgumentException.class, () -> dmc.generateDungeon(-50, -50, 50, 50, "shflsfje")); 
+        assertThrows(IllegalArgumentException.class, () -> dmc.generateDungeon(-50, -50, 50, 50, "shflsfje")); 
     }
 }
