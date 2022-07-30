@@ -112,7 +112,7 @@ public class DungeonGenerator {
         while (! options.isEmpty()) {
 
             Random random = new Random();
-            int randomIndex = random.nextInt(0, options.size());
+            int randomIndex = random.nextInt(options.size());
 
             // Remove a random from options. 
             Position next = options.remove(randomIndex);
@@ -128,7 +128,7 @@ public class DungeonGenerator {
 
             if (! neighbours.isEmpty()) {
                 random = new Random();
-                randomIndex = random.nextInt(0, neighbours.size());
+                randomIndex = random.nextInt(neighbours.size());
 
                 Position neighbour = neighbours.remove(randomIndex);
 
@@ -163,7 +163,7 @@ public class DungeonGenerator {
 
             if (isConnected == false) {
                 Random random = new Random();
-                int randomIndex = random.nextInt(0, neighbours.size());
+                int randomIndex = random.nextInt(neighbours.size());
 
                 Position neighbour = neighbours.remove(randomIndex);
                 maze.replace(neighbour, true);
