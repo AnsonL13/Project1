@@ -183,5 +183,10 @@ public class DungeonManiaController {
         return getDungeonResponseModel();        
     }
 
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String name) {
+        //To do
+        return null;
+    }
+    
 
 }
