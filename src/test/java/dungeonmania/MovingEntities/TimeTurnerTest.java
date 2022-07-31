@@ -1,7 +1,6 @@
 package dungeonmania.MovingEntities;
 
 import static dungeonmania.TestUtils.getInventory;
-import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.countEntityOfType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 
 public class TimeTurnerTest {

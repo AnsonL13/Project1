@@ -75,7 +75,9 @@ public class SaveHelper {
             File folder = new File("src/main/java/dungeonmania/savedgames");
             File[] listOfFiles = folder.listFiles();
 
+            // Get the filenames from the folder.
             for (int i = 0; i < listOfFiles.length; i++) {
+                // Edit the filename to extract the name of the dungeon only. 
                 filenames.add(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
             }
         }
@@ -87,6 +89,9 @@ public class SaveHelper {
         return filenames;
     }
 
+    /*
+     * Creates a folder to store saved dungeons if there is no folder to begin with. 
+     */
     public static void createFolder(String path) {
         File f = new File(path);
             try{

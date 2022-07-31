@@ -48,72 +48,8 @@ public class LightBulb extends LogicalEntity {
         }
 
         // Check if this entity is active. 
-        boolean active = false;
+        boolean active = activeThroughAdjacent();
 
-        switchstatement:
-        switch (this.logic) {
-            case "and":
-                List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
-
-                // Get the number of adjacent floorswitches
-                int floorSwitchCount = 0;
-                for (LogicalEntity entity : logicalEntities) {
-                    if (entity instanceof FloorSwitch) {
-                        floorSwitchCount++;
-                    }
-                }
-
-                // If there are more than two switches adjacent, all must be activated.
-                if (floorSwitchCount > 2) {
-                    for (LogicalEntity entity : logicalEntities) {
-                        if (entity instanceof FloorSwitch && entity.isActive() == -1) {
-                            break switchstatement;
-                        }
-                    }
-                }
-
-                if (activeEntities.size() >= 2) {
-                    active = true;
-                }
-
-                break;
-            
-            case "or":
-                if (activeEntities.size() >= 1) {
-                    active = true;
-                }
-
-                break;
-            
-            case "xor":
-                if (activeEntities.size() == 1) {
-                    active = true;
-                }
-
-                break;
-
-            case "co_and":
-                // Check if there are 2 or more active entities. 
-                if (activeEntities.size() < 2) {
-                    break switchstatement;
-                }
-
-                // Check if all entities were activated on the same tick.
-                int targetTick = activeEntities.get(0).isActive();
-                for (LogicalEntity entity : activeEntities) {
-                    if (entity.isActive() != targetTick) {
-                        break switchstatement;
-                    }
-                }
-
-                active = true;
-
-                break;
-
-            default:
-                break;
-        }
-        
         // This entity got activated.
         if (active && this.activeTickNumber == -1) {
             if (usePrevActiveTickNumber) {
@@ -125,6 +61,7 @@ public class LightBulb extends LogicalEntity {
                 this.prevActiveTickNumber = tickNumber;
             }
 
+            // Activate this light bulb
             this.Activate();
         }
 
@@ -132,6 +69,7 @@ public class LightBulb extends LogicalEntity {
         else if (! active && this.activeTickNumber != -1) {
             this.activeTickNumber = -1;
 
+            // Deactivate this light bulb
             this.Deactivate();
         }
     }

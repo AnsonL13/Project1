@@ -40,6 +40,9 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         this.hasBoulder = false;
     }
 
+    /*
+     * Updates this entity based on whether or not cardinally adjacent entities are active or not. 
+     */
     @Override
     public void update(LogicalEntity logicalEntity, boolean isActive, int tickNumber, boolean usePrevActiveTickNumber) {
 
@@ -106,6 +109,9 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
         updateNeighbours(logicalEntity, this, active, tickNumber, usePrevActiveTickNumber);
     }
 
+    /*
+     * Call this function with logicalEntity as a cardinally adjacent entity in order to update this floorswitch. 
+     */
     public void updateThis(LogicalEntity logicalEntity, boolean isActive, int tickNumber, boolean usePrevActiveTickNumber) {
         // Check if there are any changes to this entity's activity.
         // Check if there is a boulder on this switch. 
@@ -144,6 +150,7 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
 
     /*
      * Checks if a boulder has moved on or off this floor switch
+     * Completed for every switch on every tick to send updates. 
      */
     public void boulderUpdate(int tickNumber) {
         // Check if there is a boulder on this switch
@@ -187,85 +194,6 @@ public class FloorSwitch extends LogicalEntity implements StaticEntity {
             }
         }
     }
-
-    /*
-     * Checks if this entity can still be active through adjacent entities. 
-     */
-    public boolean activeThroughAdjacent() { 
-        boolean activeAdjacent = false;
-        // Check if floorswitch can still be active through other cardinally adjacent logical entities. 
-        switchstatement:
-        switch (this.logic) {
-            case "and":
-                List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
-
-                // Get the number of adjacent floorswitches
-                int floorSwitchCount = 0;
-                for (LogicalEntity entity : logicalEntities) {
-                    if (entity instanceof FloorSwitch) {
-                        floorSwitchCount++;
-                    }
-                }
-
-                // If there are more than two switches adjacent, all must be activated.
-                if (floorSwitchCount > 2) {
-                    for (LogicalEntity entity : logicalEntities) {
-                        if (entity instanceof FloorSwitch && entity.isActive() == -1) {
-                            break switchstatement;
-                        }
-                    }
-                }
-
-                if (activeEntities.size() >= 2) {
-                    activeAdjacent = true;
-                }
-
-                break;
-            
-            case "or":
-                if (activeEntities.size() >= 1) {
-                    activeAdjacent = true;
-                }
-
-                break;
-            
-            case "xor":
-                if (activeEntities.size() == 1) {
-                    activeAdjacent = true;
-                }
-
-                break;
-
-            case "co_and":
-                // Check if there are 2 or more active entities. 
-                if (activeEntities.size() < 2) {
-                    break switchstatement;
-                }
-
-                // Check if all entities were activated on the same tick.
-                int targetTick = activeEntities.get(0).isActive();
-                for (LogicalEntity entity : activeEntities) {
-                    if (entity.isActive() != targetTick) {
-                        break switchstatement;
-                    }
-                }
-
-                activeAdjacent = true;
-
-                break;
-
-            default:
-                // This entity has no logic statement.  
-                if (activeEntities.size() >= 1) {
-                    activeAdjacent = true;
-                }
-                break;
-        }
-
-        return activeAdjacent;
-    }
-
-
 
     /*
      * Activating the floor switch does nothing

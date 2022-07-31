@@ -1,7 +1,6 @@
 package dungeonmania.MovingEntities;
 
 import java.util.List;
-import java.util.Random;
 
 import dungeonmania.Entity;
 import dungeonmania.MovingEntities.PositionMovements.Movement;

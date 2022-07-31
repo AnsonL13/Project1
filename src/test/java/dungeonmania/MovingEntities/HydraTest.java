@@ -21,7 +21,6 @@ import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
