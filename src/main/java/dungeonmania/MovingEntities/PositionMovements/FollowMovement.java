@@ -1,14 +1,10 @@
 package dungeonmania.MovingEntities.PositionMovements;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import dungeonmania.Entity;
 import dungeonmania.MovingEntities.DijkstrasAlgo;
 import dungeonmania.MovingEntities.Mercenary;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class FollowMovement extends Movement {
@@ -30,4 +26,7 @@ public class FollowMovement extends Movement {
         return shortestPath.getNextPos(player);
     }
 
+    public Mercenary getEnemy() {
+        return enemy;
+    }
 }

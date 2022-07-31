@@ -94,6 +94,83 @@ public abstract class LogicalEntity implements Entity {
     }
 
     /*
+     * Checks if this entity can be active through adjacent entities. 
+     */
+    public boolean activeThroughAdjacent() { 
+        boolean activeAdjacent = false;
+        // Check if floorswitch can still be active through other cardinally adjacent logical entities. 
+        switchstatement:
+        switch (this.logic) {
+            case "and":
+                List<LogicalEntity> logicalEntities = getCardinallyAdjacentLogicalEntities();
+
+                // Get the number of adjacent floorswitches
+                int floorSwitchCount = 0;
+                for (LogicalEntity entity : logicalEntities) {
+                    if (entity instanceof FloorSwitch) {
+                        floorSwitchCount++;
+                    }
+                }
+
+                // If there are more than two switches adjacent, all must be activated.
+                if (floorSwitchCount > 2) {
+                    for (LogicalEntity entity : logicalEntities) {
+                        if (entity instanceof FloorSwitch && entity.isActive() == -1) {
+                            break switchstatement;
+                        }
+                    }
+                }
+
+                if (activeEntities.size() >= 2) {
+                    activeAdjacent = true;
+                }
+
+                break;
+            
+            case "or":
+                if (activeEntities.size() >= 1) {
+                    activeAdjacent = true;
+                }
+
+                break;
+            
+            case "xor":
+                if (activeEntities.size() == 1) {
+                    activeAdjacent = true;
+                }
+
+                break;
+
+            case "co_and":
+                // Check if there are 2 or more active entities. 
+                if (activeEntities.size() < 2) {
+                    break switchstatement;
+                }
+
+                // Check if all entities were activated on the same tick.
+                int targetTick = activeEntities.get(0).isActive();
+                for (LogicalEntity entity : activeEntities) {
+                    if (entity.isActive() != targetTick) {
+                        break switchstatement;
+                    }
+                }
+
+                activeAdjacent = true;
+
+                break;
+
+            default:
+                // This entity has no logic statement.  
+                if (activeEntities.size() >= 1) {
+                    activeAdjacent = true;
+                }
+                break;
+        }
+
+        return activeAdjacent;
+    }
+
+    /*
      * Returns -1 if this entity is inactive.
      * Return a number that is not -1 if this entity is active. 
      */

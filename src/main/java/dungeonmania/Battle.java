@@ -132,7 +132,7 @@ public class Battle implements Serializable {
 
                     if (hyrda.isHealthIncrease()) {
                         double deltaPlayerHealth = - ((enemyAttack - playerShield) / 10);
-                        double deltaEnemyHealth = 0;
+                        double deltaEnemyHealth = hyrda.getHealthIncreaseAmount();
                         // Update player health
                         BigDecimal c = BigDecimal.valueOf(player.getPlayerHealth()).subtract(BigDecimal.valueOf((enemyAttack - playerShield) / 10));
                         player.setPlayerHealth(c.doubleValue());

@@ -5,7 +5,6 @@ import java.util.List;
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
-import dungeonmania.StaticEntities.Portal;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.util.Position;
 

@@ -33,7 +33,9 @@ public class Assassin extends Mercenary {
 
     }
     
-    // TODO move for invisible potion
+    /*
+     * Move the assassin
+     */
     @Override
     public void move(Position playerPos, List<Entity> entities) {
         boolean changedPotionStat = false;

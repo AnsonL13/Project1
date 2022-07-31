@@ -30,8 +30,8 @@
     "assassin_recon_radius": 4,
     "hydra_attack": 1,
     "hydra_health": 5,
-    "hydra_health_increase_rate": 0.5,
-    "hydra_health_increase_amount": 1,
+    "hydra_health_increase_rate": 0,
+    "hydra_health_increase_amount": 10,
     "mind_control_duration": 1,
     "midnight_armour_attack": 1,
     "midnight_armour_defence": 1
