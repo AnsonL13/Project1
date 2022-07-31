@@ -1,6 +1,6 @@
 {
     "main_menu": {
-        "background_image": "images/backgrounds/main_menu.png",
+        "background_image": "images/backgrounds/background2.png",
         "background_music": "audio/1.mp3",
         "text_color": "white"
     },
