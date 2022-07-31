@@ -85,14 +85,16 @@ public class Hydra extends MovingEntity {
             return true;
         }
 
-        // Increase rate is random. choose a random boolean. 
+        // Calculate change of health increase based on healthIncreaseRate
         else {
-            Random rd = new Random();
-            boolean healthIncrease = rd.nextBoolean();
+            double randomValue = Math.random() * 100;
+            boolean healthIncrease = randomValue <= (healthIncreaseRate * 100);
+
             if (healthIncrease) {
                 this.health += healthIncreaseAmount;
                 return true;
             }
+
             return false;
         }
     }
