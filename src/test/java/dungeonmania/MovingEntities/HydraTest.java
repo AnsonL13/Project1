@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static dungeonmania.TestUtils.getEntities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import dungeonmania.StaticEntities.Boulder;
 import dungeonmania.StaticEntities.Door;
 import dungeonmania.StaticEntities.Wall;
 import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -121,5 +123,46 @@ public class HydraTest {
         assertTrue(result.isEnemyWon());
         assertFalse(result.isPlayerWon());
         assertEquals(0, player.getPlayerHealth());
+    }
+
+    // Black box testing
+    @Test
+    @DisplayName("Test health will not increase if health increase rate is 0")
+    public void testHydraHealthNotIncrease2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("MovingEntity/d_hydraTest", "MovingEntity/c_noHealthIncreaseHydraTest");
+        int hydraCount = getEntities(initDungonRes,"hydra").size();
+        int playerCount = getEntities(initDungonRes,"player").size();
+        
+        assertEquals(1, hydraCount);
+        assertEquals(1, playerCount);
+
+        DungeonResponse res = dmc.tick(Direction.RIGHT);
+
+        hydraCount = getEntities(res,"hydra").size();
+        playerCount = getEntities(res,"player").size();
+
+        assertEquals(0, hydraCount);
+        assertEquals(1, playerCount);
+    }
+
+    @Test
+    @DisplayName("Test health will always increase if health increase rate is 1")
+    public void testHydraHealthAlwaysIncrease2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse initDungonRes = dmc.newGame("MovingEntity/d_hydraTest", "MovingEntity/c_invincibleHydraTest");
+        int hydraCount = getEntities(initDungonRes,"hydra").size();
+        int playerCount = getEntities(initDungonRes,"player").size();
+        
+        assertEquals(1, hydraCount);
+        assertEquals(1, playerCount);
+
+        DungeonResponse res = dmc.tick(Direction.RIGHT);
+
+        hydraCount = getEntities(res,"hydra").size();
+        playerCount = getEntities(res,"player").size();
+
+        assertEquals(1, hydraCount);
+        assertEquals(0, playerCount);
     }
 }
