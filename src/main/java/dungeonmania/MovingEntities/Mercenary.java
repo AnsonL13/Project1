@@ -25,8 +25,6 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
     private int bribeAmount;
     private int bribeRadius;
     private int bribeTime;
-    
-
 
     private Movement movement;
 
@@ -74,7 +72,7 @@ public class Mercenary extends MovingEntity implements InteractableEntity, Allie
             int mercenaryAttack, int mercenaryHealth) {
         super(id, mercenaryAttack, mercenaryHealth, position);
         this.type = "mercenary";
-        this.isInteractable = false;
+        this.isInteractable = true;
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
         this.movement = new FollowMovement(this);
