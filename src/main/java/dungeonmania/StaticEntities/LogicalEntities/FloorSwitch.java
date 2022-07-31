@@ -5,10 +5,9 @@ import java.util.List;
 
 import dungeonmania.Entity;
 import dungeonmania.StaticEntities.Boulder;
-import dungeonmania.StaticEntities.StaticEntity;
 import dungeonmania.util.Position;
 
-public class FloorSwitch extends LogicalEntity implements StaticEntity {
+public class FloorSwitch extends LogicalEntity {
 
     private boolean hasBoulder;
 

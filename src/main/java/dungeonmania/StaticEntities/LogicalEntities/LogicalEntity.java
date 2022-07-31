@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dungeonmania.Entity;
+import dungeonmania.StaticEntities.StaticEntity;
 import dungeonmania.util.Position;
 
-public abstract class LogicalEntity implements Entity {
+public abstract class LogicalEntity implements StaticEntity {
     protected String id;
     protected String type;
     protected Position position;
