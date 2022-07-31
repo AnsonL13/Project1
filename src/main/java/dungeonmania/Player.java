@@ -592,7 +592,6 @@ public class Player implements Entity {
         allies.add((AlliedEntities)ally);
     }
 
-    // TODO implement shortest if not close to player
     private void moveAllies(Position player) {
         for (AlliedEntities ally : allies) {
             ally.move(player, new ArrayList<Entity>());
